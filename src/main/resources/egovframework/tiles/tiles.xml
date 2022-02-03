@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<!--<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"	"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">-->
+	
+<tiles-definitions>
+
+    <!-- 메인 화면 tiles -->
+	<!-- <definition name="index-tiles" template="/WEB-INF/jsp/layout/indexlayout.jsp"> -->
+	<definition name="index-tiles" template="/main/layout.do?gubun=M">
+		<!-- <put-attribute name="title"		value="유니빌" /> -->
+		<put-attribute name="header"	value="/main/header.do?gubun=H" />
+		<put-attribute name="content"	value="" />
+		<put-attribute name="footer"	value="/WEB-INF/jsp/layout/footer.jsp" />
+	</definition>
+	
+	<!-- 컨텐츠 화면 tiles -->
+	<!-- <definition name="main-tiles" template="/WEB-INF/jsp/layout/layout.jsp"> -->
+	<definition name="main-tiles" template="/main/layout.do?gubun=C">
+		<!-- <put-attribute name="title"		value="유니빌" /> -->
+		<put-attribute name="header"	value="/main/header.do?gubun=H" />
+		<put-attribute name="content"	value="" />
+		<put-attribute name="footer"	value="/WEB-INF/jsp/layout/footer.jsp" />
+	</definition>
+	
+	<definition name="pop-tiles" template="/WEB-INF/jsp/layout/popLayout.jsp">
+		<put-attribute name="title"		value="유니빌" />
+		<put-attribute name="header"	value="/WEB-INF/jsp/layout/popHeader.jsp" />
+		<put-attribute name="content"	value="" />
+	</definition>
+	
+    <!-- 아래 name을 "/sample/egovSampleList"라고 정합니다.
+           "/sample/egovSampleLIst"는 컨트롤러가 리턴하는 값입니다.
+           컨트롤러에서 리턴할 때 맨앞에 "/"가 포함되어 있다는 점을 잊지 마세요.
+	<definition name="unibill/content/contentList" extends="mainTemplate">
+		<put-attribute name="title"		value="Contact Manager" />
+		<put-attribute name="header"	value="/WEB-INF/jsp/layout/header.jsp" />
+		<put-attribute name="content"	value="/WEB-INF/jsp/unibill/content/contentList.jsp" />
+		<put-attribute name="footer"	value="/WEB-INF/jsp/layout/footer.jsp" />	
+	</definition>
+	-->
+	
+	<definition name="test" extends="main-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/content/contentList_test.jsp" />
+	</definition>
+    
+    <!-- 메인 화면 tiles 패턴 -->
+	<definition name="index_tiles/*/*/*" extends="index-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<definition name="index_tiles/*/*" extends="index-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/{1}/{2}.jsp" />
+	</definition>
+	
+	<!-- 컨텐츠 화면 tiles 패턴 -->
+	<definition name="unibill_tiles/*/*/*" extends="main-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<definition name="unibill_tiles/*/*" extends="main-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="unibill_pop/*/*/*" extends="pop-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<definition name="unibill_pop/*/*" extends="pop-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/{1}/{2}.jsp" />
+	</definition>
+	
+	<!-- no tiles -->
+	<definition name="no-tiles" template="/WEB-INF/jsp/layout/noTemplate.jsp">
+		<put-attribute name="noTemplate"   value="" />
+	</definition>
+	
+	<definition name="unibill_no/*/*/*" extends="no-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<definition name="unibill_no/*/*" extends="no-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/{1}/{2}.jsp" />
+	</definition>
+	
+	<!-- header
+	<definition name="header" extends="no-tiles">
+		<put-attribute name="noTemplate"	value="/WEB-INF/jsp/layout/header.jsp" />
+	</definition>
+	 -->
+
+	<!-- 리뉴얼 layout tiles -->
+	<definition name="main-new-tiles" template="/WEB-INF/jsp/layout/renew/layout.jsp">
+		<put-attribute name="content"	value="" />
+		<put-attribute name="footer"	value="/WEB-INF/jsp/layout/renew/footer.jsp" />
+	</definition>
+
+	<!-- 리뉴얼 main 컨텐츠 화면 tiles -->
+	<definition name="unibill_new_tiles/*/*/*" extends="main-new-tiles">
+		<put-attribute name="content"   value="/WEB-INF/jsp/unibill/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	 
+</tiles-definitions>

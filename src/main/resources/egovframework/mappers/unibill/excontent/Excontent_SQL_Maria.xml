@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="excontent">
+	<!-- 사용자 유무 확인 -->
+	<select id="selectcfgIdCnt" parameterType="map" resultType="int">
+		select 
+			count(user_id)                                                                                                                                             
+			from v_user
+			where user_id = #{user_id}
+	</select>
+	
+	<select id="selectcfgUserCnt" parameterType="map" resultType="int">
+		select 
+			count(user_id)                                                                                                                                              
+			from cm_cfguser
+			where user_nm = f_enc('1','user_nm',#{name})
+			and role_id = #{role_id}
+			and work_branch = #{branch}
+			and mobile = f_enc('1','user_nm',#{num})
+	</select>
+	
+	<!-- 권한신청 사용자 등록 -->
+	<insert id="insertcfgUserReg" parameterType="map">
+		insert into cm_cfguserreg(
+			reg_type
+			,req_user_id
+			,user_nm
+			,user_role
+			,pass
+			,mobile
+			,sday
+			,eday
+			,work_place
+			,reg_id
+			,upd_id
+			,reg_tm
+			,upd_tm
+			,ubseq
+		)
+		values (
+			#{reg_type}
+			,#{user_id}
+			,f_enc('1','user_nm',#{user_nm})
+			,#{user_role}
+			,f_enc('1','pass',#{pass})
+			,#{num}
+			,#{startDate}
+			,#{endDate}
+			,#{branch}
+			,'hanssak1'
+			,'hanssak1'
+			,f_getcurtm('')
+			,f_getcurtm('')
+			,f_getsn('cm_file','ubseq')
+		)
+	</insert>
+	
+	<select id="selectRoleId"  parameterType="map" resultType="String">
+		select role_id
+			from cm_cfguser
+			where role_id = #{userId}
+	</select>
+	
+	<select id="selectId"  parameterType="map" resultType="String">
+		select user_id
+			from cm_cfguser
+			where user_nm = f_enc('1','user_nm',#{name})
+			and role_id = #{role_id}
+			and work_branch = #{branch}
+			and mobile = f_enc('1','user_nm',#{num})
+	</select>
+	
+	<select id="selectPass"  parameterType="map" resultType="String">
+		select f_enc('2','pass',pass) as pass
+			from cm_cfguser
+			where user_id = #{user_id}
+			and mobile = f_enc('1','user_nm',#{num})
+	</select>
+	
+	<!-- 인증 MMS 전송 -->
+	<insert id="insertSendMMS" parameterType="map">
+		insert into unibill.ssg_send_tran_mms(
+			fuserid
+			,fbarcode
+			,fmsgtype
+			,fsubject
+			,fmessage
+			,fdestine
+			,fcallback
+		) 
+		values (
+			#{userId}
+			,#{barcode}
+			,#{msgType}
+			,#{subject}
+			,#{message}
+			,#{destine}
+			,'02-3397-1480'
+		)
+	</insert>
+	
+	<select id="selectcfgUserCntPw" parameterType="map" resultType="int">
+		select 
+			count(user_id)                                                                                                                                              
+			from cm_cfguser
+			where user_id = #{user_id}
+			and mobile = f_enc('1','user_nm',#{num})
+	</select>
+</mapper>

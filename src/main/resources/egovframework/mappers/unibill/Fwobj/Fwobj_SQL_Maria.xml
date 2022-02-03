@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper">
+
+	<resultMap id="fwobj-result" type="com.hsck.ubfw.component.fwobj.vo.FwobjVO">
+
+		<result column="TABLE_NAME_FROM" 		property="tableNameFrom" /> <!-- database 가 가지고있는 테이블 정보에서 추출한 테이블 이름 -->
+		<result column="OBJ_ID_FROM" 			property="objIdFrom" /> <!-- database 가 가지고있는 테이블 정보에서 추출한 컬럼 이름 -->
+		<result column="OBJ_NM_FROM" 			property="objNmFrom" /> <!-- database 가 가지고있는 테이블 정보에서 추출한 컬럼 주석 이름 -->
+		<result column="COL_ID_FROM" 			property="colIdFrom" /> <!-- database 가 가지고있는 테이블 정보에서 추출한 컬럼 이름 -->
+
+		<result column="OBJ_ID" 			property="objId" /> <!-- 객체ID -->
+		<result column="OBJ_NM" 			property="objNm" /> <!-- 객체명 -->
+		<result column="COL_ID" 			property="colId" /> <!-- 컬럼ID -->
+		<result column="OBJ_TYPE" 			property="objType" /> <!-- 객체 형식 -->
+		<result column="OBJ_POS" 			property="objPos" /> <!-- 객체 위치 -->
+		<result column="XML_ID" 			property="xmlId" /> <!-- xml ID -->
+		<result column="GRP_CD" 			property="grpCd" /> <!-- 그룹코드 -->
+		<result column="REMARK" 			property="remark" /> <!-- 설명 -->
+		<result column="AUTO_GEN_COL" 			property="autoGenCol" /> <!-- 자동완성여부 -->
+		<result column="REG_ID" 			property="regId" /> <!-- 등록자 -->
+		<result column="UPD_ID" 			property="updId" /> <!-- 변경자 -->
+		<result column="REG_TM" 			property="regTm" /> <!-- 등록시간 -->
+		<result column="UPD_TM" 			property="updTm" /> <!-- 변경시간 -->
+		<result column="UBSEQ" 			property="ubseq" /> <!-- 자료순번 -->
+		<result column="GRP_TYPE" 			property="grpType" /> <!-- 그룹타입 -->
+		<result column="OBJ_SQL" 			property="objSql" /> <!-- OBJ_SQL -->
+		</resultMap>
+	
+	<sql id="listFwobj-where">
+	
+		<!-- 조회 조건값 ( F.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				 <!--<if test="tableNameFrom != null and tableNameFrom != ''">	AND UPPER(UTCL.TABLE_NAME) 	LIKE CONCAT( '%' ,   UPPER(#{tableNameFrom}) , '%' )		 </if>-->
+				 <if test="objId != null and objId != ''">	AND UPPER(F.OBJ_ID) 	LIKE CONCAT( '%' ,   UPPER(#{objId}) , '%' )		 </if>
+				 <if test="objNm != null and objNm != ''">	AND F.OBJ_NM 	LIKE CONCAT( '%' ,   #{objNm} , '%' )		 </if>
+				 <if test="colId != null and colId != ''">	AND UPPER(F.COL_ID) 	LIKE CONCAT( '%' ,   UPPER(#{colId}) , '%' )		 </if>
+				 <if test="objType != null and objType != ''">	AND UPPER(F.OBJ_TYPE) 	LIKE CONCAT( '%' ,   UPPER(#{objType}) , '%' )		 </if>
+				 <if test="objPos != null and objPos != ''">	AND F.OBJ_POS 	LIKE CONCAT( '%' ,   #{objPos}	 , '%' )	 </if>
+				 <if test="xmlId != null and xmlId != ''">	AND UPPER(F.XML_ID) 	LIKE CONCAT( '%' ,   UPPER(#{xmlId}) , '%' )	 </if>
+				 <if test="grpCd != null and grpCd != ''">	AND UPPER(F.GRP_CD) 	LIKE CONCAT( '%' ,   UPPER(#{grpCd}) , '%' )	 </if>
+				 <if test="remark != null and remark != ''">	AND F.REMARK 	LIKE CONCAT( '%' ,   #{remark} , '%' )		 </if>
+				 <if test="autoGenCol != null and autoGenCol != ''">	AND F.AUTO_GEN_COL 	LIKE CONCAT( '%' , #{autoGenCol} , '%' )		 </if>
+				<!-- <if test="regId != null and regId != ''">	AND F.REG_ID 	= #{regId}		 </if> -->
+				<!-- <if test="updId != null and updId != ''">	AND F.UPD_ID 	= #{updId}		 </if> -->
+				<!-- <if test="regTm != null and regTm != ''">	AND F.REG_TM 	= #{regTm}		 </if> -->
+				<!-- <if test="updTm != null and updTm != ''">	AND F.UPD_TM 	= #{updTm}		 </if> -->
+				<!-- <if test="ubseq != null and ubseq != ''">	AND F.UBSEQ 	= #{ubseq}		 </if> -->
+				 <if test="grpType != null and grpType != ''">	AND F.GRP_TYPE 	LIKE CONCAT( '%' ,   #{grpType} , '%' )		 </if>
+				 <if test="objSql != null and objSql != ''">	AND F.OBJ_SQL 	LIKE CONCAT( '%' , #{objSql} , '%' )		 </if>
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND F.PROTOTYPE_TITLE LIKE CONCAT( '%' ,  #{searchPrototypeTitle  } , '%' ) </if> -->
+				 <if test="searchTableName != null and searchTableName != ''">	AND UPPER(UTCL.TABLE_NAME) 	LIKE CONCAT( '%' ,   UPPER(#{searchTableName}) , '%' ) 		 </if>
+				 <if test="searchObjId != null and searchObjId != ''">	AND UPPER(F.OBJ_ID) 	LIKE CONCAT( '%' ,   UPPER(#{searchObjId}) , '%' )		 </if>
+				 <if test="searchObjNm != null and searchObjNm != ''">	AND F.OBJ_NM 	LIKE CONCAT( '%' ,   #{searchObjNm} , '%' )		 </if>
+				 <if test="searchColId != null and searchColId != ''">	AND UPPER(F.COL_ID) 	LIKE CONCAT( '%' ,   UPPER(#{searchColId}) , '%' )		 </if>
+				 <if test="searchObjType != null and searchObjType != ''">	AND UPPER(F.OBJ_TYPE) 	LIKE CONCAT( '%' ,   UPPER(#{searchObjType}) , '%' )		 </if>
+				 <if test="searchObjPos != null and searchObjPos != ''">	AND F.OBJ_POS 	LIKE CONCAT( '%' ,   #{searchObjPos} , '%' )		 </if>
+				 <if test="searchXmlId != null and searchXmlId != ''">	AND UPPER(F.XML_ID) 	LIKE CONCAT( '%' ,   UPPER(#{searchXmlId}) , '%' )		 </if>
+				 <if test="searchGrpCd != null and searchGrpCd != ''">	AND UPPER(F.GRP_CD) 	LIKE CONCAT( '%' ,   UPPER(#{searchGrpCd}) , '%' )		 </if>
+				 <if test="searchRemark != null and searchRemark != ''">	AND F.REMARK 	LIKE CONCAT( '%' ,   #{searchRemark} , '%' )		 </if>
+				 <if test="searchAutoGenCol != null and searchAutoGenCol != ''">	AND F.AUTO_GEN_COL 	= #{searchAutoGenCol}		 </if>
+				<!-- <if test="searchRegId != null and searchRegId != ''">	AND F.REG_ID 	= #{searchRegId}		 </if> -->
+				<!-- <if test="searchUpdId != null and searchUpdId != ''">	AND F.UPD_ID 	= #{searchUpdId}		 </if> -->
+				<!-- <if test="searchRegTm != null and searchRegTm != ''">	AND F.REG_TM 	= #{searchRegTm}		 </if> -->
+				<!-- <if test="searchUpdTm != null and searchUpdTm != ''">	AND F.UPD_TM 	= #{searchUpdTm}		 </if> -->
+				<!-- <if test="searchUbseq != null and searchUbseq != ''">	AND F.UBSEQ 	= #{searchUbseq}		 </if> -->
+				 <if test="searchGrpType != null and searchGrpType != ''">	AND UPPER(F.GRP_TYPE) 	LIKE CONCAT( '%' ,   UPPER(#{searchGrpType}) , '%' )		 </if>
+				 <if test="searchObjSql != null and searchObjSql != ''">	AND F.OBJ_SQL 	LIKE CONCAT( '%' ,   #{searchObjSql} , '%' )		 </if>
+			</sql>
+	
+	<select id="getFwobj" parameterType="com.hsck.ubfw.component.fwobj.vo.FwobjVO" resultType="com.hsck.ubfw.component.fwobj.vo.FwobjVO">
+		/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.getFwobj ====== */
+			SELECT
+					   F.OBJ_ID /* 객체ID */
+					,  F.OBJ_NM /* 객체명 */
+					,  F.COL_ID /* 컬럼ID */
+					,  F.OBJ_TYPE /* 객체 형식 */
+					,  F.OBJ_POS /* 객체 위치 */
+					,  F.XML_ID /* xml ID */
+					,  F.GRP_CD /* 그룹코드 */
+					,  F.REMARK /* 설명 */
+					,  F.AUTO_GEN_COL /* 자동완성여부 */
+					,  F.REG_ID /* 등록자 */
+					,  F.UPD_ID /* 변경자 */
+					,  F.REG_TM /* 등록시간 */
+					,  F.UPD_TM /* 변경시간 */
+					,  F.UBSEQ /* 자료순번 */
+					,  F.GRP_TYPE /* 그룹타입 */
+					,  F.OBJ_SQL /* OBJ_SQL */
+			  FROM FWOBJ F
+			 WHERE F.OBJ_ID = #{objId }
+	</select>
+	
+<!-- 	<select id="listFwobj" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listFwobj" parameterType="hashmap" resultType="com.hsck.ubfw.component.fwobj.vo.FwobjVO"> -->
+<!-- 	<select id="listFwobj" parameterType="hashmap" resultMap="fwobj-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listFwobj" parameterType="com.hsck.ubfw.component.fwobj.vo.FwobjVO" resultType="com.hsck.ubfw.component.fwobj.vo.FwobjVO">
+		/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.listFwobj ====== */
+		<include refid="com.hsck.ubfw.component.include.maria.pagingStart"/>
+		<![CDATA[
+			SELECT
+					   F.OBJ_ID /* 객체ID */
+					,  F.OBJ_NM /* 객체명 */
+					,  F.COL_ID /* 컬럼ID */
+					,  F.OBJ_TYPE /* 객체 형식 */
+					,  F.OBJ_POS /* 객체 위치 */
+					,  F.XML_ID /* xml ID */
+					,  F.GRP_CD /* 그룹코드 */
+					,  F.REMARK /* 설명 */
+					,  F.AUTO_GEN_COL /* 자동완성여부 */
+					,  F.REG_ID /* 등록자 */
+					,  F.UPD_ID /* 변경자 */
+					,  F.REG_TM /* 등록시간 */
+					,  F.UPD_TM /* 변경시간 */
+					,  F.UBSEQ /* 자료순번 */
+					,  F.GRP_TYPE /* 그룹타입 */
+					,  F.OBJ_SQL /* OBJ_SQL */
+			  FROM FWOBJ F
+			 WHERE 1=1 
+	    ]]>
+
+		<include refid="listFwobj-where"/>
+		<choose>
+			<when test="sidx != null and sidx != '' and sord != null and sord != ''">
+				ORDER BY ${sidx} ${sord}
+			</when>
+			<otherwise>
+				ORDER BY F.OBJ_ID ASC , F.OBJ_ID ASC
+			</otherwise>
+		</choose>
+		<include refid="com.hsck.ubfw.component.include.maria.pagingEnd"/>
+	</select>
+
+	<select id="getFwobjCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.getFwobjCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+			  FROM FWOBJ F
+			 WHERE 1=1
+	    ]]>
+
+		<include refid="listFwobj-where"/>
+	</select>
+
+
+	<select id="listFwobjTable" parameterType="com.hsck.ubfw.component.fwobj.vo.FwobjVO" resultType="com.hsck.ubfw.component.fwobj.vo.FwobjVO">
+		/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.listFwobjTable ====== */
+		<include refid="com.hsck.ubfw.component.include.maria.pagingStart"/>
+		<![CDATA[
+			SELECT
+					UTCL.TABLE_NAME AS TABLE_NAME_FROM
+					, LOWER( UTCL.COLUMN_NAME ) AS OBJ_ID_FROM
+					, UTCL.COLUMN_COMMENT AS OBJ_NM_FROM
+					, LOWER( UTCL.COLUMN_NAME ) AS COL_ID_FROM
+					,  F.OBJ_ID /* 객체ID */
+					,  F.OBJ_NM /* 객체명 */
+					,  F.COL_ID /* 컬럼ID */
+					,  F.OBJ_TYPE /* 객체 형식 */
+					,  F.OBJ_POS /* 객체 위치 */
+					,  F.XML_ID /* xml ID */
+					,  F.GRP_CD /* 그룹코드 */
+					,  F.REMARK /* 설명 */
+					,  F.AUTO_GEN_COL /* 자동완성여부 */
+					,  F.REG_ID /* 등록자 */
+					,  F.UPD_ID /* 변경자 */
+					,  F.REG_TM /* 등록시간 */
+					,  F.UPD_TM /* 변경시간 */
+					,  F.UBSEQ /* 자료순번 */
+					,  F.GRP_TYPE /* 그룹타입 */
+					,  F.OBJ_SQL /* OBJ_SQL */
+			  FROM INFORMATION_SCHEMA.columns UTCL
+				left outer JOIN FWOBJ F ON UPPER(UTCL.COLUMN_NAME) = UPPER(F.OBJ_ID)
+			 WHERE UTCL.TABLE_SCHEMA = #{dbName}
+	    ]]>
+
+		<include refid="listFwobj-where"/>
+		<choose>
+			<when test="sidx != null and sidx != '' and sord != null and sord != ''">
+				ORDER BY ${sidx} ${sord}
+			</when>
+			<otherwise>
+				ORDER BY UTCL.TABLE_NAME ASC , UTCL.ORDINAL_POSITION ASC
+			</otherwise>
+		</choose>
+		<include refid="com.hsck.ubfw.component.include.maria.pagingEnd"/>
+	</select>
+
+	<select id="getFwobjTableCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.getFwobjTableCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+			  FROM INFORMATION_SCHEMA.columns UTCL
+				left outer JOIN FWOBJ F ON UPPER(UTCL.COLUMN_NAME) = UPPER(F.OBJ_ID)
+			 WHERE UTCL.TABLE_SCHEMA = #{dbName}
+	    ]]>
+
+		<include refid="listFwobj-where"/>
+	</select>
+
+
+	<sql id="saveFwobjSQL">
+		INSERT INTO FWOBJ (
+			OBJ_ID
+			, OBJ_NM
+			, COL_ID
+			, OBJ_TYPE
+			, OBJ_POS
+			, XML_ID
+			, GRP_CD
+			, REMARK
+			, AUTO_GEN_COL
+			, REG_ID
+			, UPD_ID
+			, REG_TM
+			, UPD_TM
+			, GRP_TYPE
+			, OBJ_SQL
+		) 
+		VALUES 
+		( 
+			#{objId}
+			, #{objNm}
+			, #{colId}
+			, #{objType}
+			, #{objPos}
+			, #{xmlId}
+			, #{grpCd}
+			, #{remark}
+			, #{autoGenCol}
+			, #{sessionUserId}
+			, #{sessionUserId}
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, #{grpType}
+			, #{objSql}
+		)
+		on duplicate key update
+		UPD_TM = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		, UPD_ID = #{sessionUserId}
+		<if test="objNm != null and objNm != ''">	, OBJ_NM 	= #{objNm}		 </if>
+		<if test="colId != null and colId != ''">	, COL_ID 	= #{colId}		 </if>
+		, OBJ_TYPE 	= #{objType}
+ 		<!--<if test="objType != null and objType != ''">	, OBJ_TYPE 	= #{objType}		 </if>-->
+		<if test="objPos != null and objPos != ''">	, OBJ_POS 	= #{objPos}		 </if>
+		, XML_ID 	= #{xmlId}
+		, GRP_CD 	= #{grpCd}
+		, REMARK 	= #{remark}
+		, OBJ_SQL 	= #{objSql}
+		<!--<if test="xmlId != null and xmlId != ''">	, XML_ID 	= #{xmlId}		 </if>-->
+ 		<!--<if test="grpCd != null and grpCd != ''">	, GRP_CD 	= #{grpCd}		 </if>-->
+ 		<!--<if test="remark != null and remark != ''">	, REMARK 	= #{remark}		 </if>-->
+		<if test="autoGenCol != null and autoGenCol != ''">	, AUTO_GEN_COL 	= #{autoGenCol}		 </if>
+		<if test="grpType != null and grpType != ''">	, GRP_TYPE 	= #{grpType}		 </if>
+ 		<!--<if test="objSql != null and objSql != ''">	, OBJ_SQL 	= #{objSql}		 </if>-->
+		
+	</sql>	
+	<insert id="saveFwobjMap" parameterType="java.util.HashMap">
+		/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.saveFwobjMap ====== */
+		<include refid="saveFwobjSQL"/>
+	</insert>
+	<insert id="saveFwobj" parameterType="com.hsck.ubfw.component.fwobj.vo.FwobjVO">
+		/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.saveFwobj ====== */
+		<include refid="saveFwobjSQL"/>
+	</insert>
+	
+
+	<insert id="insertFwobj" parameterType="com.hsck.ubfw.component.fwobj.vo.FwobjVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.insertFwobj ====== */
+			INSERT INTO FWOBJ ( 
+								 OBJ_ID
+								 , OBJ_NM
+								 , COL_ID
+								 , OBJ_TYPE
+								 , OBJ_POS
+								 , XML_ID
+								 , GRP_CD
+								 , REMARK
+								 , AUTO_GEN_COL
+								 , REG_ID
+								 , UPD_ID
+								 , REG_TM
+								 , UPD_TM
+								 , UBSEQ
+								 , GRP_TYPE
+								 , OBJ_SQL
+					) 
+					VALUES 
+					( 
+						  #{objId}
+						 ,  #{objNm}
+						 ,  #{colId}
+						 ,  #{objType}
+						 ,  #{objPos}
+						 ,  #{xmlId}
+						 ,  #{grpCd}
+						 ,  #{remark}
+						 ,  #{autoGenCol}
+						 ,  #{sessionUserId}
+						 ,  #{sessionUserId}
+						 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+						 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+						 ,  #{ubseq}
+						 ,  #{grpType}
+						 ,  #{objSql}
+					)
+		]]>
+	</insert>
+
+
+	<update id="updateFwobj" parameterType="com.hsck.ubfw.component.fwobj.vo.FwobjVO">
+			/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.updateFwobj ====== */
+	        UPDATE FWOBJ 
+	        SET UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	          , UPD_ID 	= #{sessionUserId}
+				<if test="objId != null and objId != ''">		, OBJ_ID 	= #{objId}		 </if>
+				<if test="objNm != null and objNm != ''">		, OBJ_NM 	= #{objNm}		 </if>
+				<if test="colId != null and colId != ''">		, COL_ID 	= #{colId}		 </if>
+				<if test="objType != null and objType != ''">		, OBJ_TYPE 	= #{objType}		 </if>
+				<if test="objPos != null and objPos != ''">		, OBJ_POS 	= #{objPos}		 </if>
+				<if test="xmlId != null and xmlId != ''">		, XML_ID 	= #{xmlId}		 </if>
+				<if test="grpCd != null and grpCd != ''">		, GRP_CD 	= #{grpCd}		 </if>
+				<if test="remark != null and remark != ''">		, REMARK 	= #{remark}		 </if>
+				<if test="autoGenCol != null and autoGenCol != ''">		, AUTO_GEN_COL 	= #{autoGenCol}		 </if>
+				<if test="grpType != null and grpType != ''">		, GRP_TYPE 	= #{grpType}		 </if>
+				<if test="objSql != null and objSql != ''">		, OBJ_SQL 	= #{objSql}		 </if>
+			WHERE OBJ_ID 	= #{objId}
+	</update>
+
+
+	<delete id="deleteFwobj" parameterType="com.hsck.ubfw.component.fwobj.vo.FwobjVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwobj.service.impl.FwobjMapper.deleteFwobj ====== */
+			DELETE FROM FWOBJ 
+		]]>
+			 WHERE OBJ_ID 	= #{objId}
+	</delete>
+
+
+</mapper>

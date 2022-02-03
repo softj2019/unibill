@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="compare">
+
+    
+    
+    
+    <!-- 항목별 대사 조건 -->
+	<sql id="selectCompItemCond">
+		and item_id in (select item_id from mb_cfgitem where pb_yn='Y')
+		<if test="item_id != null and item_id != '' ">        <!-- 시화일자 -->
+            and item_id=#{item_id}  
+        </if>
+    </sql>
+    
+    <!-- 항목별 대사 조회 총갯수 -->
+	<sql id="selectCompItem" >
+		 select a.bill_ym, i.nm as item_id
+		 	 ,format(coalesce(a.cost+a.dc_cost,0),0) cmp_cost
+			 ,format(coalesce(b.cost+b.dc_cost,0),0) pb_cost
+			 ,format( coalesce(b.cost+b.dc_cost,0)/coalesce(a.cost+a.dc_cost,1)*100 ,0) cmppct			 
+		 from 
+		 ( select bill_ym,item_id, sum(cost) cost, sum(dc_cost) dc_cost from mb_rptsale 
+		 	where bill_ym=#{bill_ym_yyyy}||#{bill_ym_mm} and gen_type='T' 
+		 	<include refid="selectCompItemCond" /> 
+		 	group by bill_ym,item_id ) a
+		 left join 
+		 ( select bill_ym,item_id, sum(cost) cost, sum(dc_cost) dc_cost from mb_rptsale 
+		 	where bill_ym=#{bill_ym_yyyy}||#{bill_ym_mm} and gen_type='P' 
+		 	<include refid="selectCompItemCond" /> 
+		 	group by bill_ym,item_id ) b
+		 on (a.bill_ym=b.bill_ym and a.item_id=b.item_id) 
+		 left join mb_cfgitem i on (a.item_id=i.item_id)
+	</sql>
+    
+    
+    <!-- 항목별 대사 조회 총갯수 -->
+	<select id="selectCompItemListCnt" parameterType="map" resultType="int">
+		select count(*) from (
+		<include refid="selectCompItem" /> 
+		) a
+	</select>
+	
+	<!-- 항목별 대사 조회 -->
+	<select id="selectCompItemList" parameterType="map" resultType="egovMap">
+		select * from(
+		 <include refid="selectCompItem" /> 
+		 )a
+		where 1=1
+		order by bill_ym,item_id
+		limit #{limitSize}  offset #{firstIndex} 
+	</select>
+	
+ 	<!-- 항목별 대사 조회 엑셀 -->
+	<select id="selectCompItemListExcel" parameterType="map" resultType="egovMap">
+
+		select * from(
+		 <include refid="selectCompItem" /> 
+		 )a
+		where 1=1
+		order by bill_ym,item_id 
+	</select>
+	   
+    
+    
+    
+    
+    <!-- 항목별 대사 조건 -->
+	<sql id="selectCompKeynoCond">
+		and item_id in (select item_id from mb_cfgitem where pb_yn='Y')
+		<if test="item_id != null and item_id != '' ">        <!-- 시화일자 -->
+            and item_id=#{item_id}  
+        </if>
+        <if test="key_no != null and key_no != '' ">        <!-- 시화일자 -->
+            and key_no like concat('%' ,#{key_no} ,'%') 
+        </if>
+    </sql>
+    
+    <!-- 항목별 대사 조회 총갯수 -->
+	<sql id="selectCompKeyno" >
+		 select a.bill_ym, a.key_no, i.nm item_id 
+			 ,format(coalesce(a.cost+a.dc_cost,0),0) cmp_cost
+			 ,format(coalesce(b.cost+b.dc_cost,0),0) pb_cost
+			  ,format( coalesce(b.cost+b.dc_cost,0)/coalesce(a.cost+a.dc_cost,1)*100 ,0) cmppct 
+		 from 
+		 ( select bill_ym, key_no, item_id, sum(cost) cost, sum(dc_cost) dc_cost from mb_rptsale 
+		 	where bill_ym=#{bill_ym_yyyy}||#{bill_ym_mm} and gen_type='T' 
+		 	<include refid="selectCompKeynoCond" /> 
+		 	group by bill_ym, key_no, item_id ) a
+		 left join 
+		 ( select bill_ym, key_no, item_id,  sum(cost) cost, sum(dc_cost) dc_cost from mb_rptsale 
+		 	where bill_ym=#{bill_ym_yyyy}||#{bill_ym_mm} and gen_type='P' 
+		 	<include refid="selectCompKeynoCond" /> 
+		 	group by bill_ym, key_no, item_id ) b
+		 on (a.bill_ym=b.bill_ym and a.item_id=b.item_id and a.key_no=b.key_no) 
+		  left join mb_cfgitem i on (a.item_id=i.item_id)
+	</sql>
+    
+     
+	<select id="selectCompListCnt" parameterType="map" resultType="int">
+		select count(*) from (
+		<include refid="selectCompKeyno" /> 
+		) a
+	</select>
+	 
+	<select id="selectCompList" parameterType="map" resultType="egovMap">
+		select * from(
+		 <include refid="selectCompKeyno" /> 
+		 )a
+		where 1=1
+		order by bill_ym,key_no,item_id 
+		limit #{limitSize}  offset #{firstIndex} 
+	</select>
+	
+ 	<!-- 항목별 대사 조회 엑셀 -->
+	<select id="selectCompListExcel" parameterType="map" resultType="egovMap">
+		select * from(
+		 <include refid="selectCompKeyno" /> 
+		 )a
+		where 1=1
+		order by bill_ym,key_no,item_id 
+	</select>
+	   
+    
+    
+</mapper>

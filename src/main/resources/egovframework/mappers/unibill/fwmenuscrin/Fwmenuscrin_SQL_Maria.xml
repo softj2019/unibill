@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper">
+
+	<resultMap id="fwmenuscrin-result" type="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO">
+		<result column="MENU_ID" 			property="menuId" /> <!-- 메뉴ID -->
+		<result column="SCRIN_ID" 			property="scrinId" /> <!-- 화면ID -->
+		<result column="MENU_NM" 			property="menuNm" /> <!-- 메뉴 이름 -->
+		<result column="SCRIN_NM" 			property="scrinNm" /> <!-- 화면 이름 -->
+		<result column="UBSEQ" 			property="ubseq" /> <!-- 자료순번 -->
+		<result column="SHOW_SN" 			property="showSn" /> <!-- 화면출력순번 -->
+		<result column="REG_ID" 			property="regId" /> <!-- 등록자 -->
+		<result column="UPD_ID" 			property="updId" /> <!-- 변경자 -->
+		<result column="REG_TM" 			property="regTm" /> <!-- 등록시간 -->
+		<result column="UPD_TM" 			property="updTm" /> <!-- 수정시간 -->
+		<result column="GRIDHG" 			property="gridhg" /> <!-- 그리드높이 -->
+	</resultMap>
+
+	<sql id="listFwmenuscrin-where">
+
+		<!-- 조회 조건값 ( F.컬럼명 == null  형태는 사용하지 말것!! ) -->
+		<if test="menuId != null and menuId != ''">	AND UPPER(F.MENU_ID) 	LIKE CONCAT( '%' ,  UPPER(#{menuId}) , '%' )		 </if>
+		<if test="scrinId != null and scrinId != ''">	AND UPPER(F.SCRIN_ID) 	LIKE CONCAT( '%' ,  UPPER(#{scrinId}) , '%' )		 </if>
+		<if test="menuNm != null and menuNm != ''">	AND FM.MENU_NM 	LIKE CONCAT( '%' ,  #{menuNm} , '%' )		 </if>
+		<if test="scrinNm != null and scrinNm != ''">	AND FS.SCRIN_NM 	LIKE CONCAT( '%' ,  #{scrinNm} , '%' )		 </if>
+-- 		 <if test="ubseq != null and ubseq != ''">	AND F.UBSEQ 	= #{ubseq}		 </if>
+		 <if test="showSn != null and showSn != ''">	AND F.SHOW_SN 	LIKE CONCAT( '%' ,  #{showSn} , '%' )		 </if>
+		<!-- <if test="regId != null and regId != ''">	AND F.REG_ID 	= #{sessionUserId}		 </if> -->
+		<!-- <if test="updId != null and updId != ''">	AND F.UPD_ID 	= #{sessionUserId}		 </if> -->
+		<!-- <if test="regTm != null and regTm != ''">	AND F.REG_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 		 </if> -->
+		<!-- <if test="updTm != null and updTm != ''">	AND F.UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 		 </if> -->
+		 <if test="gridhg != null and gridhg != ''">	AND F.GRIDHG 	LIKE CONCAT( '%' ,  #{gridhg} , '%' )		 </if>
+
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND F.PROTOTYPE_TITLE LIKE CONCAT( '%' ,  #{searchPrototypeTitle  } , '%' ) </if> -->
+		<!-- <if test="searchMenuId != null and searchMenuId != ''">	AND F.MENU_ID 	= #{searchMenuId}		 </if> -->
+		<!-- <if test="searchScrinId != null and searchScrinId != ''">	AND F.SCRIN_ID 	= #{searchScrinId}		 </if> -->
+		<!-- <if test="searchUbseq != null and searchUbseq != ''">	AND F.UBSEQ 	= #{searchUbseq}		 </if> -->
+		<!-- <if test="searchShowSn != null and searchShowSn != ''">	AND F.SHOW_SN 	= #{searchShowSn}		 </if> -->
+		<!-- <if test="searchRegId != null and searchRegId != ''">	AND F.REG_ID 	= #{searchRegId}		 </if> -->
+		<!-- <if test="searchUpdId != null and searchUpdId != ''">	AND F.UPD_ID 	= #{searchUpdId}		 </if> -->
+		<!-- <if test="searchRegTm != null and searchRegTm != ''">	AND F.REG_TM 	= #{searchRegTm}		 </if> -->
+		<!-- <if test="searchUpdTm != null and searchUpdTm != ''">	AND F.UPD_TM 	= #{searchUpdTm}		 </if> -->
+		<!-- <if test="searchGridhg != null and searchGridhg != ''">	AND F.GRIDHG 	= #{searchGridhg}		 </if> -->
+	</sql>
+
+	<select id="getFwmenuscrin" parameterType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO" resultType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO">
+		/* ====== com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper.getFwmenuscrin ====== */
+			SELECT 
+					F.MENU_ID  /* 메뉴ID */
+				    ,  F.SCRIN_ID  /* 화면ID */
+			 		, FM.MENU_NM
+			 		, FS.SCRIN_NM
+				    ,  F.UBSEQ  /* 자료순번 */
+				    ,  F.SHOW_SN  /* 화면출력순번 */
+				    ,  F.REG_ID  /* 등록자 */
+				    ,  F.UPD_ID  /* 변경자 */
+				    ,  F.REG_TM  /* 등록시간 */
+				    ,  F.UPD_TM  /* 수정시간 */
+				    ,  F.GRIDHG  /* 그리드높이 */
+			  FROM FWMENUSCRIN F
+			  JOIN FWMENU FM ON F.MENU_ID = FM.MENU_ID
+			  JOIN FWSCRIN FS ON F.SCRIN_ID = FS.SCRIN_ID
+			 WHERE F.MENU_ID 	= #{menuId}
+			   AND F.SCRIN_ID 	= #{scrinId}
+	</select>
+
+	<!-- 	<select id="listFwmenuscrin" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+	<!-- 	<select id="listFwmenuscrin" parameterType="hashmap" resultType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO"> -->
+	<!-- 	<select id="listFwmenuscrin" parameterType="hashmap" resultMap="fwmenuscrin-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listFwmenuscrin" parameterType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO" resultType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO">
+		/* ====== com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper.listFwmenuscrin ====== */
+		<include refid="com.hsck.ubfw.component.include.maria.pagingStart"/>
+		<![CDATA[
+			SELECT 
+					F.MENU_ID  /* 메뉴ID */
+				    ,  F.SCRIN_ID  /* 화면ID */
+			 		, FM.MENU_NM
+			 		, FS.SCRIN_NM
+				    ,  F.UBSEQ  /* 자료순번 */
+				    ,  F.SHOW_SN  /* 화면출력순번 */
+				    ,  F.REG_ID  /* 등록자 */
+				    ,  F.UPD_ID  /* 변경자 */
+				    ,  F.REG_TM  /* 등록시간 */
+				    ,  F.UPD_TM  /* 수정시간 */
+				    ,  F.GRIDHG  /* 그리드높이 */
+			  FROM FWMENUSCRIN F
+			  JOIN FWMENU FM ON F.MENU_ID = FM.MENU_ID
+			  JOIN FWSCRIN FS ON F.SCRIN_ID = FS.SCRIN_ID
+			 WHERE 1=1 
+	    ]]>
+
+		<include refid="listFwmenuscrin-where"/>
+		<choose>
+			<when test="sidx != null and sidx != '' and sord != null and sord != ''">
+				ORDER BY ${sidx} ${sord}
+			</when>
+			<otherwise>
+				ORDER BY F.MENU_ID ASC
+			</otherwise>
+		</choose>
+		<include refid="com.hsck.ubfw.component.include.maria.pagingEnd"/>
+	</select>
+
+	<select id="getFwmenuscrinCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper.getFwmenuscrinCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM FWMENUSCRIN F
+			  JOIN FWMENU FM ON F.MENU_ID = FM.MENU_ID
+			  JOIN FWSCRIN FS ON F.SCRIN_ID = FS.SCRIN_ID
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listFwmenuscrin-where"/>
+	</select>
+
+
+	<sql id="saveFwmenuscrinSQL">
+		insert into FWMENUSCRIN (
+	    MENU_ID
+	    , SCRIN_ID
+	    , SHOW_SN
+	    , REG_ID
+	    , UPD_ID
+	    , REG_TM
+	    , UPD_TM
+	    , GRIDHG
+	    )
+	    VALUES
+	    (
+	    #{menuId}
+	    , #{scrinId}
+	    <choose>
+	    	<when test="showSn != null and showSn != ''">, ${showSn}</when>
+	    	<otherwise>, 0</otherwise>
+	    </choose>
+	    , #{sessionUserId}
+	    , #{sessionUserId}
+	    , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 
+	    , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 
+	    <choose>
+	    	<when test="gridhg != null and gridhg != ''">, ${gridhg}</when>
+	    	<otherwise>, 0</otherwise>
+	    </choose>
+	     )
+		on duplicate key update UPD_TM = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	    , UPD_ID 	= #{sessionUserId}
+	    <!--<if test="ubseq != null and ubseq != ''">	, UBSEQ 	= #{ubseq}		 </if>-->
+	    <if test="showSn != null and showSn != ''">	, SHOW_SN 	= #{showSn}		 </if>
+	    <if test="gridhg != null and gridhg != ''">	, GRIDHG 	= #{gridhg}		 </if>
+		
+		
+		
+</sql>
+<insert id="saveFwmenuscrinMap" parameterType="java.util.HashMap">
+    /* ====== com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper.saveFwmenuscrinMap ====== */
+    <include refid="saveFwmenuscrinSQL"/>
+</insert>
+<insert id="saveFwmenuscrin" parameterType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO">
+    /* ====== com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper.saveFwmenuscrin ====== */
+    <include refid="saveFwmenuscrinSQL"/>
+</insert>
+
+
+<insert id="insertFwmenuscrin" parameterType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO">
+    <![CDATA[
+        /* ====== com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper.insertFwmenuscrin ====== */
+        INSERT INTO FWMENUSCRIN (
+                                 MENU_ID
+                                 , SCRIN_ID
+                                 , UBSEQ
+                                 , SHOW_SN
+                                 , REG_ID
+                                 , UPD_ID
+                                 , REG_TM
+                                 , UPD_TM
+                                 , GRIDHG
+                                )
+                VALUES
+                (
+                              #{menuId}
+                                                 ,  #{scrinId}
+                                                 ,  #{ubseq}
+                                                 ,  #{showSn}
+                                                 ,  #{sessionUserId}
+                                                 ,  #{sessionUserId}
+                                                 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 
+                                                 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 
+                                                 ,  #{gridhg}
+                                                )
+    ]]>
+</insert>
+
+
+<update id="updateFwmenuscrin" parameterType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO">
+    /* ====== com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper.updateFwmenuscrin ====== */
+    UPDATE FWMENUSCRIN
+    SET UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+    , UPD_ID 	= #{sessionUserId}
+    <!--<if test="ubseq != null and ubseq != ''">		, UBSEQ 	= #{ubseq}		 </if>-->
+    <if test="showSn != null and showSn != ''">		, SHOW_SN 	= #{showSn}		 </if>
+    <if test="gridhg != null and gridhg != ''">		, GRIDHG 	= #{gridhg}		 </if>
+    WHERE
+    
+    
+</update>
+
+
+	<delete id="deleteFwmenuscrin" parameterType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO">
+		<![CDATA[
+        /* ====== com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper.deleteFwmenuscrin ====== */
+        DELETE FROM FWMENUSCRIN F
+    ]]>
+         WHERE F.MENU_ID 	= #{menuId}
+           AND F.SCRIN_ID 	= #{scrinId}
+	</delete>
+
+	<delete id="deleteListFwmenuscrin" parameterType="com.hsck.ubfw.component.fwmenuscrin.vo.FwmenuscrinVO">
+		<![CDATA[
+        /* ====== com.hsck.ubfw.component.fwmenuscrin.service.impl.FwmenuscrinMapper.deleteFwmenuscrin ====== */
+        DELETE FROM FWMENUSCRIN
+    ]]>
+		WHERE UBSEQ IN
+		<foreach collection="delUbseqList" item="delUbseqs" index="index" open="(" close=")" separator=",">
+			${delUbseqs}
+		</foreach>
+	</delete>
+
+</mapper>

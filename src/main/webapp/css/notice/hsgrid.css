@@ -1,0 +1,387 @@
+@charset "UTF-8";
+input[type=checkbox]{border-style:none;background-color:transparent}
+/* Grid DIV */
+div.hs-grid{
+	overflow:hidden;
+	position:relative;
+	border: 0;
+	margin:0;
+	padding:0;
+}
+
+/* Grid Header DIV */
+div.hs-grid-header{
+	overflow:hidden;
+	border: 0;
+}
+/* Grid Left Header DIV */
+div.hs-grid-header-left{
+	overflow:hidden;
+	border: 0;
+	float:left;
+}
+/* Grid Header Table */
+table.hs-grid-header-table{
+	table-layout: fixed;
+	background: #fff;
+	border-spacing: 0px;
+	border-top: 1px solid #adadad;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
+	border-left: 0px solid #adadad;
+	border-bottom: 1px solid #adadad;
+}
+/* Grid Header Right Table */
+table.hs-grid-header-tblright{
+	table-layout: fixed;
+	background: #fff;
+	border-spacing: 0px;
+	border-top: 1px solid #adadad;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+}
+/* Grid Header Cell */
+.hs-grid-col{
+	font-weight: bold;
+	color: #666;
+	/* text-shadow: 0 1px 0 #fff; */
+	overflow: hidden;  
+	border-top-width: 0px;
+	border-right: 1px solid #e1e1e1;
+	border-bottom: 1px solid #e1e1e1;
+	border-left-width: 0px;
+	height: 16px; 
+	padding: 4px;
+	text-align:center;
+	vertical-align: middle;
+}
+
+/* Grid Body DIV */
+div.hs-grid-body{
+	overflow:auto;
+	border: 0;
+}
+/* Grid Body Table */
+table.hs-grid-body-table{
+	table-layout: fixed;
+	border-spacing: 0px;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 0px;  
+	border-left: 0px solid #e1e1e1;
+	vertical-align: top;
+}
+/* Grid Body Cell */
+.hs-grid-cell {
+	border-right: 1px solid #e1e1e1;
+	border-bottom: 1px solid #e1e1e1;
+	background: #fefefe;
+	color: #666;
+	overflow: hidden;
+
+	vertical-align: middle;
+	height: 16px;
+	padding: 0;
+}
+.hs-grid-cell select {
+	font-size: 12px;
+}
+/* Grid View Cell */
+.hs-cell-view {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	height: 24px;
+	vertical-align: middle;
+	padding: 0 5px 0 5px;
+}
+/* Grid Editable Cell */
+.hs-cell-edit {
+	background: #ffffff;
+}
+/* Grid Selected Cell */
+.hs-cell-selected {
+	background: #dfffa1;
+}
+/* Grid Disable Cell */
+.hs-cell-disable {
+	background: #fbfbfb;
+}
+/* Grid Disable Cell */
+.hs-cell-disable.hs-cell-selected {
+	background: #f5f5f5;
+}
+
+/* Grid Cell Input-Text */
+.hs-cell-input {
+	font-family: Dotum, "µ¸¿ò", sans-serif;
+	color: #666;
+	background-color: inherit;
+	text-align: inherit;
+    font-size: 12px;
+	width: 100%; 
+	height: 100%;
+	padding: 4px 5px; 
+	border:0;
+}
+/* Grid Cell Input-Combo */
+.hs-cell-combo {
+	width: 100%;
+	margin: 0;
+}
+/* Grid Cell Input-CheckBox */
+.hs-cell-check {
+	margin: 5px 5px 3px 5px;
+	padding: 0;
+	float: left;
+	
+}
+/* Grid Cell Input-CheckBox-Description */
+.hs-cell-check-desc {
+	margin: 5px 5px 3px 5px;
+}
+
+/* Grid Bottom Scroll */
+div.hs-grid-bottom-scroll {
+	background: #ffffff;
+	border-left: 1px solid #e1e1e1;
+	border-right: 1px solid #e1e1e1;
+	position: relative;
+	line-height:0;
+	z-index: -1;
+}
+/* Grid Bottom DIV */
+div.hs-grid-bottom {
+	background: #ffffff;
+	border: 1px solid #e1e1e1;
+	border-top: 1px solid #ffffff;
+	position: relative;
+	color: #333;
+	
+	line-height:100%;
+}
+/* Grid Footer DIV */
+div.hs-grid-footer {
+	background: #f0f0f0;
+	border-top: 1px solid #e1e1e1;
+	padding: 2px 5px 2px 5px;
+	height:22px;
+	overflow: hidden;
+	position: relative;
+	vertical-align: middle;
+}
+/* Grid Footer Separator */
+span.hs-grid-sep {
+	height: 18px;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #fff;
+	display: inline-block;
+}
+/* Grid Page Navigator */
+a.hs-grid-navi {
+	height:16px; 
+	width:16px; 
+}
+/* Grid Info View */
+span.hs-grid-info {
+	vertical-align: super;
+	margin: 0 10px;
+	display: inline-block; 
+	padding-top:4px;
+}
+/* Grid ETC Info View */
+span.hs-info-etc {
+	vertical-align: super;
+	margin: 0 10px;
+	display: inline-block; 
+	padding-top:12px;
+}
+/* Grid Page Info */
+.hs-grid-page * {
+	vertical-align: super;
+}
+/* Grid Page Input */
+.hs-grid-page input {
+	padding: 0 1px;
+	text-align: center;
+	width: 35px;
+	height: 16px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	font-size: 12px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+	-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+	-webkit-transition: border linear .2s,box-shadow linear .2s;
+	-moz-transition: border linear .2s,box-shadow linear .2s;
+	-o-transition: border linear .2s,box-shadow linear .2s;
+	transition: border linear .2s,box-shadow linear .2s;
+	display: inline-block;
+	line-height: 16px;
+	color: #555;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+/* Grid & Form Div */
+.hs-gridform > div {
+	float: left;
+	padding-right:10px;
+}
+.hs-gridform > .hs-gridform-form {
+	padding-right:0;
+}
+/* GridForm Table */
+.hs-form-table {
+	table-layout: fixed;
+	border-spacing: 0px;
+	border: 1px solid #e1e1e1;
+	border-top: 1px solid #e1e1e1;
+	border-left: 1px solid #e1e1e1;
+	background-color: #fff;
+}
+/* GridForm Table TD,TH */
+.hs-form-table td,.hs-form-table th {
+	border-bottom: 1px solid #e1e1e1;
+	padding: 1px 5px 1px 5px;
+	height: 29px;
+	font-size: 12px;
+	color: #666;
+	vertical-align: middle;
+}
+/* GridForm Table TH */
+.hs-form-table th {
+	border-right: 1px solid #e1e1e1;
+	border-left: 1px solid #e1e1e1;
+	/*font-weight: normal;*/
+	color: #666;
+	text-shadow: 0 1px 0 #fff;
+	overflow: hidden;
+	text-align: center;
+	background: #f5f5f5;
+}
+/* GridForm Table TD */
+.hs-form-table td {
+	text-overflow:ellipsis; 
+	overflow:hidden; 
+	white-space:nowrap; 
+}
+/* GridForm Table Input */
+.hs-form-table input[type="text"], .hs-form-table input[type="password"], .hs-form-table textarea {
+	background-color: #fff;
+	/* border: 1px solid #ccc; */
+	padding: 1px 4px;
+	margin: 1px 2px;
+	font-size: 12px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+	-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+	-webkit-transition: border linear .2s,box-shadow linear .2s;
+	-moz-transition: border linear .2s,box-shadow linear .2s;
+	-o-transition: border linear .2s,box-shadow linear .2s;
+	transition: border linear .2s,box-shadow linear .2s;
+	display: inline-block;
+	/* height: 18px; */
+	line-height: 14px;
+	color: #555;
+	vertical-align: middle;
+	/* -webkit-border-radius: 4px;
+	-moz-border-radius: 4px; */
+	/* border-radius: 4px; */
+}
+/* GridForm Table Select */
+.hs-form-table select {
+	display: inline-block;
+	/* height: 20px; */
+	/*padding: 1px 0;*/
+	margin: 1px 2px;
+	line-height: 20px;
+	color: #555;
+	vertical-align: middle;
+	/* -webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px; */
+	font-size: 12px;
+}
+
+/* Comment Table */
+.hs-comment-table {
+	table-layout: fixed;
+	border-spacing: 0px;
+	border: 1px solid #e1e1e1;
+	border-top: 1px solid #e1e1e1;
+	border-left: 1px solid #e1e1e1;
+}
+/* Comment Table TD,TH */
+.hs-comment-table td,.hs-comment-table th {
+	border-bottom: 1px solid #e1e1e1;
+	padding: 2px 10px 2px 10px;
+	height: 26px;
+	font-size: 12px;
+	color: #666;
+	line-height: 18px;
+}
+/* Comment Table TH */
+.hs-comment-table th {
+	border-left: 1px solid #e1e1e1;
+	padding: 2px 1px 2px 1px;
+	font-weight: normal;
+	color: #666;
+	text-shadow: 0 1px 0 #fff;
+	overflow: hidden;
+	text-align: center;
+	background: #fafafa;
+}
+/* Comment Table TD */
+.hs-comment-table td {
+	text-overflow:ellipsis; 
+	overflow:hidden; 
+	white-space:nowrap; 
+}
+/* Comment Table Input */
+.hs-comment-table input[type="text"], .hs-comment-table input[type="password"], .hs-comment-table textarea {
+	text-align: inherit;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	padding: 1px 4px;
+	margin: 1px 2px;
+	font-size: 12px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+	-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+	-webkit-transition: border linear .2s,box-shadow linear .2s;
+	-moz-transition: border linear .2s,box-shadow linear .2s;
+	-o-transition: border linear .2s,box-shadow linear .2s;
+	transition: border linear .2s,box-shadow linear .2s;
+	display: inline-block;
+	height: 18px;
+	line-height: 18px;
+	color: #555;
+	vertical-align: middle;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+/* Comment Table Select */
+.hs-comment-table select {
+	text-align: inherit;
+	display: inline-block;
+	height: 20px;
+	/*padding: 1px 0;*/
+	margin: 1px 2px;
+	line-height: 20px;
+	color: #555;
+	vertical-align: middle;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	font-size: 12px;
+}
+.hs-mon-body-table{
+	table-layout: fixed;
+	border-spacing: 0px;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
+}

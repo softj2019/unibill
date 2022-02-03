@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://java.sun.com/xml/ns/javaee"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+		 version="3.0">
+	<display-name>UNIBILL</display-name>
+	
+<!-- 	<filter>
+		<filter-name>modyfyFilter</filter-name>
+		<filter-class>com.hsck.ubfw.component.com.filter.RequestModifyFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>modyfyFilter</filter-name>
+		<url-pattern>/content/initSql.do</url-pattern>
+	</filter-mapping> -->
+    
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	
+	
+ 	 <filter>
+		<filter-name>modyfyFilter</filter-name>
+		<filter-class>com.hsck.ubfw.component.com.filter.RequestModifyFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>modyfyFilter</filter-name>
+		<url-pattern>/main/loginForm.do</url-pattern>
+	</filter-mapping>  
+	
+	 
+    
+    <!--
+    HTMLTagFilter의 경우는 파라미터에 대하여 XSS 오류 방지를 위한 변환을 처리합니다.
+   우선 HTMLTagFIlter의 경우는 JSP의 <c:out /> 등을 사용하지 못하는 특수한 상황에서 사용하시면 됩니다.
+   (<c:out />의 경우 뷰단에서 데이터 출력시 XSS 방지 처리가 됨)
+   부득히 HTMLTagFilter를 사용하셔야 하는 경우는 web.xml 상에
+   다음과 같이 CertProcessFilter(GPKI 인증 처리 오류 해결) 등록해 주시면 됩니다.
+    -->
+	<!-- <filter>
+		<filter-name>HTMLTagFilter</filter-name>
+		<filter-class>egovframework.rte.ptl.mvc.filter.HTMLTagFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HTMLTagFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping> -->
+
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:egovframework/spring/context-*.xml</param-value>
+	</context-param>
+<!--      
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+ -->
+	<listener>
+		<listener-class>com.hsck.ubfw.component.com.listener.UBListener</listener-class>
+	</listener>
+    
+	<servlet>
+		<servlet-name>SpringDispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/egovframework/springmvc/dispatcher-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+    
+	<servlet-mapping>
+		<servlet-name>SpringDispatcherServlet</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SpringDispatcherServlet</servlet-name>
+		<url-pattern>*.json</url-pattern>
+	</servlet-mapping>
+	
+ 	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>protected</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>PUT</http-method>
+	        <http-method>DELETE</http-method>
+	        <http-method>OPTIONS</http-method>
+	        <http-method>TRACE</http-method>
+	        <http-method>PATCH</http-method>
+		</web-resource-collection>
+	</security-constraint> 
+    
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	
+	<servlet>
+		<servlet-name>SpringApiServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/egovframework/springmvc/apidispatcher-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	
+<!-- 	<servlet>
+		<servlet-name>UCsyncServlet</servlet-name>
+		<servlet-class>com.hsck.ubfw.component.UCsync.UCsyncServlet</servlet-class>
+		<load-on-startup>3</load-on-startup>
+	</servlet> -->
+	
+	<servlet-mapping>
+	    <servlet-name>SpringApiServlet</servlet-name>
+	    <url-pattern>*.api</url-pattern>
+	</servlet-mapping>
+    
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config> 
+	<error-page>
+	    <error-code>400</error-code>
+	  <location>/common/error.jsp</location>
+	</error-page>
+	<error-page>
+	    <error-code>401</error-code>
+	  <location>/common/error.jsp</location>
+	</error-page>
+	<error-page>
+	    <error-code>403</error-code>
+	  <location>/common/error.jsp</location>
+	</error-page>
+	<error-page>
+	    <error-code>404</error-code>
+	  <location>/common/error.jsp</location>
+	</error-page>
+	<error-page>
+	    <error-code>500</error-code>
+	  <location>/common/error.jsp</location>
+	</error-page>
+	<session-config>
+		<session-timeout>-1</session-timeout>
+		<tracking-mode>COOKIE</tracking-mode>
+	</session-config>
+    
+</web-app>

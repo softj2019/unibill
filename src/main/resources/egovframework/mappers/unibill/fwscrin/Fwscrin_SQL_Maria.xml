@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsck.ubfw.component.fwscrin.service.impl.FwscrinMapper">
+
+	<resultMap id="fwscrin-result" type="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO">
+		<result column="SCRIN_ID" 			property="scrinId" /> <!-- 화면ID -->
+		<result column="UBSEQ" 			property="ubseq" /> <!-- 자료순번 -->
+		<result column="SCRIN_NM" 			property="scrinNm" /> <!-- 화면명 -->
+		<result column="TBL_NM" 			property="tblNm" /> <!-- 테이블명 -->
+		<result column="XML_ID" 			property="xmlId" /> <!-- xmlID -->
+		<result column="REG_ID" 			property="regId" /> <!-- 등록자 -->
+		<result column="UPD_ID" 			property="updId" /> <!-- 변경자 -->
+		<result column="REG_TM" 			property="regTm" /> <!-- 등록시간 -->
+		<result column="UPD_TM" 			property="updTm" /> <!-- 수정시간 -->
+		<result column="DTL_W" 			property="dtlW" /> <!-- 상세가로 -->
+		</resultMap>
+	
+	<sql id="listFwscrin-where">
+	
+		<!-- 조회 조건값 ( F.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				 <if test="scrinId != null and scrinId != ''">	AND UPPER(F.SCRIN_ID) 	LIKE CONCAT( '%' , UPPER(#{scrinId}) , '%' )		 </if>
+				 <!--<if test="ubseq != null and ubseq != ''">	AND F.UBSEQ 	= #{ubseq}		 </if>-->
+				 <if test="scrinNm != null and scrinNm != ''">	AND F.SCRIN_NM 	LIKE CONCAT( '%' , #{scrinNm} , '%' )		 </if>
+				 <if test="tblNm != null and tblNm != ''">	AND UPPER(F.TBL_NM) 	LIKE CONCAT( '%' ,  UPPER(#{tblNm}) , '%' )		 </if>
+				 <if test="xmlId != null and xmlId != ''">	AND UPPER(F.XML_ID) 	= UPPER(#{xmlId})		 </if>
+				<!-- <if test="regId != null and regId != ''">	AND F.REG_ID 	= #{regId}		 </if> -->
+				<!-- <if test="updId != null and updId != ''">	AND F.UPD_ID 	= #{updId}		 </if> -->
+				<!-- <if test="regTm != null and regTm != ''">	AND F.REG_TM 	= #{regTm}		 </if> -->
+				<!-- <if test="updTm != null and updTm != ''">	AND F.UPD_TM 	= #{updTm}		 </if> -->
+				<!-- <if test="dtlW != null and dtlW != ''">	AND F.DTL_W 	= #{dtlW}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND F.PROTOTYPE_TITLE LIKE CONCAT( '%' ,  #{searchPrototypeTitle  } , '%' ) </if> -->
+				 <if test="searchScrinId != null and searchScrinId != ''">	AND UPPER(F.SCRIN_ID) 	LIKE CONCAT( '%' ,  UPPER(#{searchScrinId}) , '%' )		 </if>
+				<!-- <if test="searchUbseq != null and searchUbseq != ''">	AND F.UBSEQ 	= #{searchUbseq}		 </if> -->
+				 <if test="searchScrinNm != null and searchScrinNm != ''">	AND F.SCRIN_NM  LIKE CONCAT( '%' ,  #{searchScrinNm} , '%' )		 </if>
+				 <if test="searchTblNm != null and searchTblNm != ''">	AND F.TBL_NM 	 LIKE CONCAT( '%' ,  #{searchTblNm} , '%' )		 </if>
+				 <if test="searchXmlId != null and searchXmlId != ''">	AND F.XML_ID 	= #{searchXmlId}		 </if>
+				<!-- <if test="searchRegId != null and searchRegId != ''">	AND F.REG_ID 	= #{searchRegId}		 </if> -->
+				<!-- <if test="searchUpdId != null and searchUpdId != ''">	AND F.UPD_ID 	= #{searchUpdId}		 </if> -->
+				<!-- <if test="searchRegTm != null and searchRegTm != ''">	AND F.REG_TM 	= #{searchRegTm}		 </if> -->
+				<!-- <if test="searchUpdTm != null and searchUpdTm != ''">	AND F.UPD_TM 	= #{searchUpdTm}		 </if> -->
+				<!-- <if test="searchDtlW != null and searchDtlW != ''">	AND F.DTL_W 	= #{searchDtlW}		 </if> -->
+			</sql>
+	
+	<select id="getFwscrin" parameterType="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO" resultType="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO">
+		/* ====== com.hsck.ubfw.component.fwscrin.service.impl.FwscrinMapper.getFwscrin ====== */
+			SELECT 
+								  F.SCRIN_ID /* 화면ID */
+				    								 ,  F.UBSEQ /* 자료순번 */
+				    								 ,  F.SCRIN_NM /* 화면명 */
+				    								 ,  F.TBL_NM /* 테이블명 */
+				    								 ,  F.XML_ID /* xmlID */
+				    								 ,  F.REG_ID /* 등록자 */
+				    								 ,  F.UPD_ID /* 변경자 */
+				    								 ,  F.REG_TM /* 등록시간 */
+				    								 ,  F.UPD_TM /* 수정시간 */
+				    								 ,  F.DTL_W /* 상세가로 */
+				    							  FROM FWSCRIN F
+			 WHERE F.SCRIN_ID 	= #{scrinId}
+	</select>
+	
+<!-- 	<select id="listFwscrin" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listFwscrin" parameterType="hashmap" resultType="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO"> -->
+<!-- 	<select id="listFwscrin" parameterType="hashmap" resultMap="fwscrin-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listFwscrin" parameterType="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO" resultType="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO">
+		/* ====== com.hsck.ubfw.component.fwscrin.service.impl.FwscrinMapper.listFwscrin ====== */
+		<include refid="com.hsck.ubfw.component.include.maria.pagingStart"/>
+	    <![CDATA[
+			SELECT 
+								  F.SCRIN_ID  /* 화면ID */
+				    								 ,  F.UBSEQ  /* 자료순번 */
+				    								 ,  F.SCRIN_NM  /* 화면명 */
+				    								 ,  F.TBL_NM  /* 테이블명 */
+				    								 ,  F.XML_ID  /* xmlID */
+				    								 ,  F.REG_ID  /* 등록자 */
+				    								 ,  F.UPD_ID  /* 변경자 */
+				    								 ,  F.REG_TM  /* 등록시간 */
+				    								 ,  F.UPD_TM  /* 수정시간 */
+				    								 ,  F.DTL_W  /* 상세가로 */
+				    							  FROM FWSCRIN F
+			 WHERE 1=1 
+	    ]]>
+
+		<include refid="listFwscrin-where"/>
+			ORDER BY F.UPD_TM DESC
+		<include refid="com.hsck.ubfw.component.include.maria.pagingEnd"/>
+	</select>
+	
+	<select id="getFwscrinCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	
+	    <![CDATA[
+			/* ====== com.hsck.ubfw.component.fwscrin.service.impl.FwscrinMapper.getFwscrinCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM FWSCRIN F
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listFwscrin-where"/>
+	</select>
+
+	
+	<sql id="saveFwscrinSQL">
+    	MERGE INTO FWSCRIN 
+    	USING DUAL
+    		ON (
+					SCRIN_ID 	= #{scrinId}
+				)
+		WHEN MATCHED THEN
+			UPDATE SET UPD_TM = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+					 , UPD_ID 	= #{sessionUserId}
+					 <!--<if test="ubseq != null and ubseq != ''">	, UBSEQ 	= #{ubseq}		 </if>-->
+					 <if test="scrinNm != null and scrinNm != ''">	, SCRIN_NM 	= #{scrinNm}		 </if>
+                     , TBL_NM 	= #{tblNm}
+                     , XML_ID 	= #{xmlId}
+					 <!--<if test="tblNm != null and tblNm != ''">	, TBL_NM 	= #{tblNm}		 </if>-->
+					 <!--<if test="xmlId != null and xmlId != ''">	, XML_ID 	= #{xmlId}		 </if>-->
+					 <if test="dtlW != null and dtlW != ''">	, DTL_W 	= #{dtlW}		 </if>
+            WHEN NOT MATCHED THEN
+			INSERT (
+								 SCRIN_ID
+								 , UBSEQ
+								 , SCRIN_NM
+								 , TBL_NM
+								 , XML_ID
+								 , REG_ID
+								 , UPD_ID
+								 , REG_TM
+								 , UPD_TM
+								 , DTL_W
+									) 
+					VALUES 
+					( 
+								 #{scrinId}
+								 , #{ubseq}
+								 , #{scrinNm}
+								 , #{tblNm}
+								 , #{xmlId}
+								 , #{sessionUserId}
+								 , #{sessionUserId}
+								 , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+								 , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+								 , #{dtlW}
+								)
+	</sql>	
+	<insert id="saveFwscrinMap" parameterType="java.util.HashMap">
+		/* ====== com.hsck.ubfw.component.fwscrin.service.impl.FwscrinMapper.saveFwscrinMap ====== */
+		<include refid="saveFwscrinSQL"/>
+	</insert>
+	<insert id="saveFwscrin" parameterType="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO">
+		/* ====== com.hsck.ubfw.component.fwscrin.service.impl.FwscrinMapper.saveFwscrin ====== */
+		<include refid="saveFwscrinSQL"/>
+	</insert>
+	
+
+	<insert id="insertFwscrin" parameterType="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwscrin.service.impl.FwscrinMapper.insertFwscrin ====== */
+			INSERT INTO FWSCRIN ( 
+									 SCRIN_ID
+									 , UBSEQ
+									 , SCRIN_NM
+									 , TBL_NM
+									 , XML_ID
+									 , REG_ID
+									 , UPD_ID
+									 , REG_TM
+									 , UPD_TM
+									 , DTL_W
+									) 
+					VALUES 
+					( 
+								  #{scrinId}
+				    								 ,  #{ubseq}
+				    								 ,  #{scrinNm}
+				    								 ,  #{tblNm}
+				    								 ,  #{xmlId}
+				    								 ,  #{sessionUserId}
+				    								 ,  #{sessionUserId}
+													 , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+													 , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				    								 ,  #{dtlW}
+				    								)
+		]]>
+	</insert>
+
+
+	<update id="updateFwscrin" parameterType="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO">
+			/* ====== com.hsck.ubfw.component.fwscrin.service.impl.FwscrinMapper.updateFwscrin ====== */
+	        UPDATE FWSCRIN 
+	        SET UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	          , UPD_ID 	= #{sessionUserId}
+				 <if test="scrinNm != null and scrinNm != ''">		, SCRIN_NM 	= #{scrinNm}		 </if>
+				 <if test="tblNm != null and tblNm != ''">		, TBL_NM 	= #{tblNm}		 </if>
+				 <if test="xmlId != null and xmlId != ''">		, XML_ID 	= #{xmlId}		 </if>
+				 <if test="dtlW != null and dtlW != ''">		, DTL_W 	= #{dtlW}		 </if>
+		 WHERE SCRIN_ID 	= #{scrinId}
+	</update>
+
+
+	<delete id="deleteFwscrin" parameterType="com.hsck.ubfw.component.fwscrin.vo.FwscrinVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwscrin.service.impl.FwscrinMapper.deleteFwscrin ====== */
+			DELETE FROM FWSCRIN 
+		]]>
+			 WHERE SCRIN_ID 	= #{scrinId}
+	</delete>
+
+</mapper>

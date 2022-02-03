@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <link rel="stylesheet" type="text/css" href="${emailInternalFilePath}/css/ebill_1.css" />
+  <title>e-bill</title>
+ </head>
+
+ <body>
+  <div class="bill_w">
+	<div class="btop">
+				<div class="elogo">
+				<ul>
+				<li><img src="${emailInternalFilePath}/images/ebill/billlogo.png"></li>
+				<li class="etxt">
+				    한화시스템은 고객만족을 위한 최상의 서비스로 보답드리겠습니다.</li>
+				</ul>
+				</div>
+				<div class="emonth"><img src="${emailInternalFilePath}/images/ebill/icon1.png"><span>${mailBillVO.billYm}</span></div>
+	</div>
+
+	<div class="bcont">
+				<div class="billbox">
+					<div class="btitle"><img src="${emailInternalFilePath}/images/ebill/icon2.png">납부정보</div>
+					<table>
+					<colgroup>
+						<col width="23%">
+						<col width="25%">
+						<col width="23%">
+						<col width="29%">
+					</colgroup>
+					<tbody>
+					<tr>
+						<td>고객번호</td>
+						<td>${mailBillVO.repCustId}</td>
+						<td>고객명</td>
+						<td>${mailBillVO.repCustNm}</td>
+					</tr>
+					<tr>
+						<td>작성일</td>
+						<td>${mailBillVO.makeDd}</td>
+						<td>납기일</td>
+						<td>${mailBillVO.deadlineDd}</td>
+					</tr>
+					</tbody>
+					</table>
+				</div>
+
+				<div class="billbox">
+					<div class="btitle"><img src="${emailInternalFilePath}/images/ebill/icon2.png">납부 기본내역</div>
+					<div class="bvalue">
+						<ul>
+						<li class="fl">${mailBillVO.billy}년 <span>${mailBillVO.billm}월</span> 납부하실 금액은 </li>
+						<li class="fr"><span>${mailBillVO.cost} 원 </span>입니다.</li>
+						</ul>
+					</div>
+					<table>
+					<colgroup>
+						<col width="%">
+						<col width="%">
+						<col width="%">
+						<col width="%">
+						<col width="%">
+					</colgroup>
+					<thead>
+					<tr>
+						<th class="tl">구분</th>
+						<th class="tc">요금항목</th>
+						<th colspan="3" class="tr">납부하실 금액</th>
+					</tr>
+					</thead>
+						
+					<tbody>
+					<tr>
+						<td class='tl noline'>${mailBillVO.svcNm}</td>
+						<td class='tc noline'>기본료</td>
+						<td colspan='3' class='tr noline'>${mailBillVO.giboncost} 원</td>
+					</tr>
+					<tr>
+						<td class='tl noline'>${mailBillVO.svcNm}</td>
+						<td class='tc noline'>시내통화료</td>
+						<td colspan='3' class='tr noline'>${mailBillVO.sinecost} 원</td>
+					</tr>
+					<tr>
+						<td class='tl noline'>${mailBillVO.svcNm}</td>
+						<td class='tc noline'>시외통화료</td>
+						<td colspan='3' class='tr noline'>${mailBillVO.siwecost} 원</td>
+					</tr>
+					
+					<tr>
+						<td class='tl noline'>${mailBillVO.svcNm}</td>
+						<td class='tc noline'>인접시외통화료</td>
+						<td colspan='3' class='tr noline'>${mailBillVO.injubcost} 원</td>
+					</tr>
+					<tr>
+						<td class='tl noline'>${mailBillVO.svcNm}</td>
+						<td class='tc noline'>국내통화료</td>
+						<td colspan='3' class='tr noline'>${mailBillVO.kooknaecost} 원</td>
+					</tr>
+					<tr>
+						<td class='tl noline'>${mailBillVO.svcNm}</td>
+						<td class='tc noline'>이동전화통화료</td>
+						<td colspan='3' class='tr noline'>${mailBillVO.idongcost} 원</td>
+					</tr>
+					<tr>
+						<td class='tl noline'>${mailBillVO.svcNm}</td>
+						<td class='tc noline'>인터넷전화통화료</td>
+						<td colspan='3' class='tr noline'>${mailBillVO.internetcost} 원</td>
+					</tr>
+					<tr>
+						<td class='tl noline'>${mailBillVO.svcNm}</td>
+						<td class='tc noline'>국제통화료</td>
+						<td colspan='3' class='tr noline'>${mailBillVO.kukjecost} 원</td>
+					</tr>
+					<tr>
+						<td class='tl tb'>${mailBillVO.svcNm}</td>
+						<td class='tc tb'>그외(기타)</td>
+						<td colspan='3' class='tr tb'>${mailBillVO.kitacost} 원</td>
+					</tr>
+					<tr>
+						<td colspan="4">당월금액 (A)</td>
+						<td colspan="1"class="tr">${mailBillVO.supCost} 원</td>
+					</tr>
+					<tr>
+						<td colspan="4">부과세제외금액 (B)</td>
+						<td colspan="1"class="tr">${mailBillVO.vsupCost} 원</td>
+					</tr>
+					<tr>
+						<td colspan="4">연체가산금액 (C)</td>
+						<td colspan="1"class="tr">${mailBillVO.lateCost} 원</td>
+					</tr>
+					<tr>
+						<td colspan="4">부과세 (D)</td>
+						<td colspan="1"class="tr">${mailBillVO.vatCost} 원</td>
+					</tr>
+					<tr>
+						<td colspan="4">이번달 납부하실 총금액 (A+B+C+D)</td>
+						<td colspan="1"class="tr">${mailBillVO.cost} 원</td>
+					</tr>
+					</tbody>
+					</table>				
+				</div>
+
+				<div class="billbox1">
+						<div class="btitle"><img src="${emailInternalFilePath}/images/ebill/icon2.png">공급자 정보</div>
+						<div class="bbox0">
+						<table>
+							<colgroup>
+							<col width="16%">
+							<col width="34%">
+							<col width="7%">
+							<col width="43%">
+							</colgroup>
+							<tr>
+							<td>공급자명</td>
+							<td>${mailBillVO.spNm}</td>
+							<td>TEL</td> 
+							<td>1644-0788</td>
+							</tr>
+							<tr>
+							<td>URL</td> 
+							<td>https://www.hanwhabilling.co.kr </td>
+							<td></td>
+							<td></td>
+							
+							</tr>
+						</table>
+						</div>
+				</div>
+
+				<div class="billbox1">
+						<div class="btitle"><img src="${emailInternalFilePath}/images/ebill/icon2.png">고객전용 입금계좌</div>
+						<div class="bbox">
+						<img src="${emailInternalFilePath}/images/ebill/bank1.png">우리은행 <span>1006-100-193963</span>
+						</div>
+				</div>
+
+				<div class="billbox bp">
+						<div class="btitle"><img src="${emailInternalFilePath}/images/ebill/icon2.png">고객님께 알려드립니다</div>
+						<div class="bbox1">
+						청구서의 상세내역을 확인 하시려면, 첨부된<img src="${emailInternalFilePath}/images/ebill/icon3.png">엑셀파일을 참고하세요.
+						</div>
+				</div>
+
+	</div>
+	<div class="bfooter">
+	<p>Copyright ©2019 Hanwha Systems All Rights Reserved.</p>
+	</div>
+  </div>
+</body>
+</html>

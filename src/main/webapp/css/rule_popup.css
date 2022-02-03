@@ -1,0 +1,118 @@
+@charset "utf-8";
+
+@font-face {
+  font-family:'NBG';
+  font-style:normal;
+  src: local(��NanumBarunGothic��), local(��Nanum Barun Gothic-Regular��), local(��NanumBarunGothic Regular��);
+  src:url(../font/NanumBarunGothic.ttf) format('ttf');
+}
+
+@font-face {
+  font-family:'NBGB';
+  font-style:normal;
+  src: local(��NanumBarunGothicBold��), local(��Nanum Barun Gothic Bold-Regular��), local(��NanumBarunGothicBold Regular��);
+  src:url(../font/NanumBarunGothicBold.ttf) format('ttf');
+}
+
+#rule_header *{margin:0;padding:0}
+#rule_header body{background:#fff;color:#333333;font:normal 12px/1.7 'NBG','NBGB','����',Gulim,'����',Dotum,AppleGothic,Sans-serif;}
+#rule_header table{border-collapse:collapse;border-spacing:0;width:100%; _width /**/:auto}
+#rule_header ul,li{list-style:none}
+#rule_header i,em{font-style:normal}
+#rule_header img,fieldset{border:none;vertical-align:middle;}
+#rule_header hr{display:none}
+#rule_header a{color:#01c73c; text-decoration:none}
+#rule_header a:hover,a:active,a:focus{text-decoration:underline}
+
+#pop_wrap input{vertical-align:middle;margin-left:10px;} 
+#rule_header *{margin:0;padding:0}
+
+/* popup */
+
+#pop_body {background:#fff;color:#333333;font:normal 12px/1.7 'NBG','NBGB','����',Gulim,'����',Dotum,AppleGothic,Sans-serif;}
+#pop_wrap {width:660px; height:610px; border:1px solid #000;}
+#pop_header {width:100%; height:40px; background:#2a2a2a;}
+#pop_header .img1 {float:left; color:#fff; font-size:100%; padding:5px 15px 0;}
+#pop_header .img2 {float:right; color:#fff; font-size:120%;  padding:10px 20px;}
+#pop_cont {width:655px; padding:20px 20px;}
+#pop_cont h2 {width:100%; font-size:19px; color:#2a2a2a; padding-bottom:10px; text-align:center; font-size:19px; font-family:'NBGB',Sans-serif; font-weight:800 !important;}
+#pop_cont p {width:100%; padding-bottom:10px;}
+#pop_cont table {width:100%; font-size:12px;}
+#pop_cont div {width:100%; text-align:right;}
+
+
+
+#pop_cont .pop_tb{border:1px solid #eee; margin-bottom:10px;}
+#pop_cont .pop_tb caption{text-align:left; font-weight:bold;display:table-caption;}
+#pop_cont .pop_tb tr th {border:1px solid #d8d8d8; background:#fafafa; padding:2px;}
+#pop_cont .pop_tb tr td {border:1px solid #d8d8d8; padding:2px 10px;}
+
+#pop_cont button{width:200px; font-size:14px; font-weight:bold; height:35px; margin-left:210px; margin-top:10px; background:#dd5904; border:1px solid #dd5904; border-radius:3px; color:#fff;}
+#pop_cont button:hover{background:#e94800; border:1px solid #e94800; border-radius:3px;}
+
+
+
+/* rule */
+
+#wrap{position:relative;min-width:980px;}
+
+#rule_header{margin-bottom:45px;*position:relative;*z-index:10}
+#rule_header .top_area{position:relative;height:54px;border-bottom:1px solid rgba(0, 0, 0,.1);background-color:#2a2a2a;*z-index:1}
+#rule_header .top_area .gnb_in{position:relative;height:100%;width:960px;margin:0 auto}
+#rule_header h1{position:absolute;top:15px;left:0}
+
+
+/* Content */
+#content{clear:both;position:relative;width:960px;margin:0 auto;z-index:1}
+#content .title{position:relative;padding:0 0 31px;border-bottom:1px solid #e5e5e5}
+#content .title .nav1{overflow:hidden; _height:1%; margin:0 0 8px 0;}
+#content .title .nav1 li{float:left; padding:0 14px 0 15px; background:url(https://s.pstatic.net/static/rules/r8/line_v_e5.gif) no-repeat 0 0}
+#content .title .nav1 li.first{padding-left:0 !important; background:none}
+#content .title .nav1 li h2{display:inline}
+#content .title .nav1 li a{float:left; display:block; padding:0 1px 1px 1px}
+#content .title .nav1 li a:hover{border-bottom:1px solid #a6a6a6}
+#content .title .nav1 li.on a{border-bottom:1px solid #a6a6a6}
+#content .title .p_h2{clear:both}
+
+#content .section dl {margin-top:30px;}
+#content .section dl dt {color:#333;margin-top:20px;margin-bottom:5px; font-weight:bold;}
+#content .section dl dd ul {color:#333;margin-top:3px;margin-bottom:5px; padding-left:16px;}
+#content .section dl dd .sec_last_p {padding-bottom: 42px;}
+#content .section h3 {margin-top:30px; font-size:19px; font-family:'NBGB',Sans-serif;}
+#content .section img { padding:15px 0px 30px;}
+
+/* Content by Case */
+#content.agreement .section{padding-bottom:91px}
+#content.agreement .section .past{margin:8px 0 0 0}
+#content.agreement .section em{color:#417c01}
+#content.agreement .section .u{text-decoration:underline}
+
+
+.gotop{position:fixed; _position:absolute; left:50%; top:556px; width:960px; margin-left:-480px; text-align:right; clear:both}
+.gotop a{display:block; float:right; position:relative; right:-22px; padding:6px 1px 2px 1px; font:10px Verdana; color:#666; background:url(https://s.pstatic.net/static/rules/r8/bu_arrow3.gif) no-repeat 6px 2px}
+
+
+
+
+/* Footer */
+#footer{clear:both; width:960px; margin:0 auto 0; padding:22px 0 30px 0; border-top:1px solid #dedede; text-align:center}
+#footer *{margin:0; padding:0; color:#333; list-style:none; font-size:11px; font-family: '�������',NanumGothic,'����',Dotum,'����',Gulim, AppleGothic, Sans-serif;line-height:normal}
+#footer address{font:9px/14px Verdana}
+#footer address img{vertical-align:middle}
+#footer address a{font:bold 9px Tahoma; color:#333}
+#footer address a:hover{color:#2cb400}
+#footer address span{padding-left:2px; font:9px/14px Verdana}
+#footer address em{padding-left:6px; font:9px verdana}
+#footer address .logo{display:inline-block; *display:inline; vertical-align:top; *vertical-align:baseline}
+
+
+
+/* dimmed layer popup */
+.ui_confirm{position:fixed;_position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(35,40,50,0.9);overflow-y:auto;z-index:99}
+.ui_confirm .dim{position:absolute;top:0;left:0;width:100%;height:100%}
+.ui_confirm .rule_confirm_cont{position:absolute;top:50%;left:50%;height:auto;background:#fafafa;margin:30px auto}
+.ui_confirm .rule_confirm_cont:before{display:block;width:100%;padding:27px 0;background-color:#777f98}
+.ui_confirm .rule_confirm_cont > h4{font-size:18px;color:#fff;margin-top:-39px;font-weight:400 !important;padding:0 0 15px 20px;letter-spacing:-1px}
+.ui_confirm .rule_confirm_cont .close{position:absolute;top:20px;right:20px;display:block;width:16px;height:14px;background: url('../images/common/btn_layer_close.png') 0 0 no-repeat;line-height:999;overflow:hidden}
+.ui_confirm .rule_confirm_cont table{padding:0px;padding-bottom:0;padding-top:0}
+.ui_confirm .rule_confirm_cont div{}

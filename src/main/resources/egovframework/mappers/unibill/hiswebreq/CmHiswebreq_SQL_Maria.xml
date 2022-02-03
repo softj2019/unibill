@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsck.ubfw.component.hiswebreq.service.impl.CmHiswebreqMapper">
+
+	<resultMap id="cmHiswebreq-result" type="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		<result column="UBSEQ" 			property="ubseq" /> <!-- 자료순번 -->
+		<result column="PBX_SN" 			property="pbxSn" /> <!-- 교환기순번 -->
+		<result column="JOB_TYPE" 			property="jobType" /> <!-- 작업유형 -->
+		<result column="SDAY" 			property="sday" /> <!-- 정산 시작일 -->
+		<result column="EDAY" 			property="eday" /> <!-- 정산 종료일 -->
+		<result column="PROC_NM" 			property="procNm" /> <!-- 프로세스명 -->
+		<result column="PARA" 			property="para" /> <!-- 파라미터 -->
+		<result column="REQ_STATUS" 			property="reqStatus" /> <!-- 요청상태 -->
+		<result column="REQ_STATUS_LABEL" 			property="reqStatus" /> <!-- 요청상태_LABEL -->
+		<result column="PID" 			property="pid" /> <!-- pid -->
+		<result column="PROGRESS" 			property="progress" /> <!-- 진행율 -->
+		<result column="PROGRESS_LABEL" 			property="progress" /> <!-- 진행율_LABEL -->
+		<result column="MSG" 			property="msg" /> <!-- 메시지 -->
+		<result column="REG_ID" 			property="regId" /> <!-- 등록자 -->
+		<result column="UPD_ID" 			property="updId" /> <!-- 변경자 -->
+		<result column="REG_TM" 			property="regTm" /> <!-- 등록시간 -->
+		<result column="UPD_TM" 			property="updTm" /> <!-- 변경시간 -->
+		</resultMap>
+	
+	<sql id="listCmHiswebreq-where">
+		<!-- 조회 조건값 Type 1( CH.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<!-- <if test="ubseq != null and ubseq != ''">	AND CH.UBSEQ 	= #{ubseq}		 </if> -->
+				 <if test="pbx_sn != null and pbx_sn != ''">	AND CH.PBX_SN 	= #{pbx_sn}		 </if>
+				 <if test="job_type != null and job_type != ''">	AND CH.JOB_TYPE 	= #{job_type}		 </if>
+				 <!--<if test="sday != null and sday != ''"><![CDATA[	AND CH.SDAY 	>= REPLACE(#{sday}, '-', '')		 ]]></if>-->
+				 <!--<if test="eday != null and eday != ''"><![CDATA[	AND CH.EDAY 	<= REPLACE(#{eday}, '-', '')		 ]]></if>-->
+				<!-- <if test="proc_nm != null and proc_nm != ''">	AND CH.PROC_NM 	= #{proc_nm}		 </if> -->
+				<!-- <if test="para != null and para != ''">	AND CH.PARA 	= #{para}		 </if> -->
+				<!-- <if test="cust_id_param != null and cust_id_param != ''"> AND CH.PARA LIKE '%' ||  #{cust_id_param  } || '%' </if>-->
+				 <if test="req_status != null and req_status != ''">	AND CH.REQ_STATUS 	= #{req_status}		 </if>
+				<!-- <if test="pid != null and pid != ''">	AND CH.PID 	= #{pid}		 </if> -->
+				<!-- <if test="progress != null and progress != ''">	AND CH.PROGRESS 	= #{progress}		 </if> -->
+				<!-- <if test="msg != null and msg != ''">	AND CH.MSG 	= #{msg}		 </if> -->
+				<!-- <if test="reg_id != null and reg_id != ''">	AND CH.REG_ID 	= #{reg_id}		 </if> -->
+				<!-- <if test="upd_id != null and upd_id != ''">	AND CH.UPD_ID 	= #{upd_id}		 </if> -->
+				<!-- <if test="reg_tm != null and reg_tm != ''">	AND CH.REG_TM 	= #{reg_tm}		 </if> -->
+				<!-- <if test="upd_tm != null and upd_tm != ''">	AND CH.UPD_TM 	= #{upd_tm}		 </if> -->
+		<if test="bill_ym_yyyy != null and bill_ym_yyyy != '' ">
+			AND  ( CH.SDAY <![CDATA[>=]]> concat(#{bill_ym_yyyy},#{bill_ym_mm},'01')  ) 
+		</if>
+		<if test="sday != null and sday != '' ">
+			AND CH.SDAY <![CDATA[>=]]> REPLACE(#{sday}, '-', '')
+		</if>
+				
+		<!-- 조회 조건값 Type 2( CH.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<!-- <if test="ubseq != null and ubseq != ''">	AND CH.UBSEQ 	= #{ubseq}		 </if> -->
+				<!-- <if test="pbxSn != null and pbxSn != ''">	AND CH.PBX_SN 	= #{pbxSn}		 </if> -->
+				<!-- <if test="jobType != null and jobType != ''">	AND CH.JOB_TYPE 	= #{jobType}		 </if> -->
+				<!-- <if test="sday != null and sday != ''">	AND CH.SDAY 	= #{sday}		 </if> -->
+				<!-- <if test="eday != null and eday != ''">	AND CH.EDAY 	= #{eday}		 </if> -->
+				<!-- <if test="procNm != null and procNm != ''">	AND CH.PROC_NM 	= #{procNm}		 </if> -->
+				<!-- <if test="para != null and para != ''">	AND CH.PARA 	= #{para}		 </if> -->
+				<!-- <if test="reqStatus != null and reqStatus != ''">	AND CH.REQ_STATUS 	= #{reqStatus}		 </if> -->
+				<!-- <if test="pid != null and pid != ''">	AND CH.PID 	= #{pid}		 </if> -->
+				<!-- <if test="progress != null and progress != ''">	AND CH.PROGRESS 	= #{progress}		 </if> -->
+				<!-- <if test="msg != null and msg != ''">	AND CH.MSG 	= #{msg}		 </if> -->
+				<!-- <if test="regId != null and regId != ''">	AND CH.REG_ID 	= #{regId}		 </if> -->
+				<!-- <if test="updId != null and updId != ''">	AND CH.UPD_ID 	= #{updId}		 </if> -->
+				<!-- <if test="regTm != null and regTm != ''">	AND CH.REG_TM 	= #{regTm}		 </if> -->
+				<!-- <if test="updTm != null and updTm != ''">	AND CH.UPD_TM 	= #{updTm}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND CH.PROTOTYPE_TITLE LIKE '%' ||  #{searchPrototypeTitle  } || '%' </if> -->
+				<!-- <if test="searchUbseq != null and searchUbseq != ''">	AND CH.UBSEQ 	= #{searchUbseq}		 </if> -->
+				<!-- <if test="searchPbxSn != null and searchPbxSn != ''">	AND CH.PBX_SN 	= #{searchPbxSn}		 </if> -->
+				<!-- <if test="searchJobType != null and searchJobType != ''">	AND CH.JOB_TYPE 	= #{searchJobType}		 </if> -->
+				<!-- <if test="searchSday != null and searchSday != ''">	AND CH.SDAY 	= #{searchSday}		 </if> -->
+				<!-- <if test="searchEday != null and searchEday != ''">	AND CH.EDAY 	= #{searchEday}		 </if> -->
+				<!-- <if test="searchProcNm != null and searchProcNm != ''">	AND CH.PROC_NM 	= #{searchProcNm}		 </if> -->
+				<!-- <if test="searchPara != null and searchPara != ''">	AND CH.PARA 	= #{searchPara}		 </if> -->
+				<!-- <if test="searchReqStatus != null and searchReqStatus != ''">	AND CH.REQ_STATUS 	= #{searchReqStatus}		 </if> -->
+				<!-- <if test="searchPid != null and searchPid != ''">	AND CH.PID 	= #{searchPid}		 </if> -->
+				<!-- <if test="searchProgress != null and searchProgress != ''">	AND CH.PROGRESS 	= #{searchProgress}		 </if> -->
+				<!-- <if test="searchMsg != null and searchMsg != ''">	AND CH.MSG 	= #{searchMsg}		 </if> -->
+				<!-- <if test="searchRegId != null and searchRegId != ''">	AND CH.REG_ID 	= #{searchRegId}		 </if> -->
+				<!-- <if test="searchUpdId != null and searchUpdId != ''">	AND CH.UPD_ID 	= #{searchUpdId}		 </if> -->
+				<!-- <if test="searchRegTm != null and searchRegTm != ''">	AND CH.REG_TM 	= #{searchRegTm}		 </if> -->
+				<!-- <if test="searchUpdTm != null and searchUpdTm != ''">	AND CH.UPD_TM 	= #{searchUpdTm}		 </if> -->
+			</sql>
+
+	<sql id="listCmHiswebreq-select">
+			SELECT
+			CH.BILL_YM
+			,CH.UBSEQ /* 자료순번 */
+			,  CH.PBX_SN /* 교환기순번 */
+			/* ,  CH.JOB_TYPE 작업유형 */
+			, ( SELECT NM FROM CM_CFGBASECD WHERE GRP_CD = 'JOB_TYPE' AND VAL = CH.JOB_TYPE ) AS JOB_TYPE
+			, ( SELECT NM FROM CM_CFGBASECD WHERE GRP_CD = 'SVC_ID' AND VAL = CH.SVC_ID ) AS SVC_ID
+			,  CH.SDAY /* 시작일 */
+			,  CH.EDAY /* 종료일 */
+			,  CH.PROC_NM /* 프로세스명 */
+			,  CH.PARA /* 파라미터 */
+			/* ,  CH.REQ_STATUS 요청상태 */
+			<![CDATA[
+			, (
+				CASE 	WHEN CH.REQ_STATUS = 'S' THEN '<span class="s_step3">성공</span>'
+				WHEN CH.REQ_STATUS = 'F' THEN '<span class="s_step4">실패</span>'
+				WHEN CH.REQ_STATUS = 'C' THEN '<span class="s_step4">취소</span>'
+				WHEN CH.REQ_STATUS = 'T' THEN '<span class="s_step2">접수완료</span>'
+				WHEN CH.REQ_STATUS = 'P' THEN '<span class="s_step2">진행중</span>'
+				WHEN CH.REQ_STATUS = 'R' THEN '<span class="s_step1">요청</span>'
+				WHEN CH.REQ_STATUS = 'X' THEN '<span class="s_step4">취소완료</span>'
+				END
+			) AS REQ_STATUS_LABEL /* 요청상태 */
+			, CH.REQ_STATUS /* 요청상태 */			
+			,concat('<button type="button" onclick="" class="btn_reload">새로고침</button> ',CH.PROGRESS ) AS PROGRESS_LABEL /* 진행률 */
+			, CH.PROGRESS /* 진행률 */
+			]]>
+			,  CH.PID /* pid */
+			,  CH.MSG /* 메시지 */
+			,  CH.REG_ID /* 등록자 */
+			,  CH.UPD_ID /* 변경자 */
+			,  CH.REG_TM /* 등록시간 */
+			,  CH.UPD_TM /* 변경시간 */
+	  FROM CM_HISWEBREQ CH
+	  WHERE 1=1
+	</sql>
+	
+	<select id="getCmHiswebreq" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO" resultType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		/* ====== CmHiswebreqMapper.getCmHiswebreq ====== */
+		<include refid="listCmHiswebreq-select"/>
+		AND CH.UBSEQ = #{ubseq}
+	</select>
+	
+<!-- 	<select id="listCmHiswebreq" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listCmHiswebreq" parameterType="hashmap" resultType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO"> -->
+<!-- 	<select id="listCmHiswebreq" parameterType="hashmap" resultMap="cmHiswebreq-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listCmHiswebreq" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO" resultType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		/* ====== CmHiswebreqMapper.listCmHiswebreq ====== */		
+		<include refid="listCmHiswebreq-select"/>
+		<include refid="listCmHiswebreq-where"/>
+		<choose>
+			<when test="sidx != null and sidx != '' and sord != null and sord != ''">
+				ORDER BY ${sidx} ${sord}
+			</when>
+			<otherwise>
+				ORDER BY CH.UBSEQ DESC
+			</otherwise>
+		</choose>
+		limit ${limitSize} offset ${offsetSize}  
+	</select>
+	
+	<select id="listCmHiswebreqCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+			/* ====== CmHiswebreqMapper.listCmHiswebreqCnt ====== */
+		SELECT COUNT(*) CNT
+		FROM (
+		<include refid="listCmHiswebreq-select"/>
+		<include refid="listCmHiswebreq-where"/>
+		) a
+	</select>
+
+	<select id="getKeyDuplicateCnt" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO" resultType="java.lang.Integer">
+		/* ====== CmHiswebreqMapper.getKeyDuplicateCnt ====== */
+		SELECT COUNT(*)
+		FROM CM_HISWEBREQ CH
+		WHERE 1=1
+		AND UBSEQ = #{ubseq}
+	</select>
+
+
+	<select id="listCmHiswebreqExcel" parameterType="map" resultType="egovMap">
+		/* ====== CmHiswebreqMapper.listCmHiswebreqExcel ====== */
+		<include refid="listCmHiswebreq-select"/>
+		<include refid="listCmHiswebreq-where"/>
+		<choose>
+			<when test="sidx != null and sidx != '' and sord != null and sord != ''">
+				ORDER BY ${sidx} ${sord}
+			</when>
+			<otherwise>
+				ORDER BY CH.UBSEQ ASC
+			</otherwise>
+		</choose>
+	</select>
+ 
+	<sql id="saveCmHiswebreqSQL">	 
+			INSERT into  cm_hiswebreq (
+					bill_ym
+					,JOB_TYPE
+					, PROC_NM
+					, PARA
+					, REQ_STATUS
+					, PROGRESS
+					, MSG
+					, REG_ID
+					, UPD_ID
+					, REG_TM
+					, UPD_TM	
+					, PBX_SN
+					, rep_cust_id
+					, autotrans_month
+					, svc_id
+			)
+			VALUES
+			( 
+					  #{billYm}
+					, #{jobType}
+					, #{procNm}
+					, #{para}
+					<if test="reqStatus == null or reqStatus == ''">	, 'R' </if><if test="reqStatus != null and reqStatus != ''">	, #{reqStatus}		 </if>
+					
+					, #{progress}
+					, #{msg}
+					, #{sessionUserId}
+					, #{sessionUserId}
+					, date_format(current_timestamp,'%Y%m%d%H%i%s')
+					, date_format(current_timestamp,'%Y%m%d%H%i%s')
+					, 0
+					,#{repCustId}
+					,#{autotransMonth}
+					,#{svcId}
+			)
+	</sql>	
+	<insert id="saveCmHiswebreqMap" parameterType="java.util.HashMap">
+		/* ====== CmHiswebreqMapper.saveCmHiswebreqMap ====== */
+		<include refid="saveCmHiswebreqSQL"/>
+	</insert>
+	<insert id="saveCmHiswebreq" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		/* ====== CmHiswebreqMapper.saveCmHiswebreq ====== */
+		<include refid="saveCmHiswebreqSQL"/>
+	</insert>
+	
+
+	<insert id="insertCmHiswebreq" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+			/* ====== CmHiswebreqMapper.insertCmHiswebreq ====== */
+			INSERT INTO CM_HISWEBREQ ( 
+									 UBSEQ
+									 , PBX_SN
+									 , JOB_TYPE
+									 , SDAY
+									 , EDAY
+									 , PROC_NM
+									 , PARA
+									 , REQ_STATUS
+									 , PID
+									 , PROGRESS
+									 , MSG
+									 , REG_ID
+									 , UPD_ID
+									 , REG_TM
+									 , UPD_TM
+									) 
+					VALUES 
+					( 
+								  #{ubseq}
+								 ,  #{pbxSn}
+								 ,  #{jobType}
+								 ,  #{sday}
+								 ,  #{eday}
+								 ,  #{procNm}
+								 ,  #{para}
+								 <if test="reqStatus == null or reqStatus == ''">	, 'R'		 </if><if test="reqStatus != null and reqStatus != ''">	, #{reqStatus}		 </if>
+								 ,  #{pid}
+								 ,  #{progress}
+								 ,  #{msg}
+								 , #{sessionUserId}
+								 , #{sessionUserId}
+								 , date_format(current_timestamp,'%Y%m%d%H%i%s')
+								 , date_format(current_timestamp,'%Y%m%d%H%i%s')
+				    								)
+	</insert>
+
+
+	<update id="updateCmHiswebreq" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+			/* ====== CmHiswebreqMapper.updateCmHiswebreq ====== */
+	        UPDATE CM_HISWEBREQ 
+	        SET UPD_TM = date_format(current_timestamp,'%Y%m%d%H%i%s')
+				,UPD_ID = #{sessionUserId}
+				,REQ_STATUS ='C' 
+			WHERE	1=1
+			<choose>
+				<when test="ubSeqArr2 != null and ubSeqArr2 != ''">
+					AND UBSEQ IN
+					<foreach collection="ubSeqArr2" item="ubseqs" index="index" open="(" close=")" separator=",">
+						'${ubseqs}'
+					</foreach>
+				</when>
+				<otherwise>
+					AND UBSEQ = #{ubseq}
+				</otherwise>
+			</choose>
+
+	</update>
+
+
+	<delete id="deleteCmHiswebreq" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		<![CDATA[
+			/* ====== CmHiswebreqMapper.deleteCmHiswebreq ====== */
+			DELETE FROM CM_HISWEBREQ 
+		]]>
+			 WHERE UBSEQ = #{ubseq}
+	</delete>
+
+
+	<delete id="deleteListCmHiswebreq" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		<![CDATA[
+			/* ====== CmHiswebreqMapper.deleteCmHiswebreq ====== */
+			DELETE FROM CM_HISWEBREQ 
+		]]>
+			 WHERE 1=1  
+			   AND UBSEQ IN
+		<foreach collection="delUbseqList" item="delUbseqs" index="index" open="(" close=")" separator=",">
+			${delUbseqs}
+		</foreach>
+	</delete>
+
+
+	<insert id="insertTelecomBillingData" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		/* ====== CmHiswebreqMapper.insertTelecomBillingData ====== */
+		insert into mb_tc_tong
+		(
+			 bill_ym
+			 ,svc_id
+			 ,gd_id
+			 ,item_id
+			 ,cust_id
+			 ,key_no
+			 ,ubseq
+			 ,ocost
+			 ,cost
+			 ,item_grp
+			 ,rcust_id
+			 ,cust_dept_id
+			 ,reg_id
+			 ,reg_tm
+		)
+		select
+			 #{billYm}
+			 ,svc_id
+			 ,gd_id
+			 ,item_id
+			 ,nvl(cust_id,'-')
+			 ,key_no
+			 ,f_getsn('mb_tc_tong','ubseq')
+			 ,nvl(f_cost,0)
+			 ,nvl(cost,0)
+			 ,nvl(item_grp, '-')
+			 ,nvl(rcust_id,'-')
+			 ,nvl(cust_dept_id, '-')
+			 ,''
+			 ,to_char(current_timestamp(),'%Y%m%d%H%i%s')
+		 from
+		 (
+			 select
+					  svc_id
+					 ,gd_id
+					 ,item_id
+					 ,cust_id
+					 ,key_no
+					 ,rcust_id
+					 ,cust_dept_id
+					 ,item_grp
+					 ,sum(f_cost)  f_cost
+					 ,sum(cost)   cost
+		   from (
+					   select
+							a.svc_id
+							,a.gd_id
+							,a.item_id
+							,a.key_no
+							,nvl(a.item_grp,'-') item_grp
+							,nvl(k.cust_id,'-') cust_id
+							,nvl(c.rcust_id,'-') rcust_id
+							,nvl(k.cust_dept_id,'-') cust_dept_id
+							,f_cost
+							,F_CALC_COST(F_CALC_USEDAY(#{billYm}, #{billYmLastDay},k.sday, k.eday, k.psday,k.peday, i.one_yn) ,#{billYmLastDay},i.calc_type,i.calc_pos,i.daycalc_yn,k.bill_yn,cost) cost
+						from
+						(
+							select svc_id,gd_id,item_id,item_grp,cust_no,key_no,sum(cost) cost  ,sum(f_cost) f_cost
+							from mb_tc_bill
+							where bill_ym=#{billYm} and ( f_cost!=0 or cost!=0 )
+							group by svc_id,gd_id,item_id,item_grp,cust_no,key_no
+						) a  left join mb_tc_key  k on (a.svc_id=k.svc_id and a.gd_id=k.gd_id and a.cust_no=k.cust_no and a.key_no=k.key_no)
+							 left join mb_cfgitem i on (a.item_id=i.item_id   )
+							 left join mb_cfgcust c on (k.cust_id=c.cust_id )
+			  )a
+		  group by svc_id,gd_id,item_id,cust_id,key_no ,rcust_id,cust_dept_id,item_grp
+		 ) a
+	</insert>
+
+
+	<insert id="insertJumpoBillingData" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		/* ====== CmHiswebreqMapper.insertJumpoBillingData ====== */
+		INSERT  INTO mb_rptjumpo ( bill_ym,svc_id,gd_id,jumpo_code,cust_id,rcust_id,key_no,item_id,ubseq,ocost,cost,reg_id,upd_id,reg_tm,upd_tm)
+		select
+				#{billYm}   bill_ym
+				,svc_id,gd_id,jumpo_code,cust_id,rcust_id,key_no,item_id
+				/*
+				,nvl(svc_id ,'-') svc_id
+				,nvl( gd_id  ,'-')   gd_id
+				,nvl(jumpo_code ,'-') jumpo_code
+				,nvl(cust_id,'-')   cust_id
+				,nvl(rcust_id,'-') rcust_id
+				,nvl(key_no  ,'-')  key_no
+				,item_id
+				*/
+				,f_getsn('MB_RPTJUMPO','UBSEQ')       ubseq
+				,sum(cost)
+				,sum(cost)
+				,'admin' reg_id
+				,'admin' upd_id
+				,TO_CHAR(current_timestamp,'%Y%m%d%H%i%s') reg_tm
+				,TO_CHAR(current_timestamp,'%Y%m%d%H%i%s') upd_tm
+		from (
+				select
+						nvl(svc_id ,'-') svc_id
+						,nvl( nvl(c.comm_code, gd_id)  ,'-')   gd_id
+						,nvl(jumpo_code ,'-') jumpo_code
+						,nvl(nvl(c.cust_id , j.cust_id),'-')   cust_id
+						,nvl(line_no  ,'-')  key_no
+						,i.item_id   item_id
+						, F_CALC_COST(
+						F_CALC_USEDAY(#{beforeBillYm}, #{beforeBillYmLastDay},c.open_date, c.close_date, c.psday,c.peday, i.one_yn)
+						-- F_CALC_USEDAY('201703', '31','20170310', c.close_date, '20170320','20170325', i.one_yn)
+						,#{beforeBillYmLastDay},i.calc_type,i.calc_pos,i.daycalc_yn,i.bill_yn,i.cost) cost
+						,nvl(cu.rcust_id,'-') rcust_id
+						-- ,c.open_date, c.close_date
+						--  , F_CALC_USEDAY('201703', '31','20170310', c.close_date, '20170320','20170325', i.one_yn)   useday
+						-- , F_CALC_USEDAY('201703', '31',c.open_date, c.close_date, c.psday,c.peday, i.one_yn) useday
+				from (
+						select  a.* from mb_data_request a
+						where 1=1
+		<![CDATA[
+						and open_date <= #{beforeBillYm}||#{beforeBillYmLastDay}  and ( close_date >= #{beforeBillYm}||'01'       or close_date is null )
+		]]>
+						--  and jumpo_code='111'
+						-- and cust_id='2007080009' and line_id='4309358'
+				) c
+				left join v_cfgitem i on ( c.comm_code=i.gd_id  )
+				left join mb_cfgjumpo j on ( c.JUMPO_CODE=j.JUMPO_id  )
+				left join mb_cfgcust cu on ( c.cust_id=cu.cust_id  )
+				where i.cost!=0
+		) a
+		group by svc_id,gd_id,jumpo_code,cust_id,rcust_id,key_no,item_id
+	</insert>
+
+	<insert id="insertMbtctongFromJumpoBillingData" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+	/* ====== CmHiswebreqMapper.insertMbtctongFromJumpoBillingData ====== */
+	insert into mb_tc_tong
+	(
+	bill_ym
+	,svc_id
+	,gd_id
+	,item_id
+	,cust_id
+	,key_no
+	,ubseq
+	,ocost
+	,cost
+	,item_grp
+	,rcust_id
+	,cust_dept_id
+	,reg_id
+	,reg_tm
+	)
+	select
+	</insert>
+
+	<update id="updateAdjustmentForTelecomBilling" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+	/* ====== CmHiswebreqMapper.updateAdjustmentForTelecomBilling ====== */
+		UPDATE MB_TC_TONG X
+		SET X.COST = (
+			SELECT ( MTT.COST + MC.COST ) AS COST
+			FROM MB_TC_TONG MTT
+		<![CDATA[
+			INNER JOIN MB_CFGBILLADD MC ON ( ( MTT.BILL_YM >= MC.SYM AND MTT.BILL_YM <= MC.EYM )
+		]]>
+										AND MTT.SVC_ID = MC.SVC_ID
+										AND MTT.GD_ID = MC.GD_ID
+										AND MTT.ITEM_GRP = MC.ITEM_GRP
+										AND MTT.ITEM_ID = MC.ITEM_ID
+										AND MTT.CUST_ID = MC.CUST_ID
+										AND MTT.KEY_NO = MC.KEY_NO )
+			WHERE MTT.BILL_YM = X.BILL_YM
+			  AND MTT.SVC_ID = X.SVC_ID
+			  AND MTT.GD_ID = X.GD_ID
+			  AND MTT.ITEM_GRP = X.ITEM_GRP
+			  AND MTT.ITEM_ID = X.ITEM_ID
+			  AND MTT.CUST_ID = X.CUST_ID
+			  AND MTT.KEY_NO = X.KEY_NO
+		)
+		WHERE X.BILL_YM = #{billYm}
+		  AND EXISTS (
+				SELECT 1
+				  FROM MB_TC_TONG MTT
+		<![CDATA[
+				 INNER JOIN MB_CFGBILLADD MC ON ( ( MTT.BILL_YM >= MC.SYM AND MTT.BILL_YM <= MC.EYM )
+		]]>
+											AND MTT.SVC_ID = MC.SVC_ID
+											AND MTT.GD_ID = MC.GD_ID
+											AND MTT.ITEM_GRP = MC.ITEM_GRP
+											AND MTT.ITEM_ID = MC.ITEM_ID
+											AND MTT.CUST_ID = MC.CUST_ID
+											AND MTT.KEY_NO = MC.KEY_NO )
+				WHERE MTT.BILL_YM = X.BILL_YM
+				  AND MTT.SVC_ID = X.SVC_ID
+				  AND MTT.GD_ID = X.GD_ID
+				  AND MTT.ITEM_GRP = X.ITEM_GRP
+				  AND MTT.ITEM_ID = X.ITEM_ID
+				  AND MTT.CUST_ID = X.CUST_ID
+				  AND MTT.KEY_NO = X.KEY_NO
+				)
+	</update>
+	<update id="updateAdjustmentForJumpoBilling" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		/* ====== CmHiswebreqMapper.updateAdjustmentForJumpoBilling ====== */
+		UPDATE MB_RPTJUMPO X
+		SET X.COST = (
+						SELECT ( MR.COST + MC.COST ) AS COST
+						  FROM MB_RPTJUMPO MR
+		<![CDATA[
+						 INNER JOIN MB_CFGBILLADD MC ON ( ( MR.BILL_YM >= MC.SYM AND MR.BILL_YM <= MC.EYM )
+		]]>
+													   AND MR.SVC_ID = MC.SVC_ID
+													   AND MR.GD_ID = MC.GD_ID
+													   AND MR.ITEM_ID = MC.ITEM_ID
+													   AND MR.CUST_ID = MC.CUST_ID
+													   AND MR.KEY_NO = MC.KEY_NO )
+						 WHERE MR.BILL_YM = X.BILL_YM
+						   AND MR.SVC_ID = X.SVC_ID
+						   AND MR.GD_ID = X.GD_ID
+						   AND MR.ITEM_ID = X.ITEM_ID
+						   AND MR.CUST_ID = X.CUST_ID
+						   AND MR.KEY_NO = X.KEY_NO
+					)
+		WHERE X.BILL_YM = #{billYm}
+		AND EXISTS (
+						SELECT 1
+						  FROM MB_RPTJUMPO MR
+		<![CDATA[
+						 INNER JOIN MB_CFGBILLADD MC ON ( ( MR.BILL_YM >= MC.SYM AND MR.BILL_YM <= MC.EYM )
+		]]>
+													   AND MR.SVC_ID = MC.SVC_ID
+													   AND MR.GD_ID = MC.GD_ID
+													   AND MR.ITEM_ID = MC.ITEM_ID
+													   AND MR.CUST_ID = MC.CUST_ID
+													   AND MR.KEY_NO = MC.KEY_NO )
+						 WHERE MR.BILL_YM = X.BILL_YM
+						   AND MR.SVC_ID = X.SVC_ID
+						   AND MR.GD_ID = X.GD_ID
+						   AND MR.ITEM_ID = X.ITEM_ID
+						   AND MR.CUST_ID = X.CUST_ID
+						   AND MR.KEY_NO = X.KEY_NO
+					)
+	</update>
+
+	<delete id="deleteTelecomBillingData" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		<![CDATA[
+			/* ====== CmHiswebreqMapper.deleteMbTcTongFromBillingJobRequest ====== */
+			DELETE FROM MB_TC_TONG
+		]]>
+		WHERE bill_ym = #{billYm}
+	</delete>
+
+	<delete id="deleteJumpoBillingData" parameterType="com.hsck.ubfw.component.hiswebreq.vo.CmHiswebreqVO">
+		<![CDATA[
+			/* ====== CmHiswebreqMapper.deleteJumpoBillingData ====== */
+			DELETE FROM MB_RPTJUMPO
+		]]>
+		WHERE bill_ym = #{billYm}
+	</delete>
+
+	<!-- 매출현황 보고서 -보증금 내역  조건 -->
+	<sql id="selectTerminationSql">
+        <if test="od_status != null and od_status != '' ">          
+            AND OD_STATUS = #{od_status}
+        </if>
+		<if test="tel_no != null and tel_no != '' ">        <!-- 고객명 -->
+	        AND tel_no like #{tel_no} || '%'
+	    </if>
+	    <if test="cust_id != null and cust_id != '' ">        <!-- 고객명 -->
+	        AND cust_id like #{cust_id} || '%'
+	    </if>
+	</sql>
+		
+	<!-- 즉시처리완료불 리스트 조회 -->
+	<select id="selectTerminationList" parameterType="map" resultType="egovMap">
+
+		SELECT 	*				
+          FROM (select m.*,
+          			   CASE WHEN (select HOTBILL_YN FROM (SELECT cust_id, nvl(max(HOTBILL_YN),'N') as HOTBILL_YN FROM mb_cfgcont GROUP BY cust_id) f WHERE m.cust_id = f.cust_id) = 'Y' THEN '처리완료' ELSE '미처리' end AS hotbill_nm,	
+          			   ROW_NUMBER() OVER (ORDER BY cust_id desc) as rnum
+          		  from(
+						SELECT DISTINCT CUST_ID ,
+				       CUST_NM ,
+				       USE_STATUS AS OD_STATUS ,
+				       UNIBILL_CRYPTO.DEC_AES256(TEL_NO) AS tel_no,
+				       GRP_NM AS OD_STATUSNM 
+				  FROM MB_CFGCUST A ,
+				       CM_CFGGRPID B  
+				 WHERE 1 = 1 
+				       AND B.GRP_TYPE = 'OD_STATUS' 
+				       AND A.USE_STATUS = B.GRP_ID
+				        and a.cust_id in ( select cust_id from mb_cfgcont group by cust_id )     	
+               ) M
+               where 1=1
+               <include refid="selectTerminationSql" />
+               )
+		 WHERE 1 = 1
+		   AND rnum <![CDATA[ <= #{lastIndex} ]]> AND rnum <![CDATA[ > #{firstIndex} ]]>
+	</select>
+	
+	<!-- 즉시처리완료불 총갯수 -->
+	<select id="selectTerminationListCnt" parameterType="map" resultType="int">
+	
+		SELECT COUNT(*)
+				from(
+				SELECT DISTINCT CUST_ID ,
+				       CUST_NM ,
+				       USE_STATUS AS OD_STATUS ,
+				       TEL_NO ,
+				       GRP_NM AS OD_STATUSNM 
+				  FROM MB_CFGCUST A ,
+				       CM_CFGGRPID B  
+				 WHERE 1 = 1 
+				       AND B.GRP_TYPE = 'OD_STATUS' 
+				       AND A.USE_STATUS = B.GRP_ID
+				       and a.cust_id in ( select cust_id from mb_cfgcont group by cust_id )     	
+               ) m
+        where 1=1
+		<include refid="selectTerminationSql" />
+	</select>
+	
+	<select id="selectTerminationDtlList" parameterType="map" resultType="egovMap">
+	SELECT *
+	FROM(
+		SELECT m.*, ROW_NUMBER() OVER (ORDER BY CONT_SEQ DESC) as rnum
+	 	FROM(
+			SELECT 
+	            A.CONT_SEQ
+	           ,A.CONT_NO
+	           ,A.CONT_STATUS
+	           ,A.BILL_SDAY
+	           ,A.BILL_EDAY
+	           ,A.SVC_ID
+	           ,C.NM AS SVC_NM
+	           ,D.CUST_ID
+	           ,A.REQ_DAY AS REQ_DT
+	           ,B.GRP_NM STATUS_NM
+	           ,case when A.HOTBILL_YN = 'Y' then '처리완료' else '미처리' end as HOTBILL_NM
+	        FROM
+	            MB_CFGCONT A
+	           ,CM_CFGGRPID B
+	           ,MB_CFGSVC C
+	           ,MB_CFGCUST D
+	        WHERE
+	        1=1
+	        AND A.CONT_STATUS = B.GRP_ID
+	        AND B.GRP_TYPE = 'OD_STATUS'
+	        AND A.SVC_ID = C.SVC_ID
+	        AND A.CUST_ID = D.CUST_ID
+	        AND A.CUST_ID = #{cust_id}
+	        AND A.CONT_STATUS in ('20', '30', '40', '50', '21', '70', '60', '22', '72', '31', '41', '32', '42', '71', '11', '23')
+	        ORDER BY A.CONT_NO DESC, A.CONT_SEQ DESC
+	        )M
+	        WHERE 1=1
+	        <include refid="selectTerminationSql" />
+	        )
+	       WHERE 1 = 1
+		   AND rnum <![CDATA[ <= #{lastIndex} ]]> AND rnum <![CDATA[ > #{firstIndex} ]]>
+	</select>
+	
+	<select id="selectTerminationDtlListCnt" parameterType="map" resultType="int">
+	 SELECT COUNT(*)
+	 FROM(
+		SELECT m.*, ROW_NUMBER() OVER (ORDER BY CONT_SEQ DESC) as rnum
+	 	FROM(
+			SELECT 
+	            A.CONT_SEQ
+	           ,A.CONT_NO
+	           ,A.CONT_STATUS
+	           ,A.BILL_SDAY
+	           ,A.BILL_EDAY
+	           ,A.SVC_ID
+	           ,C.NM AS SVC_NM
+	           ,D.CUST_ID
+	           ,A.REQ_DAY AS REQ_DT
+	           ,B.GRP_NM STATUS_NM
+	        FROM
+	            MB_CFGCONT A
+	           ,CM_CFGGRPID B
+	           ,MB_CFGSVC C
+	           ,MB_CFGCUST D
+	        WHERE
+	        1=1
+	        AND A.CONT_STATUS = B.GRP_ID
+	        AND B.GRP_TYPE = 'OD_STATUS'
+	        AND A.SVC_ID = C.SVC_ID
+	        AND A.CUST_ID = D.CUST_ID
+	        AND A.CUST_ID = #{cust_id}
+	        AND A.CONT_STATUS in ('20', '30', '40', '50', '21', '70', '60', '22', '72', '31', '41', '32', '42', '71', '11', '23')
+	        ORDER BY A.CONT_NO DESC, A.CONT_SEQ DESC
+	        )M
+	        WHERE 1=1
+	        <include refid="selectTerminationSql" />
+	       )
+	</select>
+	
+	<update id="hotbill_proc" parameterType="map" statementType="CALLABLE">
+		{call HS_HOTSALE_PRC(
+			#{cust_id, mode=IN, jdbcType=VARCHAR, javaType=string},
+			#{reg_id, mode=IN, jdbcType=VARCHAR, javaType=string},
+			#{resultMsg, mode=OUT, jdbcType=VARCHAR, javaType=string}
+		)}
+	</update>
+	
+	
+	<select id="getHotbill_summury" parameterType="com.hsck.ubfw.component.hiswebreq.vo.instPayVO" resultType="com.hsck.ubfw.component.hiswebreq.vo.instPayVO">
+		SELECT 
+			a.cust_id as custId
+		    ,a.cust_nm as custNm 
+		    ,MAX(b.bill_ym) AS billYm
+		    ,to_char(SUM(b.cost),'999,999,999,999') AS cost
+		    ,'0' AS dcCost
+		    ,to_char(SUM(b.COST + b.dc_cost),'999,999,999,999') AS totCost
+		FROM MB_CFGCUST a
+		left JOIN MB_HOTSALE b ON (a.cust_id = b.cust_id) 
+		WHERE a.cust_id = #{custId}
+		GROUP BY a.cust_id, a.cust_nm
+	</select>
+	
+	<select id="getHotbill_detail" parameterType="com.hsck.ubfw.component.hiswebreq.vo.instPayVO" resultType="com.hsck.ubfw.component.hiswebreq.vo.instPayVO">
+		SELECT 
+			 NVL(b.nm,'요금계') AS priceplannm
+		     ,NVL(c.nm,'요금계') AS itemnm
+		     ,to_char(SUM(a.cost),'999,999,999,999') AS useamt
+		FROM MB_HOTSALE a
+		left JOIN MB_CFGGD b ON (a.gd_id = b.gd_id)
+		left JOIN MB_CFGitem c ON (a.item_id = c.item_id)
+		WHERE cust_id = #{custId}
+		GROUP BY ROLLUP(b.nm,c.nm) HAVING GROUPING_id(b.nm,c.nm) IN(0,3)
+		order by b.nm,c.nm
+	
+	</select>
+	
+	<update id="hotbill_proc_commit" parameterType="map" statementType="CALLABLE">
+		{call HS_HOTSALE_PRC_COMMIT(
+			#{cust_id, mode=IN, jdbcType=VARCHAR, javaType=string},
+			#{reg_id, mode=IN, jdbcType=VARCHAR, javaType=string},
+			#{resultMsg, mode=OUT, jdbcType=VARCHAR, javaType=string}
+		)}
+	</update>
+</mapper>

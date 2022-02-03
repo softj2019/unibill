@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper">
+
+	<resultMap id="cmCfggrpid-result" type="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+		<result column="GRP_TYPE" 			property="grpType" /> <!-- cfgbasecd grpType 참조 B:건물 J:조직 C:고객유형 D:문서 F:파일 R:요금항목 O:점용위치 -->
+		<result column="GRP_ID" 			property="grpId" /> <!-- 그룹ID -->
+		<result column="UBSEQ" 			property="ubseq" /> <!-- 자료순번 -->
+		<result column="UP_GRP_ID" 			property="upGrpId" /> <!-- 상위ID -->
+		<result column="GRP_NM" 			property="grpNm" /> <!-- 그룹명 -->
+		<result column="DEPTH" 			property="depth" /> <!-- 레벨 -->
+		<result column="SHOW_SN" 			property="showSn" /> <!-- 출력순번 -->
+		<result column="USE_YN" 			property="useYn" /> <!-- 사용여부 -->
+		<result column="MAN_NO" 			property="manNo" /> <!-- 관리번호 -->
+		<result column="REG_ID" 			property="regId" /> <!-- 등록자 -->
+		<result column="UPD_ID" 			property="updId" /> <!-- 변경자 -->
+		<result column="REG_TM" 			property="regTm" /> <!-- 등록시간 -->
+		<result column="UPD_TM" 			property="updTm" /> <!-- 수정시간 -->
+		</resultMap>
+	
+	<sql id="listCmCfggrpid-where">
+	
+		<!-- 조회 조건값 ( CC.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<!-- <if test="grpType != null and grpType != ''">	AND CC.GRP_TYPE 	= #{grpType}		 </if> -->
+				 <!--<if test="grpId != null and grpId != ''">	AND CC.GRP_ID 	LIKE concat('%'  ,  #{grpId}  ,  '%' )		 </if>-->
+				<!-- <if test="ubseq != null and ubseq != ''">	AND CC.UBSEQ 	= #{ubseq}		 </if> -->
+				<!-- <if test="upGrpId != null and upGrpId != ''">	AND CC.UP_GRP_ID 	= #{upGrpId}		 </if> -->
+				 <!--<if test="grpNm != null and grpNm != ''">	AND CC.GRP_NM 	LIKE concat('%'  ,  #{grpNm}  ,  '%')		 </if>-->
+				<!-- <if test="depth != null and depth != ''">	AND CC.DEPTH 	= #{depth}		 </if> -->
+				<!-- <if test="useYn != null and useYn != ''">	AND CC.USE_YN 	= #{useYn}		 </if> -->
+				<!-- <if test="manNo != null and manNo != ''">	AND CC.MAN_NO 	= #{manNo}		 </if> -->
+				<!-- <if test="regId != null and regId != ''">	AND CC.REG_ID 	= #{regId}		 </if> -->
+				<!-- <if test="updId != null and updId != ''">	AND CC.UPD_ID 	= #{updId}		 </if> -->
+				<!-- <if test="regTm != null and regTm != ''">	AND CC.REG_TM 	= #{regTm}		 </if> -->
+				<!-- <if test="updTm != null and updTm != ''">	AND CC.UPD_TM 	= #{updTm}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND CC.PROTOTYPE_TITLE LIKE concat( '%'  ,   #{searchPrototypeTitle  }  ,  '%') </if> -->
+				<if test="searchGrpId == null or searchGrpId == ''">
+					<if test="searchGrpNm == null or searchGrpNm == ''">
+						<if test="searchGrpType == null or searchGrpType == ''">	AND CC.GRP_TYPE 	= '_empty_' </if>
+					</if>
+				</if>
+				<if test="searchGrpType != null and searchGrpType != ''">	AND CC.GRP_TYPE 	= #{searchGrpType} </if>
+				 <if test="searchGrpId != null and searchGrpId != ''">	AND CC.GRP_ID 	LIKE concat( '%'  ,  #{searchGrpId}  ,  '%' )		 </if>
+				<!-- <if test="searchUbseq != null and searchUbseq != ''">	AND CC.UBSEQ 	= #{searchUbseq}		 </if> -->
+				 <!--<if test="searchUpGrpId != null and searchUpGrpId != ''">	AND CC.UP_GRP_ID 	LIKE concat( '%'  ,  #{searchUpGrpId}  ,  '%' )		 </if>-->
+				 <if test="searchGrpNm != null and searchGrpNm != ''">	AND CC.GRP_NM 	 LIKE concat( '%'  ,    #{searchGrpNm}  ,  '%' )		 </if>
+				<!-- <if test="searchDepth != null and searchDepth != ''">	AND CC.DEPTH 	= #{searchDepth}		 </if> -->
+				<!-- <if test="searchUseYn != null and searchUseYn != ''">	AND CC.USE_YN 	= #{searchUseYn}		 </if> -->
+				<!-- <if test="searchManNo != null and searchManNo != ''">	AND CC.MAN_NO 	= #{searchManNo}		 </if> -->
+				<!-- <if test="searchRegId != null and searchRegId != ''">	AND CC.REG_ID 	= #{searchRegId}		 </if> -->
+				<!-- <if test="searchUpdId != null and searchUpdId != ''">	AND CC.UPD_ID 	= #{searchUpdId}		 </if> -->
+				<!-- <if test="searchRegTm != null and searchRegTm != ''">	AND CC.REG_TM 	= #{searchRegTm}		 </if> -->
+				<!-- <if test="searchUpdTm != null and searchUpdTm != ''">	AND CC.UPD_TM 	= #{searchUpdTm}		 </if> -->
+				<if test="searchGrpNm != null and searchGrpNm != ''  and  searchGrpId != null and searchGrpId != ''  and  searchUpGrpId != null and searchUpGrpId != ''  and  searchGrpNm != null and searchGrpNm != '' ">	AND CC.UP_GRP_ID   = 'ROOT' </if>
+			</sql>
+
+
+	<select id="getCmCfggrpid" parameterType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO" resultType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+		/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.getCmCfggrpid ====== */
+			SELECT 
+								  CC.GRP_TYPE /* cfgbasecd grpType 참조 B:건물 J:조직 C:고객유형 D:문서 F:파일 R:요금항목 O:점용위치 */
+								  					 , CONCAT( CC.GRP_TYPE , '#' , CC.GRP_ID ) AS TREE_ID
+													 , (
+														CASE CC.UP_GRP_ID
+															WHEN 'ROOT'
+															THEN CC.GRP_TYPE
+															ELSE CONCAT( CC.GRP_TYPE , '#', CC.UP_GRP_ID )
+														END
+													 ) AS TREE_UP_ID
+				    								 ,  CC.GRP_ID /* 그룹ID */
+				    								 ,  TO_CHAR(CC.UBSEQ) AS UBSEQ /* 자료순번 */
+				    								 ,  CC.UP_GRP_ID /* 상위ID */
+				    								 ,  CC.GRP_NM /* 그룹명 */
+				    								 ,  CC.DEPTH /* 레벨 */
+				    								 ,  CC.SHOW_SN
+				    								 ,  CC.USE_YN /* 사용여부 */
+				    								 ,  CC.MAN_NO /* 관리번호 */
+				    								 ,  CC.REG_ID /* 등록자 */
+				    								 ,  CC.UPD_ID /* 변경자 */
+				    								 ,  CC.REG_TM /* 등록시간 */
+				    								 ,  CC.UPD_TM /* 수정시간 */
+				    							  FROM CM_CFGGRPID CC
+			 WHERE CC.GRP_TYPE = #{grpType}
+			 AND   CC.GRP_ID = #{grpId}
+	</select>
+
+	<sql id="listCmCfggrpid-body">
+		SELECT T.*
+		, 'true' AS EXPANDED
+		, 'true' AS LOADED
+		from (
+				select
+						CGT.GRP_TYPE AS TREE_ID
+						, '-' AS TREE_UP_ID
+						, CGT.GRP_TYPE
+						, CGT.GRP_TYPE AS GRP_ID
+						, 'GRP_TYPE_ROOT' AS UP_GRP_ID
+						, CGT.GRP_NM AS GRP_NM
+						, 0 AS DEPTH
+						, -1 AS SHOW_SN
+						, 'Y' AS USE_YN
+						, '0' as ubseq
+						, '' AS MAN_NO
+				FROM 	CM_CFGGRPTYPE CGT
+				union
+				select
+						CONCAT( CGI.GRP_TYPE , '#' , CGI.GRP_ID ) AS TREE_ID
+						, (
+						CASE CGI.UP_GRP_ID
+							WHEN 'ROOT'
+							THEN CGI.GRP_TYPE
+							ELSE CONCAT( CGI.GRP_TYPE , '#', CGI.UP_GRP_ID )
+						END
+						) AS TREE_UP_ID
+						, CGI.GRP_TYPE
+						, CGI.GRP_ID
+						, CGI.UP_GRP_ID
+						, CGI.GRP_NM
+						, CGI.DEPTH
+						, CGI.SHOW_SN
+						, CGI.USE_YN
+						, TO_CHAR(CGI.UBSEQ)
+						, CGI.MAN_NO
+				FROM 	CM_CFGGRPID CGI
+		) T
+		WHERE 1=1
+		<if test="searchGrpType != null and searchGrpType != ''">	AND T.GRP_TYPE 	= #{searchGrpType} </if>
+		ORDER BY T.DEPTH ASC
+	</sql>
+
+	<select id="listCmCfggrpidGrpType" parameterType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO" resultType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+		/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.listCmCfggrpidGrpType ====== */
+		SELECT CC.*
+		FROM (
+		<include refid="listCmCfggrpid-body"/>
+		) CC
+	</select>
+
+	<!-- 	<select id="listCmCfggrpid" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listCmCfggrpid" parameterType="hashmap" resultType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO"> -->
+<!-- 	<select id="listCmCfggrpid" parameterType="hashmap" resultMap="cmCfggrpid-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listCmCfggrpid" parameterType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO" resultType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+		/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.listCmCfggrpid ====== */
+<!-- 		<include refid="kr.co.hanssak.include.pagingStart"/> -->
+	    <![CDATA[
+		]]>
+		SELECT CC.*
+		FROM (
+		<include refid="listCmCfggrpid-body"/>
+		) CC
+		WHERE 1=1
+		<include refid="listCmCfggrpid-where"/>
+<!-- 		<include refid="kr.co.hanssak.include.pagingEnd"/> -->
+	</select>
+	
+	<select id="getCmCfggrpidCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.getCmCfggrpidCnt ====== */
+		SELECT
+		COUNT(*) CNT
+		FROM (
+		<include refid="listCmCfggrpid-body"/>
+		) CC
+		WHERE 1=1
+		<include refid="listCmCfggrpid-where"/>
+	</select>
+
+	
+	<sql id="saveCmCfggrpidSQL">
+		INSERT INTO CM_CFGGRPID ( GRP_TYPE
+								, GRP_ID
+								, UBSEQ
+								, UP_GRP_ID
+								, GRP_NM
+								, DEPTH
+								, SHOW_SN
+								, USE_YN
+								, MAN_NO
+								, REG_ID
+								, UPD_ID
+								, REG_TM
+								, UPD_TM
+		) VALUES (	#{grpType}
+					, #{grpId}
+					, #{ubseq}
+					, #{upGrpId}
+					, #{grpNm}
+					, #{depth}
+					, #{showSn}
+					, #{useYn}
+					, #{manNo}
+					, #{sessionUserId}
+					, #{sessionUserId}
+					, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+					, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+		ON DUPLICATE KEY
+		UPDATE GRP_TYPE 	= #{grpType}
+							, GRP_ID 		= #{grpId}
+							, UPD_TM = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+							, UPD_ID 	= #{sessionUserId}
+							<if test="upGrpId != null and upGrpId != ''">	, UP_GRP_ID 	= #{upGrpId}		 </if>
+							<if test="grpNm != null and grpNm != ''">	, GRP_NM 	= #{grpNm}		 </if>
+							<if test="depth != null and depth != ''">	, DEPTH 	= #{depth}		 </if>
+							<if test="showSn != null and showSn != ''">	, SHOW_SN 	= #{showSn}		 </if>
+							<if test="useYn != null and useYn != ''">	, USE_YN 	= #{useYn}		 </if>
+							<if test="manNo != null and manNo != ''">	, MAN_NO 	= #{manNo}		 </if>
+	</sql>	
+	<insert id="saveCmCfggrpidMap" parameterType="java.util.HashMap">
+		/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.saveCmCfggrpidMap ====== */
+		<include refid="saveCmCfggrpidSQL"/>
+	</insert>
+	<insert id="saveCmCfggrpid" parameterType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+		/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.saveCmCfggrpid ====== */
+		<include refid="saveCmCfggrpidSQL"/>
+	</insert>
+	
+
+	<insert id="insertCmCfggrpid" parameterType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.insertCmCfggrpid ====== */
+			INSERT INTO CM_CFGGRPID ( 
+				GRP_TYPE
+				, GRP_ID
+				, UBSEQ
+				, UP_GRP_ID
+				, GRP_NM
+				, DEPTH
+				, SHOW_SN
+				, USE_YN
+				, MAN_NO
+				, REG_ID
+				, UPD_ID
+				, REG_TM
+				, UPD_TM
+			)
+			VALUES
+			(
+				#{grpType}
+				,  #{grpId}
+				,  #{ubseq}
+				,  #{upGrpId}
+				,  #{grpNm}
+				,  #{depth}
+				,  #{showSn}
+				,  #{useYn}
+				,  #{manNo}
+				,  #{sessionUserId}
+				,  #{sessionUserId}
+				,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			)
+		]]>
+	</insert>
+
+	<update id="updateCmCfggrpid" parameterType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+			/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.updateCmCfggrpid ====== */
+	        UPDATE CM_CFGGRPID 
+	        SET UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	          , UPD_ID 	= #{sessionUserId}
+				<if test="grpType != null and grpType != ''">		, GRP_TYPE 	= #{grpType}		 </if>
+				<if test="grpId != null and grpId != ''">		, GRP_ID 	= #{grpId}		 </if>
+				<if test="upGrpId != null and upGrpId != ''">		, UP_GRP_ID 	= #{upGrpId}		 </if>
+				<if test="grpNm != null and grpNm != ''">		, GRP_NM 	= #{grpNm}		 </if>
+				<if test="depth != null and depth != ''">		, DEPTH 	= #{depth}		 </if>
+				<if test="showSn != null and showSn != ''">	, SHOW_SN 	= #{showSn}		 </if>
+				<if test="useYn != null and useYn != ''">		, USE_YN 	= #{useYn}		 </if>
+				<if test="manNo != null and manNo != ''">		, MAN_NO 	= #{manNo}		 </if>
+			WHERE
+				UBSEQ 	= #{ubseq}
+	</update>
+
+
+	<delete id="deleteCmCfggrpid" parameterType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.deleteCmCfggrpid ====== */
+			DELETE FROM CM_CFGGRPID
+		]]>
+		WHERE 					UBSEQ 	= #{ubseq}
+	</delete>
+
+	<delete id="deleteListCmCfggrpid" parameterType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.deleteListCmCfggrpid ====== */
+			DELETE FROM CM_CFGGRPID
+		]]>
+		WHERE
+		<choose>
+			<when test="delUbseqList.length != 0">
+				UBSEQ 	IN
+				<foreach collection="delUbseqList" item="item" index="index" separator="," open="(" close=")">
+					#{item}
+				</foreach>
+			</when>
+		</choose>
+	</delete>
+
+	<delete id="deleteCmCfggrpidTree" parameterType="com.hsck.ubfw.component.cmCfggrpid.vo.CmCfggrpidVO">
+		/* ====== com.hsck.ubfw.component.cmCfggrpid.service.impl.CmCfggrpidMapper.deleteCmCfggrpidTree ====== */
+	</delete>
+
+</mapper>

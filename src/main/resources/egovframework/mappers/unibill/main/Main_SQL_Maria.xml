@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="main">
+
+    <!-- 사용자정보 조회 -->
+
+
+	<!-- 사용자정보 조회 -->
+	<select id="searchUserInfo2" parameterType="com.hsck.ubfw.component.main.model.LoginVO" resultType="com.hsck.ubfw.component.main.model.LoginVO">
+		SELECT user_id AS userId  /* 사용자id */
+			 , f_enc(2, 'nm', user_nm) AS userNm  /* 사용자명 */
+			 , pass    AS pass    /* 비밀번호 */
+			 , role_id AS roleId  /* 권한id */
+			 , CASE WHEN last_de > stdr_de and role_id!='L001' and role_id!='D001' THEN stdr_de ELSE '0' END AS dayCnt  /* 로그인 경과일 */
+			 , date_FORMAT(LASTLOGIN_DT , '%Y.%m.%d %H:%i:%s') AS lastloginDt  /* 마지막로그인시간 */
+			 , LAST_PASS_UPD_DT
+			 , ( CASE WHEN datediff(current_timestamp(),LAST_PASS_UPD_DT)>passchg_day THEN 'Y' ELSE 'N' END ) AS passChangeYn
+			 , dept_grp_id AS deptGrpId
+			 , dept_grp_nm AS deptGrpNm
+			 , ipchk_yn    AS ipchkYn
+			 , failcnt     AS failcnt
+			 , login_yn    AS loginYn
+			 , agree_yn	   as agreeYn
+			 , dup_yn      as dupYn
+			 , (select role_level from fwrole x where a.role_id = x.role_id ) as roleLevel
+			 , firstlogin_yn as firstloginYn
+		  FROM (
+				SELECT user_id
+					 , user_nm
+					 , pass
+					 , role_id
+					 , datediff(current_timestamp(), lastlogin_dt) AS last_de					 
+					, b.pass_chg_term AS passchg_day 
+					, b.nologin_pariod AS stdr_de 	
+					 , LASTLOGIN_DT
+					 , LAST_PASS_UPD_DT
+					 , dept_grp_id
+					 , (SELECT t.grp_nm
+                          FROM cm_cfggrpid t
+                         WHERE 1 = 1
+                           AND t.grp_id = dept_grp_id
+                           AND t.grp_type = 'DEPT'
+                           AND t.use_yn   = 'Y') AS dept_grp_nm
+					 , ipchk_yn
+					 , ( case when role_id!='L001' and role_id!='D001' then failcnt else 0 end ) failcnt
+					 , login_yn
+					 , agree_yn
+					 , dup_yn
+					 ,firstlogin_yn
+					 ,sday
+					 ,eday
+				  FROM cm_cfguser a,   cm_cfgpassrule b
+				 WHERE 1 = 1
+				   AND use_yn  = 'Y'
+				   AND user_id = #{userId}
+				   and #{curDate} between hsnull(sday, '11111111') and hsnull(eday, '99999999')
+			   ) a
+	</select>
+
+
+
+	<!-- 메뉴 조회 -->
+	<select id="selectMenuList2" parameterType="com.hsck.ubfw.component.main.model.Menu" resultType="com.hsck.ubfw.component.main.model.Menu">
+
+		SELECT e.menu_id1    AS menuId1
+		     , e.up_menu_id1 AS upMenuId1
+		     , e.menu_nm1    AS menuNm1
+		     , e.depth1      AS depth1
+		     , e.menu_seq1   AS menuSeq1
+		
+		     , e.menu_id2    AS menuId2
+		     , e.up_menu_id2 AS upMenuId2
+		     , e.menu_nm2    AS menuNm2
+		     , e.depth2      AS depth2
+		     , e.menu_seq2   AS menuSeq2
+		     , (SELECT CASE WHEN COUNT(*) > 0 THEN 'Y' ELSE 'N' END
+		          FROM fwmenu x
+		         WHERE 1 = 1 
+		           AND x.up_menu_id = e.menu_id2) AS upMenuYn2
+		
+		     , e.menu_id3    AS menuId3
+		     , e.up_menu_id3 AS upMenuId3
+		     , e.menu_nm3    AS menuNm3
+		     , e.depth3      AS depth3
+		     , e.menu_seq3   AS menuSeq3
+		     , (SELECT CASE WHEN COUNT(*) > 0 THEN 'Y' ELSE 'N' END
+		          FROM fwmenu x
+		         WHERE 1 = 1 
+		           AND x.up_menu_id = e.menu_id3) AS upMenuYn3
+		
+		     , f.menu_id     AS menuId4
+		     , f.up_menu_id  AS upMenuId4
+		     , f.menu_nm     AS menuNm4
+		     , f.depth       AS depth4
+		     , f.menu_seq    AS menuSeq4
+		
+		     , CASE WHEN f.url IS NOT NULL THEN f.url ELSE e.url END AS url
+		     , (SELECT CASE WHEN COUNT(*) > 0 THEN 'Y' ELSE CASE WHEN f.url IS NOT NULL THEN 'Y' ELSE 'N' END END
+		          FROM fwmenuscrin s
+		         WHERE 1 = 1
+		           AND s.menu_id = CASE WHEN f.menu_id IS NULL THEN e.menu_id3 ELSE f.menu_id END) AS scrinYn  /* 화면(or URL) 존재여부 */
+		     , (SELECT CASE WHEN COUNT(*) > 0 THEN 'Y' ELSE 'N' END
+		          FROM fwmenuscrin s
+                 INNER JOIN fwrolemenu rm
+		            ON s.menu_id  = rm.menu_id
+                   AND s.scrin_id = rm.scrin_id
+                 WHERE 1 = 1 
+		           AND rm.menu_id = CASE WHEN f.menu_id IS NULL THEN e.menu_id3 ELSE f.menu_id END) AS roleYn  /* 화면 권한 여부 */
+		  FROM (
+		        SELECT TRIM(d.a_menu_id)    AS menu_id1
+		             , TRIM(d.a_up_menu_id) AS up_menu_id1
+		             , TRIM(d.a_menu_nm)    AS menu_nm1
+		             , d.a_depth            AS depth1
+		             , d.a_menu_seq         AS menu_seq1
+		
+		             , TRIM(d.b_menu_id)    AS menu_id2
+		             , TRIM(d.b_up_menu_id) AS up_menu_id2
+		             , TRIM(d.b_menu_nm)    AS menu_nm2
+		             , d.b_depth            AS depth2
+		             , d.b_menu_seq         AS menu_seq2
+		
+		             , TRIM(c.menu_id)      AS menu_id3
+		             , TRIM(c.up_menu_id)   AS up_menu_id3
+		             , TRIM(c.menu_nm)      AS menu_nm3
+		             , c.depth              AS depth3
+		             , c.menu_seq           AS menu_seq3
+		             , TRIM(c.url)          AS url
+		          FROM fwmenu c
+		          LEFT OUTER JOIN (
+		                SELECT a.menu_id    AS a_menu_id
+		                     , a.up_menu_id AS a_up_menu_id
+		                     , a.menu_nm    AS a_menu_nm
+		                     , a.depth      AS a_depth
+		                     , a.menu_seq   AS a_menu_seq
+		
+		                     , b.menu_id    AS b_menu_id
+		                     , b.up_menu_id AS b_up_menu_id
+		                     , b.menu_nm    AS b_menu_nm
+		                     , b.depth      AS b_depth
+		                     , b.menu_seq   AS b_menu_seq
+		                  FROM fwmenu a
+		                  JOIN (
+		                        SELECT menu_id
+		                             , up_menu_id
+		                             , menu_nm
+		                             , depth
+		                             , menu_seq
+		                          FROM fwmenu
+		                         WHERE 1 = 1
+		                           AND depth = 2
+		                           AND use_yn = 'Y'
+		                         ORDER BY menu_seq
+		                       ) b
+		                    ON a.menu_id = b.up_menu_id
+		                 WHERE 1 = 1
+		                   AND a.depth = 1
+		                   AND a.use_yn = 'Y'
+		                 ORDER BY a.menu_seq, b.menu_seq
+		               ) d
+		            ON c.up_menu_id = d.b_menu_id
+		         WHERE 1 = 1
+		           AND c.depth = 3
+		           AND c.use_yn = 'Y'
+		         ORDER BY d.a_menu_seq, d.b_menu_seq, c.menu_seq
+		      ) e
+		   LEFT OUTER JOIN fwmenu f
+		    ON e.menu_id3 = f.up_menu_id
+		   AND f.use_yn = 'Y'
+		  INNER JOIN (SELECT menu_id
+                           , role_id
+                       FROM fwrolemenu                   
+                      GROUP BY menu_id, role_id) r
+            ON (r.menu_id = e.menu_id1 OR r.menu_id = e.menu_id2 OR r.menu_id = e.menu_id3 OR r.menu_id = f.menu_id)
+		 WHERE 1 = 1
+		   AND r.role_id = #{roleId}
+		 ORDER BY e.menu_seq1, e.menu_seq2, e.menu_seq3, f.menu_seq
+
+	</select>
+	
+	
+	
+
+	<!-- 메뉴 조회 -->
+	<select id="selectMenuList" parameterType="com.hsck.ubfw.component.main.model.Menu" resultType="com.hsck.ubfw.component.main.model.Menu">
+
+	 select 
+		d1.MENU_ID         MENUID1
+		,d1.UP_MENU_ID     UPMENUID1
+		,d1.MENU_NM        MENUNM1
+		,d1.depth          depth1
+		,d1.MENU_SEQ       MENUSEQ1
+		,d2.MENU_ID         MENUID2
+		,d2.UP_MENU_ID     UPMENUID2
+		,d2.MENU_NM        MENUNM2
+		,d2.depth          depth2
+		,d2.MENU_SEQ       MENUSEQ2
+		-- ,(case when d2.UP_MENU_ID is not null then 'Y' else 'N' end)               UPMENUYN2
+		,'Y' UPMENUYN2
+		,d3.MENU_ID        MENUID3
+		,d3.UP_MENU_ID     UPMENUID3
+		,d3.MENU_NM        MENUNM3
+		,d3.depth          depth3
+		,d3.MENU_SEQ       MENUSEQ3
+		-- ,(case when d3.UP_MENU_ID is not null then 'Y' else 'N' end)               UPMENUYN3
+		, 'N' UPMENUYN3
+		/* 
+		,null        MENUID4
+		,null     UPMENUID4
+		,null        MENUNM4
+		,null          depth4
+		,null      MENUSEQ4
+		 */
+		,d3.url  
+		,(case when ms.cnt >0  then 'Y' else 'N' end)               scrinyn
+		,'Y' roleyn
+		from 
+		( select MENU_ID,UP_MENU_ID,MENU_NM,DEPTH, MENU_SEQ,url from fwmenu  where depth=3 and USE_YN='Y') d3 
+		inner join ( select MENU_ID,UP_MENU_ID,MENU_NM,DEPTH, MENU_SEQ from fwmenu  where depth=2 and USE_YN='Y' ) d2 on ( d3.UP_MENU_ID=d2.MENU_ID)
+		inner join ( select MENU_ID,UP_MENU_ID,MENU_NM,DEPTH, MENU_SEQ from fwmenu  where depth=1 and USE_YN='Y' ) d1 on ( d2.UP_MENU_ID=d1.MENU_ID)
+		inner join ( select MENU_ID, count(*) cnt from  fwmenuscrin group by MENU_ID) ms on ( d3.MENU_ID=ms.MENU_ID)
+		where d3.MENU_ID in ( 
+			select MENU_ID from fwrolemenu where  ( #{roleId} like  'D%'  or role_id =#{roleId})			 
+			<!-- 
+			select menu_id from
+			(
+				select a.*,b.role_grp,b.role_level role_level2 from fwrolemenu a left join fwrole b on ( a.ROLE_ID=b.ROLE_ID) 
+			) a left join (select role_level,role_id,role_grp from fwrole where  role_id= #{roleId}  ) b  on (a.role_level2 >=  b.role_level and a.role_grp=b.role_grp)
+			group by menu_id
+			-->
+		)		 
+		order by d1.menu_seq,d2.menu_seq,d3.menu_seq,d3.menu_id
+		 
+
+	</select>
+	
+	
+	
+
+	<!-- 로그인시 사용자정보 변경 -->
+	<update id="updateUserInfo" parameterType="com.hsck.ubfw.component.main.model.LoginVO">
+
+		UPDATE cm_cfguser
+		   SET lastlogin_dt = current_timestamp()
+		     , failcnt = 0
+		     <if test="loginYn != null and loginYn != '' ">      <!-- 로그인 여부 -->
+		     , login_yn = #{loginYn}
+		     </if>
+		 WHERE 1 = 1
+		   AND user_id = #{userId}
+	</update>
+
+	<!-- 로그인 실패시 암호 실패 횟수 증가 -->
+	<update id="updateFailcnt" parameterType="map">
+		UPDATE cm_cfguser
+		SET lastlogin_dt = current_timestamp()
+		, failcnt = ( select FAILCNT from (SELECT MAX(FAILCNT)+1 as FAILCNT from cm_cfguser where user_id = #{user_id}) a )
+		WHERE user_id = #{user_id}
+	</update>
+
+	<!-- 로그인시 사용자정보 변경 -->
+	<update id="updateUserPass" parameterType="egovframework.rte.psl.dataaccess.util.EgovMap">
+
+		UPDATE cm_cfguser
+		SET pass =  f_enc('1', 'pass', #{newPass} )  
+		,LAST_PASS_UPD_DT = current_timestamp()
+		,firstlogin_yn = 'N'
+		WHERE 1 = 1
+		AND user_id = #{userId}
+		AND pass = f_enc('1', 'pass', #{oldPass} )   
+		 
+	</update>
+
+
+	<select id="checkPreviousPassword" parameterType="com.hsck.ubfw.component.main.model.LoginVO" resultType="egovframework.rte.psl.dataaccess.util.EgovMap">
+		/* ====== main.checkPreviousPassword ====== */  
+		  select UPD_TM
+			from ( 
+				 SELECT ROW_NUMBER() OVER (ORDER BY UPD_TM DESC) AS ROW_NUM, USER_ID, PASS, UPD_TM FROM CM_HISUSERPASS where user_id = #{userId}
+			) a
+			, ( SELECT coalesce(his_pass_cnt,'0')his_pass_cnt FROM cm_cfgpassrule   ) b
+			where  1=1
+			<![CDATA[
+			and ROW_NUM <=b.his_pass_cnt
+			]]>
+			AND PASS = f_enc('1', 'pass', #{newPass} )
+;
+	</select>
+
+	<insert id="insertCmHisuserpass" parameterType="com.hsck.ubfw.component.main.model.LoginVO">
+		<![CDATA[
+			
+			/* ====== main.insertCmHisuserpass ====== */
+			INSERT INTO CM_HISUSERPASS (USER_ID, PASS, UPD_TM) VALUES(#{userId}, f_enc('1', 'pass', #{newPass} ) , date_format(current_timestamp(),'%Y%m%d%H%i%s'))
+			on duplicate key
+			update  
+			UPD_TM = date_format(current_timestamp(),'%Y%m%d%H%i%s')
+			
+		]]>
+	</insert>
+
+	<delete id="deletePreviousPassword" parameterType="com.hsck.ubfw.component.main.model.LoginVO">
+		/* ====== main.deletePreviousPassword ====== */
+		DELETE
+		  FROM CM_HISUSERPASS
+		 WHERE user_id = #{userId}
+		   AND PASS IN (
+						SELECT PASS
+						  FROM (
+								SELECT ROW_NUMBER() OVER (ORDER BY UPD_TM DESC) AS ROW_NUM,
+									   USER_ID, PASS, UPD_TM
+								  FROM CM_HISUSERPASS
+						) FOO
+						WHERE user_id = #{userId}
+<![CDATA[
+						  AND ROW_NUM > 11
+]]>
+		)
+	</delete>
+
+	<insert id="insertUserHisLogin" parameterType="map">
+	
+		INSERT INTO cm_hisloginout (ymd, hms, user_id,user_nm, ip, login_status)
+		     VALUES (date_format(current_timestamp(), '%Y%m%d')  /* 년월일 */
+		           , date_format(current_timestamp(), '%H%i%s')  /* 시분초 */
+		           , #{user_id}       /* 사용자ID */
+		           , #{user_nm}       /* 사용자ID */
+		           , #{ip}            /* IP */
+		           , #{login_status}  /* 로그인상태 */
+		            )
+	
+	</insert>
+
+
+	<insert id="insertUserHisLoginout" parameterType="map">
+	
+		INSERT INTO cm_hisloginout (ymd, hms, user_id,user_nm, ip, login_status, logout_tm, ubseq)
+		     VALUES (
+		           date_format(current_timestamp(), '%Y%m%d')  /* 년월일 */
+		           , date_format(current_timestamp(), '%H%i%s')  /* 시분초 */
+		           , #{user_id}       /* 사용자ID */
+		           , #{user_nm}       /* 사용자ID */
+		           , #{ip}            /* IP */
+		           , #{login_status}  /* 로그인상태 */
+		           , date_format(current_timestamp(), '%Y%m%d%H%i%s')
+		           ,#{ubseq}
+		            )
+	
+	</insert>
+	
+	<update id="updateLogOut" parameterType="map">
+	<!--  
+		 <selectKey resultType="string" keyProperty="ubseq" order="BEFORE">
+       	  SELECT max(ubseq) from cm_hisloginout
+       	  where  user_id= #{user_id}        
+		       and  ip= #{ip}            
+		       and logout_tm is null 
+		       and login_status=1  
+    	</selectKey> 
+	 -->
+		update   cm_hisloginout set logout_tm =  date_format(current_timestamp(), '%Y%m%d%H%i%s')
+				, login_status=#{login_status}  
+		where  1=1
+		       and ubseq = #{ubseq}	
+	</update>
+	
+	<update id="updateForceLogOut" parameterType="map">
+		update   cm_hisloginout set logout_tm =  #{logoutTm}
+				, login_status=#{loginStatus}  
+		where  1=1
+		       and user_id = #{forceUserId}
+		       and logout_tm is null
+	</update>
+
+
+	<!-- 메인화면 계약현황 조회 -->
+	<select id="selectContCurstatList" parameterType="map" resultType="egovMap">
+	
+		SELECT req_day
+		     , cont_no
+		     , svc_nm
+		     , cont_status
+		  FROM (
+		        SELECT ROWNUM AS rnum
+		             , M.*
+		          FROM (
+		                SELECT CASE WHEN t1.req_day IS NOT NULL THEN SUBSTR(t1.req_day, 0, 4) || '-' || SUBSTR(t1.req_day, 5, 2) || '-' || SUBSTR(t1.req_day, 7, 2) ELSE '' END AS req_day
+		                     , t1.cont_no
+		                     , t2.nm     AS svc_nm
+		                     , t3.grp_nm AS cont_status
+		                  FROM mb_cfgcont t1
+		                  LEFT OUTER JOIN mb_cfgsvc t2
+		                    ON t1.svc_id = t2.svc_id
+		                  LEFT OUTER JOIN cm_cfggrpid t3
+		                    ON t1.cont_status = t3.grp_id  
+		                   AND t3.grp_type = 'OD_STATUS'
+		                 WHERE 1 = 1				   
+		                 <!-- ORDER BY t1.ubseq DESC -->
+		                 ORDER BY length(t1.ubseq) DESC, t1.ubseq DESC
+		               ) M
+		       )
+		 WHERE 1 = 1
+	       AND rnum <![CDATA[ <= ]]> 3
+	
+	</select>
+
+
+	<!-- 메인화면 접수 조회 -->
+	<select id="selectOdList" parameterType="map" resultType="egovMap">
+		SELECT a.ubseq
+		     , a.od_no
+		     , a.od_nm
+		     , a.req_day
+		     , o.grp_nm odType
+		     , c.cust_nm custNm
+		     , g.nm gdNm
+		     , a.od_cnt
+		     , concat(SUBSTR(a.reg_tm, 1, 4) , '-' , SUBSTR(a.reg_tm, 5, 2) , '-' , SUBSTR(a.reg_tm, 7, 2) ) AS reg_tm
+	  	FROM mb_cfgod a
+	  	left join mb_cfgcont_gd g on (a.cont_gd_id=g.cont_gd_id)
+	  	left join mb_cfgcust  c on (a.cust_id=c.cust_id)
+	  	left join (select * from  cm_cfggrpid where grp_type='OD_TYPE' )  o on (a.od_type=o.grp_id)
+		WHERE 1 = 1
+		ORDER BY a.ubseq DESC  
+	    limit 4
+	
+	</select>
+	
+		<!-- 메인화면 계약알람 조회x -->
+	<select id="selectAlmContList" parameterType="map" resultType="egovMap">
+		SELECT a.ubseq
+		     , a.cont_seq
+		     , c.cust_nm custNm
+		     , g.nm gdNm
+		     , a.alm_msg
+		     , concat(SUBSTR(a.reg_tm, 1, 4) , '-' , SUBSTR(a.reg_tm, 5, 2) , '-' , SUBSTR(a.reg_tm, 7, 2) ) AS reg_tm
+	  	FROM mb_cfgcont a 
+	  	left join mb_cfgcont_gd g on (a.cont_gd_id=g.cont_gd_id)
+	  	left join mb_cfgcust  c on (a.cust_id=c.cust_id)
+		WHERE 1 = 1
+		   <![CDATA[
+		and hsnull(a.alm_day,'99999999') < f_addday( current_timestamp, -30, '%Y%m%d')
+			]]>
+		ORDER BY ubseq DESC
+	
+	    limit 4
+	
+	</select>
+	
+	
+	<!-- 메인화면 공지사항 조회 -->
+	<select id="selectNoticeList" parameterType="map" resultType="egovMap">
+		SELECT ubseq
+		     , title
+		     , concat(SUBSTR(reg_tm, 1, 4) , '-' , SUBSTR(reg_tm, 5, 2) , '-' , SUBSTR(reg_tm, 7, 2) ) AS reg_tm
+	  	FROM cm_notice
+		WHERE 1 = 1
+		ORDER BY ubseq DESC
+	
+	    limit 4
+	
+	</select>
+	
+	<!-- 메인화면 공지사항 조회 -->
+	<select id="selectNoticePopList" parameterType="map" resultType="egovMap">
+		SELECT *
+	  	FROM cm_notice
+		WHERE popup_yn = 'Y'
+		ORDER BY ubseq DESC
+	
+	</select>
+	
+	<!-- 메인화면 FAQ 조회 -->
+	<select id="selectFAQList" parameterType="map" resultType="egovMap">
+		select ubseq
+		, title
+		, msg
+		, concat(SUBSTR(reg_tm, 1, 4) , '-' , SUBSTR(reg_tm, 5, 2) , '-' , SUBSTR(reg_tm, 7, 2) ) AS reg_tm
+		from cm_faq
+		WHERE 1 = 1
+		ORDER BY ubseq DESC
+	
+	    limit 4
+	
+	</select>
+	
+	<!-- 오늘의 서비스 알림 현황 조회 -->
+	<select id="getToDaySvcAlmCnt" parameterType="map" resultType="int">
+ 
+		<!-- 만기알림 -->
+		<if test='alm_gubun == "1" '>		
+		select count(*) from mb_cfgcont where expiry_day <![CDATA[ >=]]> substr(f_addday(current_timestamp, -30,''),1,8) 
+		</if>
+		<if test='alm_gubun == "2" '>		
+		select count(*) from mb_cfgcont where hsnull(term_day,'')='' and  hsnull(expiry_day,'999999') <![CDATA[ < ]]> substr(f_getcurtm(''),1,8)
+		</if>
+		<if test='alm_gubun == "3" '>		
+		select count(*) from mb_cfgcont where hsnull(alm_day,'')=substr(f_getcurtm(''),1,8)
+		</if>
+		<if test='alm_gubun == "4" '>		
+		select count(*) from mb_cfgodcont where hsnull(cont_yn,'N')='N'
+		</if>
+		<if test='alm_gubun == "5" '>		
+		select count(*) from mb_cfgodcont where hsnull(cont_yn,'N')='N' and  hsnull(job_yn,'N')='Y' and  hsnull(jobend_yn,'N')='N'
+		</if>
+		<if test='alm_gubun == "6" '>		
+		select count(*) from mb_cfgodcont where hsnull(cont_yn,'N')='N' and  hsnull(jobend_yn,'N')='Y'
+		</if>
+ 
+
+	</select>
+
+	<!-- 작업대기건 조회 -->
+	<select id="getJobWaitCnt" parameterType="map" resultType="int">
+		SELECT count(*)
+		  FROM
+              (SELECT CONT_NO  
+			    FROM VW_JOB_TODO_LIST_ST_001  WHERE 1 = 1  
+			    AND TO_PARTNER = (SELECT DEPT_GRP_ID FROM CM_CFGUSER WHERE USER_ID=#{user_id} )
+			    AND prc_result = 'N' 
+			    AND close_yn = 'N'
+			    GROUP BY OD_GRPNO , 
+			              CONT_NO , 
+			              SEQ , 
+			              JOBTYPE , 
+			              OD_NM , 
+			              REQCATEGORY , 
+			              FROM_PARTNER , 
+			              JOBGUBUN , 
+			              CUST_ID , 
+			              CUST_NM , 
+			              REQ_DT)
+	</select>
+
+	<!-- 승인대기건 조회 -->
+	<select id="getEnterWaitCnt" parameterType="map" resultType="int">
+		SELECT count(*) 
+		from(select od_grpno
+			    FROM VW_JOB_TODO_LIST_ST_001  WHERE 1 = 1  
+			    AND TO_PARTNER = (SELECT DEPT_GRP_ID FROM CM_CFGUSER WHERE USER_ID=#{user_id} )
+			    AND prc_result = 'N' 
+			    AND close_yn = 'N'
+			 group by od_grpno)
+	</select>
+
+	<select id="checkIp" parameterType="map" resultType="int">
+		/* ====== main.checkIp ====== */
+		SELECT count(IP) AS CNT
+		FROM CM_CFGUSER_IP
+		WHERE IP = #{loginIp}
+	</select>
+	
+	
+	<!-- 계약현황 및 공지사항 더보기 권한 -->
+	<select id="selectMoreAuth" parameterType="map" resultType="String">
+	
+		SELECT CASE WHEN COUNT(*) > 0 THEN 'Y' ELSE 'N' END AS more_role_yn
+		  FROM fwmenu t1
+		 INNER JOIN fwrolemenu t2
+		    ON t1.menu_id = t2.menu_id
+		   AND t2.role_id = #{role_id}
+		 INNER JOIN fwscrin t3
+		    ON t2.scrin_id = t3.scrin_id
+		 WHERE 1 = 1
+		   AND t1.menu_id = #{menu_id} 
+	
+	</select>
+	
+	<!-- 권한별 시작 메뉴 -->
+	<select id="selectstartMenu" parameterType="map" resultType="String">
+		select s_menu 
+		from fwrole 
+		where role_id = #{role_id} 
+	</select>	
+	
+	<!-- 메인화면 공지사항 상세조회 -->
+	<select id="selectNoticeDetail" parameterType="map" resultType="egovMap">
+	
+		SELECT title 
+		     <![CDATA[
+			 ,replace(msg,"\r\n","<br>") msg
+			]]>
+			
+		     , TO_CHAR(concat(SUBSTR(reg_tm, 1, 4) , '-' , SUBSTR(reg_tm, 5, 2) , '-' , SUBSTR(reg_tm, 7, 2) , ' ' , SUBSTR(reg_tm, 9, 2) , ':' , SUBSTR(reg_tm, 11, 2) , ':' , SUBSTR(reg_tm, 13, 2))) AS reg_tm
+		  FROM cm_notice
+		 WHERE 1 = 1
+		   AND ubseq = #{ubseq}	
+	
+	</select>
+	
+	<!-- FAQ 상세 조회 -->
+	<select id="selectFaqDetail" parameterType="map" resultType="egovMap">
+		select ubseq
+			, qseq
+			, title
+			, msg
+			, concat(SUBSTR(reg_tm, 1, 4) , '-' , SUBSTR(reg_tm, 5, 2) , '-' , SUBSTR(reg_tm, 7, 2) ) AS reg_tm
+		from cm_faq
+		WHERE ubseq = #{ubseq}
+		
+	</select>
+	
+	<select id="selectAnserList" parameterType="map" resultType="egovMap">
+		select ubseq
+			, qseq
+			, aseq
+			, qtype
+			, msg
+			, concat(SUBSTR(reg_tm, 1, 4) , '-' , SUBSTR(reg_tm, 5, 2) , '-' , SUBSTR(reg_tm, 7, 2) ) AS reg_tm
+		from cm_board
+		WHERE 1 = 1
+		and qtype = 'A'
+		AND qseq = #{qseq}
+		
+	
+	</select>
+	
+	
+	<select id="selectAnserListCnt" parameterType="map" resultType="int">
+	
+		SELECT count(*)
+		  FROM cm_board
+		 WHERE 1 = 1
+		 and qtype = 'A'
+		   AND qseq = #{qseq}
+	
+	</select>
+	
+	<select id="loginPassFailCnt" parameterType="map" resultType="int">
+	
+		SELECT failcnt
+		  FROM cm_cfguser
+		 WHERE 1 = 1
+		   AND user_id = #{user_id}
+	
+	</select>
+	
+	<!-- 현재 메뉴의 상위 메뉴 정보 조회 -->
+	<select id="selectUpMenuInfoList_old" parameterType="map" resultType="egovMap">
+	
+		SELECT menu_id
+		     , menu_nm
+		     , depth
+		     , LEVEL AS lvl
+		  FROM fwmenu
+		 START WITH menu_id = #{menu_id}
+		 CONNECT BY PRIOR up_menu_id = menu_id
+		 ORDER BY depth ASC 
+	
+	</select>
+	
+	<!-- 현재 메뉴의 상위 메뉴 정보 조회 -->
+	<select id="selectUpMenuInfoList" parameterType="map" resultType="egovMap">
+		select 
+                a._ID as menu_id
+                ,b.menu_nm as menu_nm
+                ,a.level as lvl
+                , b.depth 
+        from (         
+		    SELECT @r AS _ID,
+				(SELECT @r := up_menu_id FROM fwmenu WHERE menu_id = _ID) AS _PARENT_ID,
+				(@L := @L + 1) AS level
+			FROM ( SELECT @r := #{menu_id}) AS v
+			, (SELECT * FROM fwmenu) AS h
+			, ( SELECT @l := '0') as t
+			order by level desc
+		) a
+		left join fwmenu b on (a._ID = b.menu_id)
+		where  _PARENT_ID is not null 
+	
+	</select>
+	
+	<!-- 모든 메뉴의 상위 메뉴 정보 조회 -->
+	<select id="selectMenuDepthList" parameterType="map" resultType="egovMap">
+		select * from (   
+	        select 
+		        (select up_menu_id from fwmenu f where a.up_menu_id = f.menu_id) as depth1
+		        , a.up_menu_id as depth2
+		        , a.menu_id as depth3
+	        from fwmenu a
+	        where depth = '3'
+	     ) a 
+	     where depth1 is not null and depth2 is not null and depth3 is not null  
+	
+	</select>
+	
+	
+		
+	<insert id="insertFwHisAccess" parameterType="map">
+	
+		INSERT INTO fwhisaccess (MENU_ID, ACCESS_TYPE,IP,CUST_ID, REG_ID,YMD,HMS, scrin_id, remark, exesql, tbl_nm,cond,tbl_key, ubseq)
+		     VALUES (
+		             #{menu_id}
+		             ,#{ACCESS_TYPE}
+		             ,#{IP}
+		             ,#{CUST_ID}
+		             ,#{REG_ID}
+		             , f_getcurtm('%Y%m%d')   
+		             , f_getcurtm('%H%i%s')
+		             ,#{scrin_id}
+		             ,#{REMARK}
+		             ,#{exesql}
+		             ,#{tblNm}
+		             ,#{cond}
+		             ,#{tblKey}
+		             ,#{fwubseq}
+		            )
+	
+	</insert>
+	
+	
+	
+	<insert id="insertHisResult2" parameterType="map">
+	
+		INSERT INTO cm_hisresult (fwubseq, hisubseq, msg)
+		     VALUES (
+		             #{fwubseq}
+		             ,#{hisubseq}
+		             ,#{msg} 
+		            )
+	
+	</insert>
+	
+		
+	<insert id="insertHisResult" parameterType="map">
+	
+		INSERT INTO cm_hisresult (fwubseq, hisubseq, cust_id,cust_nm
+			,telno,real_telno,email,mobile,fax,bank_acc,brn,addr1,addr2)
+		     VALUES (
+		             #{fwubseq}
+		             ,#{hisubseq}
+		             ,#{cust_id} 
+		             ,#{cust_nm}
+		             ,#{telno}
+		             ,#{real_telno}
+		             ,#{email}
+		             ,#{mobile}
+		             ,#{faxno}
+		             ,#{bank_acc}
+		             ,#{brn}
+		             ,#{addr1}
+		             ,#{addr2}
+		            )
+	
+	</insert>
+	
+	<!-- scrin_id를 menu_id로 변환 -->
+	<select id="selectMenuScrinList" parameterType="map" resultType="egovMap">
+		SELECT menu_id, scrin_id, dtl_tmp_type
+		FROM fwmenuscrin
+		WHERE 1=1
+		<if test="scrin_id != null and scrin_id != '' ">      <!-- 스크린 ID -->
+			AND scrin_id = #{scrin_id}
+		</if>
+		<if test="menu_id != null and menu_id != '' ">      <!-- 메뉴 ID -->
+			AND menu_id = #{menu_id}
+		</if>
+		ORDER BY menu_id asc, scrin_id asc
+	</select>
+	
+	
+	<update id="updateAgreeYn" parameterType="map">
+		update cm_cfguser
+		set agree_yn = 'Y'
+		where user_id = #{userID}
+	</update>
+	
+</mapper>

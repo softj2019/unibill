@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="commonxml">
+    
+    <sql id="selectCfgdddSql">
+		<if test="ddd != null and ddd != '' ">        	  <!-- 지역번호 -->
+            AND a.ddd = #{ddd}
+        </if>
+		<if test="areacd != null and areacd != '' ">      <!-- 지역구분 -->
+            AND a.areacd = #{areacd}
+        </if>
+		<if test="skook != null and skook != '' ">        <!-- 시작구분 -->
+            AND a.skook = #{skook}
+        </if>
+		<if test="ekook != null and ekook != '' ">        <!-- 종료구분 -->
+            AND a.ekook = #{ekook}
+        </if>
+		<if test="ubseq != null and ubseq != '' ">        
+            AND a.ubseq = #{ubseq}
+        </if>
+    </sql>
+	
+	<!-- 지역번호 관리 총갯수 -->
+	<select id="selectCfgdddCnt" parameterType="map" resultType="int">
+	
+		SELECT COUNT(*)
+       	 from PB_CFGDDD	a
+       	 where 0=0
+         <include refid="selectCfgdddSql" />
+	
+	</select>
+	
+	<!-- 지역번호 관리 조회 -->
+	<select id="selectCfgddd" parameterType="map" resultType="egovMap">
+		select * from(
+			select m.*,
+					@rownum:=@rownum+1 as rnum
+			  from	(SELECT a.ubseq,
+						   concat( b.nm,'(',a.ddd,')') AS ddd,
+						   a.skook,
+					       a.ekook,
+					       concat(c.nm,'(',a.areacd,')') AS areacd
+					  FROM PB_CFGDDD a
+					  left outer JOIN CM_CFGBASECD b ON b.grp_cd='DDD' AND a.ddd=b.dtl_cd
+					  left outer JOIN CM_CFGBASECD c ON c.grp_cd='AREACD' AND a.areacd=c.dtl_cd
+					where 0=0
+					<include refid="selectCfgdddSql" />
+					order by a.ddd, a.areacd
+					)m, (select @rownum:=0) tmp
+				) t
+				where rnum <![CDATA[ <= #{lastIndex} ]]> AND rnum <![CDATA[ > #{firstIndex} ]]>
+	</select>
+	
+	<!-- 지역번호 관리 엑셀-->
+	<select id="selectCfgdddExcel" parameterType="map" resultType="egovMap">
+		SELECT a.ubseq,
+			   concat( b.nm,'(',a.ddd,')') AS ddd,
+			   a.skook,
+		       a.ekook,
+		       concat(c.nm,'(',a.areacd,')') AS areacd
+		  FROM PB_CFGDDD a
+		  left outer JOIN CM_CFGBASECD b ON b.grp_cd='DDD' AND a.ddd=b.dtl_cd
+		  left outer JOIN CM_CFGBASECD c ON c.grp_cd='AREACD' AND a.areacd=c.dtl_cd
+		where 0=0
+				<include refid="selectCfgdddSql" />
+		order by a.ddd, a.areacd
+	</select>
+
+</mapper>

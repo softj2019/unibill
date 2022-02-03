@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsck.ubfw.component.include.maria">
+
+	<sql id="pagingStart"></sql>
+
+	<sql id="pagingEnd2">
+ 		LIMIT #{recordCountPerPage , jdbcType=VARCHAR } OFFSET #{firstIndex , jdbcType=VARCHAR }
+	</sql>
+	<sql id="pagingEnd">
+ 		limit ${offsetSize}, ${limitSize} 
+	</sql>
+	<!--SELECT DATA1.*-->
+	<!--FROM 	(-->
+	<!--SELECT-->
+	<!--F.OBJ_ID /* 객체ID */-->
+	<!--,  F.OBJ_NM /* 객체명 */-->
+	<!--,  F.COL_ID /* 컬럼ID */-->
+	<!--,  F.UBSEQ /* 자료순번 */-->
+	<!--, @ROWNUM := @ROWNUM + 1 AS ROWNUM-->
+	<!--FROM FWOBJ F, (SELECT @ROWNUM := 0) R-->
+	<!--WHERE 1=1-->
+	<!--ORDER BY F.UBSEQ ASC-->
+	<!--) DATA1-->
+	<!--/* order by DATA1.ROWNUM asc LIMIT 10 OFFSET 0 */-->
+	<!--/* order by DATA1.ROWNUM asc LIMIT 10 OFFSET 10 */-->
+	<!--order by DATA1.ROWNUM asc LIMIT 10 OFFSET 20-->
+	<!--;-->
+
+	<!--SELECT DATA1.*-->
+	<!--FROM 	(-->
+	<!--SELECT-->
+	<!--F.OBJ_ID /* 객체ID */-->
+	<!--,  F.OBJ_NM /* 객체명 */-->
+	<!--,  F.COL_ID /* 컬럼ID */-->
+	<!--,  F.UBSEQ /* 자료순번 */-->
+	<!--, @ROWNUM := @ROWNUM + 1 AS ROWNUM-->
+	<!--FROM FWOBJ F, (SELECT @ROWNUM := 0) R-->
+	<!--WHERE 1=1-->
+	<!--ORDER BY F.UBSEQ ASC-->
+	<!--) DATA1-->
+	<!--WHERE DATA1.ROWNUM > ( IFNULL(1, 1) -1) * IFNULL(10 ,10)-->
+	<!--AND DATA1.ROWNUM <= IFNULL(1, 1)  * IFNULL(10 ,10)-->
+	<!--;-->
+	<sql id="rownum">
+		@rownum:=@rownum+1 as ROWNUM
+	</sql>
+	
+	<sql id="rownumTbl">
+		(select @rownum:=0) tmp
+	</sql>
+</mapper>

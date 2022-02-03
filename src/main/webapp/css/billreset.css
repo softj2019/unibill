@@ -1,0 +1,51 @@
+/* reset.css */
+/*
+    1. 문서객체들을 div, span과 같은 형태로 만들기 위함
+    2. 문서 목적에 맞는 초기 설정을 하기 위함
+*/
+
+
+body {
+    /*typo-system*/
+	font-size:12px;
+    color: #333;
+	font-family: '맑은 고딕', sans-serif;
+}
+body { line-height: 1.5; } 
+h1, h2, h3, h4, h5, h6 { line-height: 1.2; }
+
+/* tables still need cellspacing="0" in the markup */
+table {
+    border-collapse: 0;
+    border-spacing: 0;
+}
+caption, th, td {
+    font-weight: normal;
+    text-align: left;
+}
+/* remove possible quote marks (") from <q> & <blockquote> */
+blockquote:before, blockquote:after, q:before, q:after {
+    content: "";
+}
+blockquote, q {
+    quotes: "" "";
+}
+
+/* html5 style rule */
+header,footer,section,article,nav,address,aside{
+    display: block; font-style:normal;
+}
+
+a:link        {text-decoration:none}
+a:visited     {text-decoration:none}
+a:active      {text-decoration:none}
+a:hover       {text-decoration:none}
+a.ulno:hover  {text-decoration:none}
+a             {cursor:pointer}
+
+
+
+
+
+
+

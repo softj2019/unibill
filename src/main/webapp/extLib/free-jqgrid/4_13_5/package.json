@@ -1,0 +1,134 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "free-jqgrid",
+        "scope": null,
+        "escapedName": "free-jqgrid",
+        "name": "free-jqgrid",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "F:\\20161130"
+    ]
+  ],
+  "_from": "free-jqgrid@latest",
+  "_id": "free-jqgrid@4.13.5",
+  "_inCache": true,
+  "_location": "/free-jqgrid",
+  "_nodeVersion": "7.0.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/free-jqgrid-4.13.5.tgz_1478208285479_0.9830493850167841"
+  },
+  "_npmUser": {
+    "name": "olegki",
+    "email": "oleg.kiriljuk@ok-soft-gmbh.com"
+  },
+  "_npmVersion": "3.10.9",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "free-jqgrid",
+    "scope": null,
+    "escapedName": "free-jqgrid",
+    "name": "free-jqgrid",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/free-jqgrid/-/free-jqgrid-4.13.5.tgz",
+  "_shasum": "bca81a321963e944cf7d1c8c07926634e264f04c",
+  "_shrinkwrap": null,
+  "_spec": "free-jqgrid",
+  "_where": "F:\\20161130",
+  "author": {
+    "name": "Oleg Kiriljuk",
+    "email": "oleg.kiriljuk@ok-soft-gmbh.com"
+  },
+  "bugs": {
+    "url": "https://github.com/free-jqgrid/jqGrid/issues"
+  },
+  "dependencies": {},
+  "description": "grid as jQuery plugin - fork of jqGrid before licensing change",
+  "devDependencies": {
+    "google-closure-compiler": "^20161024.1.0",
+    "grunt": "^1.0.1",
+    "grunt-closure-tools": "^0.9.9",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^1.0.2",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-file-append": "^0.0.7",
+    "grunt-jscs": "^3.0.1",
+    "grunt-newer": "^1.2.0",
+    "grunt-replace": "^1.0.1"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "bca81a321963e944cf7d1c8c07926634e264f04c",
+    "tarball": "https://registry.npmjs.org/free-jqgrid/-/free-jqgrid-4.13.5.tgz"
+  },
+  "filename": "js/jquery.jqgrid.src.js",
+  "homepage": "https://github.com/free-jqgrid/jqGrid",
+  "keywords": [
+    "jqGrid",
+    "jQuery",
+    "JavaScript",
+    "grid",
+    "table",
+    "jQuery",
+    "grid",
+    "TreeGrid",
+    "Subgrid",
+    "sorting",
+    "paging",
+    "editing",
+    "grouping",
+    "searching"
+  ],
+  "license": "(MIT OR GPL-2.0)",
+  "main": "js/jquery.jqgrid.src.js",
+  "maintainers": [
+    {
+      "name": "olegki",
+      "email": "oleg.kiriljuk@ok-soft-gmbh.com"
+    }
+  ],
+  "name": "free-jqgrid",
+  "npmFileMap": [
+    {
+      "basePath": "/",
+      "files": [
+        "css/*",
+        "js/jquery.jqgrid.min.js",
+        "js/jquery.jqgrid.min.map",
+        "js/jquery.jqgrid.src.js",
+        "js/*.js",
+        "js/i18n/*.js",
+        "js/i18n/*.map",
+        "js/min/*.js",
+        "js/min/*.map",
+        "plugins/*"
+      ]
+    }
+  ],
+  "npmName": "free-jqgrid",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/free-jqgrid/jqGrid.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "title": "free jqGrid",
+  "version": "4.13.5"
+}

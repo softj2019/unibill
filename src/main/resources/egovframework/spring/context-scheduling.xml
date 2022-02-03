@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<!-- <bean id="testCronController" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="TestCronController" />
+		<property name="targetMethod" value="runTestScheduler" />
+		<property name="concurrent" value="false" />
+	</bean>
+  
+	<bean id="jobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="testCronController" />
+		<property name="cronExpression" value="1 * * * * ?"/>
+	</bean>
+	
+	<bean id="jobScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="jobTrigger" />
+			</list>
+		</property>
+	</bean> -->
+	
+	<!-- <bean id="jobcontrol" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="BatchJobController" />
+		<property name="targetMethod" value="jobControl" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<bean id="jobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobcontrol" />
+		<property name="cronExpression" value="0/10 * * * * ?"/>
+	</bean>
+	
+	<bean id="jobScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="jobTrigger" />
+			</list>
+		</property>
+	</bean> -->
+	
+	<!--
+	 1. 시스템명 : 인천공항공사 빌링
+	 2. 작성자 : 홍길동
+	 3. 작성일 : 2016.10.04
+	 4. 처리내용 : DB에서 스케줄 정보를 조회 후 Quartz를 실행한다.
+	 5. History : 2016.10.04 최초작성  
+	-->
+	<!-- Quartz Job 생성시 DB 정보를 이용해서 생성 --> 
+    <!-- <bean id="schedulerFactoryBeanWrapper" class="com.hsck.ubfw.component.batch.web.SchedulerFactoryBeanWrapper" init-method="init" destroy-method="destroy">
+	    
+		Quartz 실행시 세팅
+		<property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+				<prop key="org.quartz.threadPool.threadCount">5</prop>
+				<prop key="org.quartz.threadPool.threadPriority">4</prop>
+				<prop key="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</prop>
+				<prop key="org.quartz.jobStore.misfireThreshold">60000</prop>
+			</props>
+		</property>
+		  
+		<property name="autoStartup" value="false"/>
+		<property name="waitForJobsToCompleteOnShutdown" value="true" />
+	
+	</bean>		 -->
+
+</beans>	

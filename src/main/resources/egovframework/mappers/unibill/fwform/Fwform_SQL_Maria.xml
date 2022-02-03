@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsck.ubfw.component.fwform.service.impl.FwformMapper">
+
+	<resultMap id="fwform-result" type="com.hsck.ubfw.component.fwform.vo.FwformVO">
+		<result column="MENU_ID" 			property="menuId" /> <!-- 메뉴ID -->
+		<result column="SCRIN_ID" 			property="scrinId" /> <!-- 화면ID -->
+		<result column="OBJ_ID" 			property="objId" /> <!-- 객체ID -->
+		<result column="MENU_NM" 			property="menuNm" /> <!-- 메뉴 이름 -->
+		<result column="SCRIN_NM" 			property="scrinNm" /> <!-- 화면 이름 -->
+		<result column="OBJ_NM" 			property="objNm" /> <!-- 객체 이름 -->
+		<result column="UBSEQ" 			property="ubseq" /> <!-- 자료순번 -->
+		<result column="UP_OBJ_ID" 			property="upObjId" /> <!-- 상위객체ID -->
+		<result column="FIND_ITEM_W" 			property="findItemW" /> <!-- 검색항목가로 -->
+		<result column="ROW_POS" 			property="rowPos" /> <!-- 검색행위치 -->
+		<result column="COL_POS" 			property="colPos" /> <!-- 검색열위치 -->
+		<result column="W" 			property="w" /> <!-- 검색객체넓이 -->
+		<result column="XML_ID" 			property="xmlId" /> <!-- xmlID -->
+		<result column="FIND_SHOW_YN" 			property="findShowYn" /> <!-- 검색출력여부 -->
+		<result column="DTL_SHOW_YN" 			property="dtlShowYn" /> <!-- 상세출력여부 -->
+		<result column="DTL_OBJ_W" 			property="dtlObjW" /> <!-- 상세객체넓이 -->
+		<result column="DTL_ROW_POS" 			property="dtlRowPos" /> <!-- 상세행위치 -->
+		<result column="DTL_COL_POS" 			property="dtlColPos" /> <!-- 상세열위치 -->
+		<result column="DTL_ROW_MGR" 			property="dtlRowMgr" /> <!-- 상세행병합 -->
+		<result column="DTL_MUST_YN" 			property="dtlMustYn" /> <!-- 상세필수여부 -->
+		<result column="SHOW_SN" 			property="showSn" /> <!-- 그리드출력순번 -->
+		<result column="SHOW_TYPE" 			property="showType" /> <!-- 그리드출력여부 -->
+		<result column="CELL_W" 			property="cellW" /> <!-- 그리드셀가로 -->
+		<result column="CELL_SORT" 			property="cellSort" /> <!-- 그리드셀정렬 -->
+		<result column="COLOR" 			property="color" /> <!-- 그리드컬러 -->
+		<result column="FONT" 			property="font" /> <!-- 그리드폰트 -->
+		<result column="BG_COLOR" 			property="bgColor" /> <!-- 그리드배경색 -->
+		<result column="REG_ID" 			property="regId" /> <!-- 등록자 -->
+		<result column="UPD_ID" 			property="updId" /> <!-- 변경자 -->
+		<result column="REG_TM" 			property="regTm" /> <!-- 등록시간 -->
+		<result column="UPD_TM" 			property="updTm" /> <!-- 변경시간 -->
+		<result column="DAY_FIND_YN" 			property="dayFindYn" /> <!-- 일자검색여부 -->
+		<result column="DTL_ROLE_ROW_MGR" 			property="dtlRoleRowMgr" /> <!-- 상세권한행병합 -->
+		</resultMap>
+
+	<sql id="listFwform-where">
+
+				<!-- 조회 조건값 ( F.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<if test="menuId != null and menuId != ''">	AND UPPER(FMS.MENU_ID) 	LIKE CONCAT( '%' , UPPER(#{menuId}) , '%' )		 </if>
+				<if test="scrinId != null and scrinId != ''">	AND UPPER(F.SCRIN_ID) 	LIKE CONCAT( '%' , UPPER(#{scrinId}) , '%' )		 </if>
+				 <if test="objId != null and objId != ''">	AND UPPER(F.OBJ_ID) 	LIKE CONCAT( '%' , UPPER(#{objId}) , '%' ) </if>
+				<if test="menuNm != null and menuNm != ''">	AND FM.MENU_NM 	LIKE CONCAT( '%' , #{menuNm} , '%' )		 </if>
+				<if test="scrinNm != null and scrinNm != ''">	AND FS.SCRIN_NM 	LIKE CONCAT( '%' , #{scrinNm} , '%' )		 </if>
+				 <if test="objNm != null and objNm != ''">	AND FO.OBJ_NM 	LIKE CONCAT( '%' , #{objNm} , '%' )		 </if>
+				 <if test="ubseq != null and ubseq != ''">	AND F.UBSEQ 	= #{ubseq}		 </if>
+				 <if test="upObjId != null and upObjId != ''">	AND UPPER(F.UP_OBJ_ID) 	LIKE CONCAT( '%' , UPPER(#{upObjId}) , '%' )		 </if>
+				 <if test="findItemW != null and findItemW != ''">	AND F.FIND_ITEM_W 	= #{findItemW}		 </if>
+				 <if test="rowPos != null and rowPos != ''">	AND F.ROW_POS 	= #{rowPos}		 </if>
+				 <if test="colPos != null and colPos != ''">	AND F.COL_POS 	= #{colPos}		 </if>
+				 <if test="w != null and w != ''">	AND F.W 	= #{w}		 </if>
+				 <if test="xmlId != null and xmlId != ''">	AND F.XML_ID 	LIKE CONCAT( '%' , #{xmlId} , '%' )		 </if>
+				 <if test="findShowYn != null and findShowYn != ''">	AND F.FIND_SHOW_YN 	= #{findShowYn}		 </if>
+				 <if test="dtlShowYn != null and dtlShowYn != ''">	AND F.DTL_SHOW_YN 	= #{dtlShowYn}		 </if>
+				 <if test="dtlObjW != null and dtlObjW != ''">	AND F.DTL_OBJ_W 	= #{dtlObjW}		 </if>
+				 <if test="dtlRowPos != null and dtlRowPos != ''">	AND F.DTL_ROW_POS 	= #{dtlRowPos}		 </if>
+				 <if test="dtlColPos != null and dtlColPos != ''">	AND F.DTL_COL_POS 	= #{dtlColPos}		 </if>
+				 <if test="dtlRowMgr != null and dtlRowMgr != ''">	AND F.DTL_ROW_MGR 	= #{dtlRowMgr}		 </if>
+				 <if test="dtlMustYn != null and dtlMustYn != ''">	AND F.DTL_MUST_YN 	= #{dtlMustYn}		 </if>
+				 <if test="showSn != null and showSn != ''">	AND F.SHOW_SN 	= #{showSn}		 </if>
+				 <if test="showType != null and showType != ''">	AND F.SHOW_TYPE 	= #{showType}		 </if>
+				 <if test="cellW != null and cellW != ''">	AND F.CELL_W 	= #{cellW}		 </if>
+				 <if test="cellSort != null and cellSort != ''">	AND F.CELL_SORT 	= #{cellSort}		 </if>
+				 <if test="color != null and color != ''">	AND F.COLOR 	= #{color}		 </if>
+				 <if test="font != null and font != ''">	AND F.FONT 	= #{font}		 </if>
+				 <if test="bgColor != null and bgColor != ''">	AND F.BG_COLOR 	= #{bgColor}		 </if>
+				<!-- <if test="regId != null and regId != ''">	AND F.REG_ID 	= #{regId}		 </if> -->
+				<!-- <if test="updId != null and updId != ''">	AND F.UPD_ID 	= #{updId}		 </if> -->
+				<!-- <if test="regTm != null and regTm != ''">	AND F.REG_TM 	= #{regTm}		 </if> -->
+				<!-- <if test="updTm != null and updTm != ''">	AND F.UPD_TM 	= #{updTm}		 </if> -->
+				 <if test="dayFindYn != null and dayFindYn != ''">	AND F.DAY_FIND_YN 	= #{dayFindYn}		 </if>
+				 <if test="dtlRoleRowMgr != null and dtlRoleRowMgr != ''">	AND F.DTL_ROLE_ROW_MGR 	= #{dtlRoleRowMgr}		 </if>
+
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND F.PROTOTYPE_TITLE LIKE CONCAT( '%' ,  #{searchPrototypeTitle  } , '%' ) </if> -->
+				<!-- <if test="searchScrinId != null and searchScrinId != ''">	AND F.SCRIN_ID 	= #{searchScrinId}		 </if> -->
+				<!-- <if test="searchObjId != null and searchObjId != ''">	AND F.OBJ_ID 	= #{searchObjId}		 </if> -->
+				<!-- <if test="searchScrinNm != null and searchScrinNm != ''">	AND FS.SCRIN_NM 	= #{searchScrinNm}		 </if> -->
+				<!-- <if test="searchObjNm != null and searchObjNm != ''">	AND FO.OBJ_NM 	= #{searchObjNm}		 </if> -->
+				<!-- <if test="searchUbseq != null and searchUbseq != ''">	AND F.UBSEQ 	= #{searchUbseq}		 </if> -->
+				<!-- <if test="searchUpObjId != null and searchUpObjId != ''">	AND F.UP_OBJ_ID 	= #{searchUpObjId}		 </if> -->
+				<!-- <if test="searchFindItemW != null and searchFindItemW != ''">	AND F.FIND_ITEM_W 	= #{searchFindItemW}		 </if> -->
+				<!-- <if test="searchRowPos != null and searchRowPos != ''">	AND F.ROW_POS 	= #{searchRowPos}		 </if> -->
+				<!-- <if test="searchColPos != null and searchColPos != ''">	AND F.COL_POS 	= #{searchColPos}		 </if> -->
+				<!-- <if test="searchW != null and searchW != ''">	AND F.W 	= #{searchW}		 </if> -->
+				<!-- <if test="searchXmlId != null and searchXmlId != ''">	AND F.XML_ID 	= #{searchXmlId}		 </if> -->
+				<!-- <if test="searchFindShowYn != null and searchFindShowYn != ''">	AND F.FIND_SHOW_YN 	= #{searchFindShowYn}		 </if> -->
+				<!-- <if test="searchDtlShowYn != null and searchDtlShowYn != ''">	AND F.DTL_SHOW_YN 	= #{searchDtlShowYn}		 </if> -->
+				<!-- <if test="searchDtlObjW != null and searchDtlObjW != ''">	AND F.DTL_OBJ_W 	= #{searchDtlObjW}		 </if> -->
+				<!-- <if test="searchDtlRowPos != null and searchDtlRowPos != ''">	AND F.DTL_ROW_POS 	= #{searchDtlRowPos}		 </if> -->
+				<!-- <if test="searchDtlColPos != null and searchDtlColPos != ''">	AND F.DTL_COL_POS 	= #{searchDtlColPos}		 </if> -->
+				<!-- <if test="searchDtlRowMgr != null and searchDtlRowMgr != ''">	AND F.DTL_ROW_MGR 	= #{searchDtlRowMgr}		 </if> -->
+				<!-- <if test="searchDtlMustYn != null and searchDtlMustYn != ''">	AND F.DTL_MUST_YN 	= #{searchDtlMustYn}		 </if> -->
+				<!-- <if test="searchShowSn != null and searchShowSn != ''">	AND F.SHOW_SN 	= #{searchShowSn}		 </if> -->
+				<!-- <if test="searchShowYn != null and searchShowYn != ''">	AND F.SHOW_TYPE 	= #{searchShowYn}		 </if> -->
+				<!-- <if test="searchCellW != null and searchCellW != ''">	AND F.CELL_W 	= #{searchCellW}		 </if> -->
+				<!-- <if test="searchCellSort != null and searchCellSort != ''">	AND F.CELL_SORT 	= #{searchCellSort}		 </if> -->
+				<!-- <if test="searchColor != null and searchColor != ''">	AND F.COLOR 	= #{searchColor}		 </if> -->
+				<!-- <if test="searchFont != null and searchFont != ''">	AND F.FONT 	= #{searchFont}		 </if> -->
+				<!-- <if test="searchBgColor != null and searchBgColor != ''">	AND F.BG_COLOR 	= #{searchBgColor}		 </if> -->
+				<!-- <if test="searchRegId != null and searchRegId != ''">	AND F.REG_ID 	= #{searchRegId}		 </if> -->
+				<!-- <if test="searchUpdId != null and searchUpdId != ''">	AND F.UPD_ID 	= #{searchUpdId}		 </if> -->
+				<!-- <if test="searchRegTm != null and searchRegTm != ''">	AND F.REG_TM 	= #{searchRegTm}		 </if> -->
+				<!-- <if test="searchUpdTm != null and searchUpdTm != ''">	AND F.UPD_TM 	= #{searchUpdTm}		 </if> -->
+				<!-- <if test="searchDayFindYn != null and searchDayFindYn != ''">	AND F.DAY_FIND_YN 	= #{searchDayFindYn}		 </if> -->
+				<!-- <if test="searchDtlRoleRowMgr != null and searchDtlRoleRowMgr != ''">	AND F.DTL_ROLE_ROW_MGR 	= #{searchDtlRoleRowMgr}		 </if> -->
+			</sql>
+
+	<select id="getFwform" parameterType="com.hsck.ubfw.component.fwform.vo.FwformVO" resultType="com.hsck.ubfw.component.fwform.vo.FwformVO">
+		/* ====== com.hsck.ubfw.component.fwform.service.impl.FwformMapper.getFwform ====== */
+			SELECT
+				    FMS.MENU_ID
+				 ,	F.SCRIN_ID  /* 화면ID */
+				 ,  F.OBJ_ID  /* 객체ID */
+				 ,  FM.MENU_NM
+				 ,  FS.SCRIN_NM
+				 ,  FO.OBJ_NM
+				 ,  F.UBSEQ /* 자료순번 */
+				 ,  F.UP_OBJ_ID /* 상위객체ID */
+				 ,  F.FIND_ITEM_W /* 검색항목가로 */
+				 ,  F.ROW_POS /* 검색행위치 */
+				 ,  F.COL_POS /* 검색열위치 */
+				 ,  F.W /* 검색객체넓이 */
+				 ,  F.XML_ID /* xmlID */
+				 ,  F.FIND_SHOW_YN /* 검색출력여부 */
+				 ,  F.DTL_SHOW_YN /* 상세출력여부 */
+				 ,  F.DTL_OBJ_W /* 상세객체넓이 */
+				 ,  F.DTL_ROW_POS /* 상세행위치 */
+				 ,  F.DTL_COL_POS /* 상세열위치 */
+				 ,  F.DTL_ROW_MGR /* 상세행병합 */
+				 ,  F.DTL_MUST_YN /* 상세필수여부 */
+				 ,  F.SHOW_SN /* 그리드출력순번 */
+				 ,  F.SHOW_TYPE /* 그리드출력여부 */
+				 ,  F.CELL_W /* 그리드셀가로 */
+				 ,  F.CELL_SORT /* 그리드셀정렬 */
+				 ,  F.COLOR /* 그리드컬러 */
+				 ,  F.FONT /* 그리드폰트 */
+				 ,  F.BG_COLOR /* 그리드배경색 */
+				 ,  F.REG_ID /* 등록자 */
+				 ,  F.UPD_ID /* 변경자 */
+				 ,  F.REG_TM /* 등록시간 */
+				 ,  F.UPD_TM /* 변경시간 */
+				 ,  F.DAY_FIND_YN /* 일자검색여부 */
+				 ,  F.DTL_ROLE_ROW_MGR /* 상세권한행병합 */
+			  FROM FWFORM F
+			   JOIN FWSCRIN FS ON F.SCRIN_ID = FS.SCRIN_ID
+			   JOIN FWOBJ FO ON F.OBJ_ID = FO.OBJ_ID
+			   JOIN FWMENUSCRIN FMS ON F.SCRIN_ID = FMS.SCRIN_ID
+			   JOIN FWMENU FM ON FMS.MENU_ID = FM.MENU_ID
+			 WHERE F.SCRIN_ID = #{scrinId}
+			   AND F.OBJ_ID = #{objId}
+	</select>
+
+<!-- 	<select id="listFwform" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listFwform" parameterType="hashmap" resultType="com.hsck.ubfw.component.fwform.vo.FwformVO"> -->
+<!-- 	<select id="listFwform" parameterType="hashmap" resultMap="fwform-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listFwform" parameterType="com.hsck.ubfw.component.fwform.vo.FwformVO" resultType="com.hsck.ubfw.component.fwform.vo.FwformVO">
+		/* ====== com.hsck.ubfw.component.fwform.service.impl.FwformMapper.listFwform ====== */
+		<include refid="com.hsck.ubfw.component.include.maria.pagingStart"/>
+	    <![CDATA[
+			SELECT
+				    FMS.MENU_ID
+				 ,	F.SCRIN_ID  /* 화면ID */
+				 ,  F.OBJ_ID  /* 객체ID */
+				 ,  FM.MENU_NM
+				 ,  FS.SCRIN_NM
+				 ,  FO.OBJ_NM
+				 ,  F.UBSEQ  /* 자료순번 */
+				 ,  F.UP_OBJ_ID  /* 상위객체ID */
+				 ,  F.FIND_ITEM_W  /* 검색항목가로 */
+				 ,  F.ROW_POS  /* 검색행위치 */
+				 ,  F.COL_POS  /* 검색열위치 */
+				 ,  F.W  /* 검색객체넓이 */
+				 ,  F.XML_ID  /* xmlID */
+				 ,  F.FIND_SHOW_YN  /* 검색출력여부 */
+				 ,  F.DTL_SHOW_YN  /* 상세출력여부 */
+				 ,  F.DTL_OBJ_W  /* 상세객체넓이 */
+				 ,  F.DTL_ROW_POS  /* 상세행위치 */
+				 ,  F.DTL_COL_POS  /* 상세열위치 */
+				 ,  F.DTL_ROW_MGR  /* 상세행병합 */
+				 ,  F.DTL_MUST_YN  /* 상세필수여부 */
+				 ,  F.SHOW_SN  /* 그리드출력순번 */
+				 ,  F.SHOW_TYPE  /* 그리드출력여부 */
+				 ,  F.CELL_W  /* 그리드셀가로 */
+				 ,  F.CELL_SORT  /* 그리드셀정렬 */
+				 ,  F.COLOR  /* 그리드컬러 */
+				 ,  F.FONT  /* 그리드폰트 */
+				 ,  F.BG_COLOR  /* 그리드배경색 */
+				 ,  F.REG_ID  /* 등록자 */
+				 ,  F.UPD_ID  /* 변경자 */
+				 ,  F.REG_TM  /* 등록시간 */
+				 ,  F.UPD_TM  /* 변경시간 */
+				 ,  F.DAY_FIND_YN  /* 일자검색여부 */
+				 ,  F.DTL_ROLE_ROW_MGR  /* 상세권한행병합 */
+			  FROM FWFORM F
+			   JOIN FWSCRIN FS ON F.SCRIN_ID = FS.SCRIN_ID
+			   JOIN FWOBJ FO ON F.OBJ_ID = FO.OBJ_ID
+			   JOIN FWMENUSCRIN FMS ON F.SCRIN_ID = FMS.SCRIN_ID
+			   JOIN FWMENU FM ON FMS.MENU_ID = FM.MENU_ID
+			 WHERE 1=1
+	    ]]>
+
+		<include refid="listFwform-where"/>
+
+		<choose>
+			<when test="sidx != null and sidx != '' and sord != null and sord != ''">
+				ORDER BY ${sidx} ${sord}
+			</when>
+			<otherwise>
+				ORDER BY FM.MENU_ID ASC , FS.SCRIN_ID ASC , FO.OBJ_ID ASC
+			</otherwise>
+		</choose>
+
+		<include refid="com.hsck.ubfw.component.include.maria.pagingEnd"/>
+	</select>
+
+	<select id="getFwformCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+
+	    <![CDATA[
+			/* ====== com.hsck.ubfw.component.fwform.service.impl.FwformMapper.getFwformCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+			  FROM FWFORM F
+			   JOIN FWSCRIN FS ON F.SCRIN_ID = FS.SCRIN_ID
+			   JOIN FWOBJ FO ON F.OBJ_ID = FO.OBJ_ID
+			   JOIN FWMENUSCRIN FMS ON F.SCRIN_ID = FMS.SCRIN_ID
+			   JOIN FWMENU FM ON FMS.MENU_ID = FM.MENU_ID
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listFwform-where"/>
+	</select>
+
+
+	<sql id="saveFwformSQL">
+		INSERT INTO FWFORM (
+			SCRIN_ID
+			, OBJ_ID
+			, UP_OBJ_ID
+			, FIND_ITEM_W
+			, ROW_POS
+			, COL_POS
+			, W
+			, XML_ID
+			, FIND_SHOW_YN
+			, DTL_SHOW_YN
+			, DTL_OBJ_W
+			, DTL_ROW_POS
+			, DTL_COL_POS
+			, DTL_ROW_MGR
+			, DTL_MUST_YN
+			, SHOW_SN
+			, SHOW_TYPE
+			, CELL_W
+			, CELL_SORT
+			, COLOR
+			, FONT
+			, BG_COLOR
+			, REG_ID
+			, UPD_ID
+			, REG_TM
+			, UPD_TM
+			, DAY_FIND_YN
+			, DTL_ROLE_ROW_MGR
+		)
+		VALUES
+		(
+			#{scrinId}
+			, #{objId}
+			, #{upObjId}
+			, #{findItemW}
+			<choose>
+		    	<when test="rowPos != null and rowPos != ''">, ${rowPos}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+		    <choose>
+		    	<when test="colPos != null and colPos != ''">, ${colPos}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+			, #{w}
+			, #{xmlId}
+			, #{findShowYn}
+			<choose>
+		    	<when test="dtlShowYn != null and dtlShowYn != ''">, #{dtlShowYn}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+			<choose>
+		    	<when test="dtlObjW != null and dtlObjW != ''">, ${dtlObjW}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+		    <choose>
+		    	<when test="dtlRowPos != null and dtlRowPos != ''">, ${dtlRowPos}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+		    <choose>
+		    	<when test="dtlColPos != null and dtlColPos != ''">, ${dtlColPos}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+			<choose>
+		    	<when test="dtlRowMgr != null and dtlRowMgr != ''">, ${dtlRowMgr}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+			, #{dtlMustYn}
+			<choose>
+		    	<when test="showSn != null and showSn != ''">, ${showSn}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+			, #{showType}
+			<choose>
+		    	<when test="cellW != null and cellW != ''">, ${cellW}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+			, #{cellSort}
+			, #{color}
+			, #{font}
+			, #{bgColor}
+			, #{sessionUserId}
+			, #{sessionUserId}
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, #{dayFindYn}
+			<choose>
+		    	<when test="dtlRoleRowMgr != null and dtlRoleRowMgr != ''">, ${dtlRoleRowMgr}</when>
+		    	<otherwise>, 0</otherwise>
+		    </choose>
+		)
+		on duplicate key update
+			UPD_TM = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, UPD_ID 	= #{sessionUserId}
+			<if test="upObjId != null and upObjId != ''">	, UP_OBJ_ID 	= #{upObjId}		 </if>
+			<if test="findItemW != null and findItemW != ''">	, FIND_ITEM_W 	= #{findItemW}		 </if>
+			<if test="rowPos != null and rowPos != ''">	, ROW_POS 	= #{rowPos}		 </if>
+			<if test="colPos != null and colPos != ''">	, COL_POS 	= #{colPos}		 </if>
+			<if test="w != null and w != ''">	, W 	= #{w}		 </if>
+			, XML_ID 	= #{xmlId}
+ 			<!--<if test="xmlId != null and xmlId != ''">	, XML_ID 	= #{xmlId}		 </if>-->
+			<if test="findShowYn != null and findShowYn != ''">	, FIND_SHOW_YN 	= #{findShowYn}		 </if>
+			<if test="dtlShowYn != null and dtlShowYn != ''">	, DTL_SHOW_YN 	= #{dtlShowYn}		 </if>
+			<if test="dtlObjW != null and dtlObjW != ''">	, DTL_OBJ_W 	= #{dtlObjW}		 </if>
+			<if test="dtlRowPos != null and dtlRowPos != ''">	, DTL_ROW_POS 	= #{dtlRowPos}		 </if>
+			<if test="dtlColPos != null and dtlColPos != ''">	, DTL_COL_POS 	= #{dtlColPos}		 </if>
+			<if test="dtlRowMgr != null and dtlRowMgr != ''">	, DTL_ROW_MGR 	= #{dtlRowMgr}		 </if>
+			<if test="dtlMustYn != null and dtlMustYn != ''">	, DTL_MUST_YN 	= #{dtlMustYn}		 </if>
+			<if test="showSn != null and showSn != ''">	, SHOW_SN 	= #{showSn}		 </if>
+			<if test="showType != null and showType != ''">	, SHOW_TYPE 	= #{showType}		 </if>
+			<if test="cellW != null and cellW != ''">	, CELL_W 	= #{cellW}		 </if>
+			<if test="cellSort != null and cellSort != ''">	, CELL_SORT 	= #{cellSort}		 </if>
+			<if test="color != null and color != ''">	, COLOR 	= #{color}		 </if>
+			, FONT 	= #{font}
+			, BG_COLOR 	= #{bgColor}
+ 			<!--<if test="font != null and font != ''">	, FONT 	= #{font}		 </if>-->
+ 			<!--<if test="bgColor != null and bgColor != ''">	, BG_COLOR 	= #{bgColor}		 </if>-->
+			<if test="dayFindYn != null and dayFindYn != ''">	, DAY_FIND_YN 	= #{dayFindYn}		 </if>
+			<if test="dtlRoleRowMgr != null and dtlRoleRowMgr != ''">	, DTL_ROLE_ROW_MGR 	= #{dtlRoleRowMgr}		 </if>
+			
+	</sql>
+	<insert id="saveFwformMap" parameterType="java.util.HashMap">
+		/* ====== com.hsck.ubfw.component.fwform.service.impl.FwformMapper.saveFwformMap ====== */
+		<include refid="saveFwformSQL"/>
+	</insert>
+	<insert id="saveFwform" parameterType="com.hsck.ubfw.component.fwform.vo.FwformVO">
+		/* ====== com.hsck.ubfw.component.fwform.service.impl.FwformMapper.saveFwform ====== */
+		<include refid="saveFwformSQL"/>
+	</insert>
+
+
+	<insert id="insertFwform" parameterType="com.hsck.ubfw.component.fwform.vo.FwformVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwform.service.impl.FwformMapper.insertFwform ====== */
+			INSERT INTO FWFORM (
+						 SCRIN_ID
+						 , OBJ_ID
+						 , UBSEQ
+						 , UP_OBJ_ID
+						 , FIND_ITEM_W
+						 , ROW_POS
+						 , COL_POS
+						 , W
+						 , XML_ID
+						 , FIND_SHOW_YN
+						 , DTL_SHOW_YN
+						 , DTL_OBJ_W
+						 , DTL_ROW_POS
+						 , DTL_COL_POS
+						 , DTL_ROW_MGR
+						 , DTL_MUST_YN
+						 , SHOW_SN
+						 , SHOW_TYPE
+						 , CELL_W
+						 , CELL_SORT
+						 , COLOR
+						 , FONT
+						 , BG_COLOR
+						 , REG_ID
+						 , UPD_ID
+						 , REG_TM
+						 , UPD_TM
+						 , DAY_FIND_YN
+						 , DTL_ROLE_ROW_MGR
+					)
+					VALUES
+					(
+							#{scrinId}
+						 ,  #{objId}
+						 ,  #{ubseq}
+						 ,  #{upObjId}
+						 ,  #{findItemW}
+						 ,  #{rowPos}
+						 ,  #{colPos}
+						 ,  #{w}
+						 ,  #{xmlId}
+						 ,  #{findShowYn}
+						 ,  #{dtlShowYn}
+						 ,  #{dtlObjW}
+						 ,  #{dtlRowPos}
+						 ,  #{dtlColPos}
+						 ,  #{dtlRowMgr}
+						 ,  #{dtlMustYn}
+						 ,  #{showSn}
+						 ,  #{showType}
+						 ,  #{cellW}
+						 ,  #{cellSort}
+						 ,  #{color}
+						 ,  #{font}
+						 ,  #{bgColor}
+						 ,  #{sessionUserId}
+						 ,  #{sessionUserId}
+						 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+						 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+						 ,  #{dayFindYn}
+						 ,  #{dtlRoleRowMgr}
+						)
+		]]>
+	</insert>
+
+
+	<update id="updateFwform" parameterType="com.hsck.ubfw.component.fwform.vo.FwformVO">
+			/* ====== com.hsck.ubfw.component.fwform.service.impl.FwformMapper.updateFwform ====== */
+	        UPDATE FWFORM
+	        SET UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	          , UPD_ID 	= #{sessionUserId}
+				<if test="upObjId != null and upObjId != ''">	, UP_OBJ_ID 	= #{upObjId}		 </if>
+				<if test="findItemW != null and findItemW != ''">	, FIND_ITEM_W 	= #{findItemW}		 </if>
+				<if test="rowPos != null and rowPos != ''">	, ROW_POS 	= #{rowPos}		 </if>
+				<if test="colPos != null and colPos != ''">	, COL_POS 	= #{colPos}		 </if>
+				<if test="w != null and w != ''">	, W 	= #{w}		 </if>
+				, XML_ID 	= #{xmlId}
+				<!--<if test="xmlId != null and xmlId != ''">	, XML_ID 	= #{xmlId}		 </if>-->
+				<if test="findShowYn != null and findShowYn != ''">	, FIND_SHOW_YN 	= #{findShowYn}		 </if>
+				<if test="dtlShowYn != null and dtlShowYn != ''">	, DTL_SHOW_YN 	= #{dtlShowYn}		 </if>
+				<if test="dtlObjW != null and dtlObjW != ''">	, DTL_OBJ_W 	= #{dtlObjW}		 </if>
+				<if test="dtlRowPos != null and dtlRowPos != ''">	, DTL_ROW_POS 	= #{dtlRowPos}		 </if>
+				<if test="dtlColPos != null and dtlColPos != ''">	, DTL_COL_POS 	= #{dtlColPos}		 </if>
+				<if test="dtlRowMgr != null and dtlRowMgr != ''">	, DTL_ROW_MGR 	= #{dtlRowMgr}		 </if>
+				<if test="dtlMustYn != null and dtlMustYn != ''">	, DTL_MUST_YN 	= #{dtlMustYn}		 </if>
+				<if test="showSn != null and showSn != ''">	, SHOW_SN 	= #{showSn}		 </if>
+				<if test="showType != null and showType != ''">	, SHOW_TYPE 	= #{showType}		 </if>
+				<if test="cellW != null and cellW != ''">	, CELL_W 	= #{cellW}		 </if>
+				<if test="cellSort != null and cellSort != ''">	, CELL_SORT 	= #{cellSort}		 </if>
+				<if test="color != null and color != ''">	, COLOR 	= #{color}		 </if>
+				, FONT 	= #{font}
+				, BG_COLOR 	= #{bgColor}
+				<!--<if test="font != null and font != ''">	, FONT 	= #{font}		 </if>-->
+				<!--<if test="bgColor != null and bgColor != ''">	, BG_COLOR 	= #{bgColor}		 </if>-->
+				<if test="dayFindYn != null and dayFindYn != ''">	, DAY_FIND_YN 	= #{dayFindYn}		 </if>
+				<if test="dtlRoleRowMgr != null and dtlRoleRowMgr != ''">	, DTL_ROLE_ROW_MGR 	= #{dtlRoleRowMgr}		 </if>
+			WHERE SCRIN_ID = #{scrinId}
+			  AND OBJ_ID = #{objId}
+				    																																																																																																																																																																																																																																																									     
+	</update>
+
+
+	<delete id="deleteFwform" parameterType="com.hsck.ubfw.component.fwform.vo.FwformVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwform.service.impl.FwformMapper.deleteFwform ====== */
+			DELETE FROM FWFORM 
+		]]>
+		WHERE 1=1
+		  AND SCRIN_ID = #{delScrinIds}
+		  AND OBJ_ID  #{delObjIds}
+	</delete>
+
+	<delete id="deleteListFwform" parameterType="com.hsck.ubfw.component.fwform.vo.FwformVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwform.service.impl.FwformMapper.deleteFwform ====== */
+			DELETE FROM FWFORM
+		]]>
+		WHERE 1=1
+		  AND UBSEQ IN
+		<foreach collection="delUbseqList" item="delUbseqs" index="index" open="(" close=")" separator=",">
+			${delUbseqs}
+		</foreach>
+	</delete>
+
+</mapper>

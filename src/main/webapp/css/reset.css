@@ -1,0 +1,126 @@
+﻿@charset "utf-8";
+
+@font-face {
+    font-family:'NG';
+    font-style:normal;
+    src: local(‘Nanum Gothic Regular’), local(‘Nanum Gothic-Regular’), local(‘NanumGothic Regular’);
+    src:url(../font/NanumGothic.woff) format('woff');
+}
+
+@font-face {
+    font-family:'NGB';
+    font-style:normal;
+    src: local(‘Nanum Gothic Regular’), local(‘Nanum Gothic-Regular’), local(‘NanumGothic Regular’);
+    src:url(../font/NanumGothicBold.woff) format('woff');
+}
+
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../font/NotoSansKR-Light-Hestia.eot') format('eot'),
+    url('../font/NotoSansKR-Light-Hestia.eot?#iefix') format('embedded-opentype'),
+    url('../font/NotoSansKR-Light-Hestia.woff') format('woff'),
+    url('../font/NotoSansKR-Light-Hestia.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../font/NotoSansKR-Regular-Hestia.eot') format('eot'),
+    url('../font/NotoSansKR-Regular-Hestia.eot?#iefix') format('embedded-opentype'),
+    url('../font/NotoSansKR-Regular-Hestia.woff') format('woff'),
+    url('../font/NotoSansKR-Regular-Hestia.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../font/NotoSansKR-Medium-Hestia.eot') format('eot'),
+    url('../font/NotoSansKR-Medium-Hestia.eot?#iefix') format('embedded-opentype'),
+    url('../font/NotoSansKR-Medium-Hestia.woff') format('woff'),
+    url('../font/NotoSansKR-Medium-Hestia.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../font/NotoSansKR-Bold-Hestia.eot') format('eot'),
+    url('../font/NotoSansKR-Bold-Hestia.eot?#iefix') format('embedded-opentype'),
+    url('../font/NotoSansKR-Bold-Hestia.woff') format('woff'),
+    url('../font/NotoSansKR-Bold-Hestia.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'roboto';
+    src: url('../font/Roboto-Light-webfont.eot');
+    src: url('../font/Roboto-Light-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../font/Roboto-Light-webfont.woff') format('woff'),
+    url('../font/Roboto-Light-webfont.ttf') format('truetype'),
+    url('../font/Roboto-Light-webfont.svg#robotolight') format('svg');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'roboto';
+    src: url('../font/Roboto-Regular-webfont.eot');
+    src: url('../font/Roboto-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../font/Roboto-Regular-webfont.woff') format('woff'),
+    url('../font/Roboto-Regular-webfont.ttf') format('truetype'),
+    url('../font/Roboto-Regular-webfont.svg#robotomedium') format('svg');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Buri';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../font/Arita-buriM-subset.eot');
+    src: local(※), url('../font/Arita-buriM-subset.woff') format("woff"); }
+
+/* Common #444 #0008ff*/
+body{font-family: Verdana,'MalgunGothic', '맑은 고딕',Tahoma, sans-serif;letter-spacing:-.5px;}
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select{margin:0;padding:0}
+body,input,textarea,select,button,table{/*font-family:'돋움',Dotum,AppleGothic,sans-serif;*/font-size:13px;color:444;}
+h1,h2,h3,h4,h5,h6,label{font-family:verdana,'Noto Sans', 'Malgun Gothic', dotum, sans-serif; font-weight:400 !important;word-break:break-all;letter-spacing:-.5px;}
+img,fieldset,iframe{border:0 none}
+ul,ol{list-style:none}
+em,address{font-style:normal}
+label{cursor:default}
+button{cursor:pointer}
+table{padding:0;border-collapse:collapse;border-spacing:0}
+article,aside,canvas,details,figcaption,figure,footer,header,hgroup,nav,menu,nav,section{display:block;padding:0px;margin:0px}
+legend,caption,hr{display:none}
+input,select,button{vertical-align:middle}
+button{overflow:visible;border:0;background-color:transparent;}
+button::-moz-focus-inner{padding:0;}
+button{-webkit-appearance:none;-moz-appearance:none;appearance:none}
+
+a{color:#666;}
+a:link,a:visited,a:active{text-decoration:none;}
+a:hover{color:#666;text-decoration:none;}
+.clear{clear:both;}
+
+
+* {
+    -webkit-box-sizing:inherit;
+    -moz-box-sizing:inherit;
+    box-sizing:inherit;
+}
+*:before,
+*:after {
+    -webkit-box-sizing:inherit;
+    -moz-box-sizing:inherit;
+    box-sizing:inherit;
+}
+
+
+::-webkit-scrollbar {width: 8px; height: 8px; border: 3px solid #fff; }
+::-webkit-scrollbar-button:start:decrement, ::-webkit-scrollbar-button:end:increment {display: block; height: 10px; background: #efefef}
+::-webkit-scrollbar-track {background: #efefef; -webkit-border-radius: 10px; border-radius:10px; -webkit-box-shadow: inset 0 0 4px rgba(0,0,0,.2)}
+::-webkit-scrollbar-thumb {height: 50px; width: 50px; background: rgba(0,0,0,.2); -webkit-border-radius: 8px; border-radius: 8px; -webkit-box-shadow: inset 0 0 4px rgba(0,0,0,.1)}

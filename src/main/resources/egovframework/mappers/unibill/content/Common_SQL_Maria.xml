@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common">
+
+    <!-- 기초코드 조회 -->
+	<select id="selectBaseCd" parameterType="map" resultType="egovMap">
+	
+		SELECT val  AS code
+		    ,  nm   AS name
+		    ,  dtl_cd
+		  FROM cm_cfgbasecd
+		 WHERE 1 = 1
+		   AND UPPER(grp_cd) = UPPER(#{grp_cd})
+		 <if test="val != null and val != '' ">
+		   AND val = #{val}
+		 </if>
+		 <if test="dtl_cd != null and dtl_cd != '' ">
+		   AND dtl_cd = #{dtl_cd}
+		 </if>
+         ORDER BY dtl_cd
+	
+	</select>
+	
+	<!-- 그룹코드 조회 -->
+	<select id="selectGrpIdCd" parameterType="map" resultType="egovMap">
+	
+		SELECT grp_id AS code
+             , grp_nm AS name
+		  FROM cm_cfggrpid
+		 WHERE 1 = 1
+		   AND UPPER(grp_type) = UPPER(#{grp_type})
+		   and hsnull(use_yn,'Y') ='Y'
+		 <if test="val != null and val != '' ">
+		   AND grp_id = #{val}
+		 </if>
+		 ORDER BY show_sn
+	
+	</select>
+	
+	<!-- YN 코드 조회 -->
+	<select id="selectYnCode" parameterType="map" resultType="egovMap">
+	
+		SELECT code
+		     , name
+		  FROM (
+		        SELECT 'Y' AS code, '예' AS name, 1 AS show_sn FROM dual
+		        UNION ALL
+		        SELECT 'N' AS code, '아니오' AS name, 2 AS show_sn FROM dual
+		       )t
+		 WHERE 1 = 1
+		 <if test="val != null and val != '' ">
+		   AND code = #{val}
+		 </if>
+		 ORDER BY show_sn  
+	
+	</select>
+	
+	<!-- SQL String으로 데이터 조회 -->
+	<select id="selectDynamicDataList" parameterType="map" resultType="egovMap">
+	
+		${sql}
+	
+	</select>
+	
+	<!-- 서비스관리 -->
+	<select id="svc_id" parameterType="map" resultType="egovMap">
+	
+		SELECT svc_id AS code
+		     , nm     AS name
+		  FROM mb_cfgsvc
+		  WHERE 1 =1
+		    AND use_yn = 'Y'
+		  ORDER BY svc_id  
+		  
+	</select>
+	
+	<!-- 상품관리 -->
+	<select id="gd_id" parameterType="map" resultType="egovMap">
+	
+		SELECT gd_id AS code
+		     , nm    AS name
+		  FROM mb_cfggd
+		  WHERE 1 =1
+		    AND use_yn = 'Y'
+		  ORDER BY gd_id  
+	
+	</select>
+	
+	<!-- 아래 쿼리는 테스트용 -->
+	<select id="combotest" parameterType="map" resultType="egovMap">
+
+		SELECT '0'   AS code
+		     , 'KT'  AS name
+		  FROM DUAL
+		 UNION ALL
+		SELECT '1'    AS code
+		     , 'SKBB' AS name
+		  FROM DUAL
+		 UNION ALL
+		SELECT '3'    AS code
+		     , '온세' AS name
+		  FROM DUAL
+		UNION ALL
+		SELECT '4'          AS code
+		     , 'LG유플러스' AS name
+		  FROM DUAL
+		UNION ALL
+		SELECT '5'          AS code
+		     , '무궁화꽃이피었습니다' AS name
+		  FROM DUAL
+	
+	</select>
+	
+	<select id="comboauth" parameterType="map" resultType="egovMap">
+	
+		SELECT '0'   AS code
+		     , '개발자'  AS name
+		  FROM DUAL
+		 UNION ALL
+		SELECT '1'    AS code
+		     , '통합운영자' AS name
+		  FROM DUAL
+		 UNION ALL
+		SELECT '3'    AS code
+		     , 'IT운영자' AS name
+		  FROM DUAL
+		UNION ALL
+		SELECT '4'          AS code
+		     , '역환자료운영자' AS name
+		  FROM DUAL		
+	
+	</select>
+	
+	<select id="comboipflag" parameterType="map" resultType="egovMap">
+	
+		SELECT '0'   AS code
+		     , '무조건 허용'  AS name
+		  FROM DUAL
+		 UNION ALL
+		SELECT '1'    AS code
+		     , 'IP 검증' AS name
+		  FROM DUAL		
+	
+	</select>
+	
+	
+
+</mapper>

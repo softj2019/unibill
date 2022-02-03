@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper">
+
+	<resultMap id="fwmenu-result" type="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO">
+		<result column="MENU_ID" 			property="menuId" /> <!-- 메뉴ID -->
+		<result column="UBSEQ" 			property="ubseq" /> <!-- 자료순번 -->
+		<result column="MENU_NM" 			property="menuNm" /> <!-- 메뉴명 -->
+		<result column="DEPTH" 			property="depth" /> <!-- 레벨 -->
+		<result column="MENU_SEQ" 			property="menuSeq" /> <!-- 메뉴순서 -->
+		<result column="UP_MENU_ID" 			property="upMenuId" /> <!-- 상위메뉴ID -->
+		<result column="REMARK" 			property="remark" /> <!-- 설명 -->
+		<result column="URL" 			property="url" /> <!-- url -->
+		<result column="HELP" 			property="help" /> <!-- 도움말 -->
+		<result column="TMP_TYPE" 			property="tmpType" /> <!-- 템플릿구분 -->
+		<result column="TBL_NM" 			property="tblNm" /> <!-- 테이블명 -->
+		<result column="REG_ID" 			property="regId" /> <!-- 등록자 -->
+		<result column="UPD_ID" 			property="updId" /> <!-- 변경자 -->
+		<result column="REG_TM" 			property="regTm" /> <!-- 등록시간 -->
+		<result column="UPD_TM" 			property="updTm" /> <!-- 변경시간 -->
+
+		<result column="IS_LEAF" 			property="isLeaf" /> <!-- 변경시간 -->
+
+		<result column="LPAD_MENU_NM" 			property="lpadMenuNm" />
+		<result column="LPAD_MENU_NM2" 			property="lpadMenuNm2" />
+
+		<result column="EXPANDED" 			property="expanded" />
+		<result column="LOADED" 			property="loaded" />
+
+		</resultMap>
+	
+	<sql id="listFwmenu-where">
+	
+		<!-- 조회 조건값 ( F.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				 <if test="menuId != null and menuId != ''">	AND UPPER(FM.MENU_ID) 	LIKE concat( '%' , UPPER(#{menuId}) , '%' )		 </if>
+				 <!--<if test="ubseq != null and ubseq != ''">	AND FM.UBSEQ 	= #{ubseq}		 </if>-->
+				<if test="menuNm != null and menuNm != ''">	AND FM.MENU_NM 	LIKE concat( '%' , #{menuNm} , '%' )		 </if>
+				<if test="lpadMenuNm != null and lpadMenuNm != ''">	AND FM.LPAD_MENU_NM 	LIKE concat( '%' , #{lpadMenuNm} , '%' )		 </if>
+				<if test="lpadMenuNm2 != null and lpadMenuNm2 != ''">	AND FM.LPAD_MENU_NM2 	LIKE concat( '%' , #{lpadMenuNm2} , '%' )		 </if>
+				 <if test="depth != null and depth != ''">	AND FM.DEPTH 	= #{depth}		 </if>
+				 <if test="menuSeq != null and menuSeq != ''">	AND FM.MENU_SEQ 	LIKE concat( '%' , #{menuSeq} , '%' )		 </if>
+				 <if test="upMenuId != null and upMenuId != ''">	AND UPPER(FM.UP_MENU_ID) 	LIKE concat( '%' , UPPER(#{upMenuId}) , '%' )		 </if>
+				 <if test="remark != null and remark != ''">	AND FM.REMARK 	LIKE concat( '%' , #{remark} , '%' )		 </if>
+				 <if test="url != null and url != ''">	AND FM.URL 	LIKE concat( '%' , #{url} , '%' )		 </if>
+				 <if test="help != null and help != ''">	AND FM.HELP 	LIKE concat( '%' , #{help} , '%' )		 </if>
+				 <if test="tmpType != null and tmpType != ''">	AND FM.TMP_TYPE 	LIKE concat( '%' , #{tmpType} , '%' )		 </if>
+				<!-- <if test="tblNm != null and tblNm != ''">	AND FM.TBL_NM 	= #{tblNm}		 </if> -->
+				<!-- <if test="regId != null and regId != ''">	AND FM.REG_ID 	= #{regId}		 </if> -->
+				<!-- <if test="updId != null and updId != ''">	AND FM.UPD_ID 	= #{updId}		 </if> -->
+				<!-- <if test="regTm != null and regTm != ''">	AND FM.REG_TM 	= #{regTm}		 </if> -->
+				<!-- <if test="updTm != null and updTm != ''">	AND FM.UPD_TM 	= #{updTm}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND PROTOTYPE_TITLE LIKE concat( '%' ,  #{searchPrototypeTitle  } , '%' ) </if> -->
+				 <if test="searchMenuId != null and searchMenuId != ''">	AND FM.MENU_ID 	LIKE concat( '%' ,  UPPER(#{searchMenuId}) , '%' )		 </if>
+				 <if test="searchUbseq != null and searchUbseq != ''">	AND FM.UBSEQ 	LIKE concat( '%' ,  #{searchUbseq} , '%' )	 </if>
+				 <if test="searchMenuNm != null and searchMenuNm != ''">	AND FM.MENU_NM 	LIKE concat( '%' ,  #{searchMenuNm} , '%' )		 </if>
+				 <if test="searchDepth != null and searchDepth != ''">	AND FM.DEPTH 	= #{searchDepth}		 </if>
+				 <if test="searchMenuSeq != null and searchMenuSeq != ''">	AND FM.MENU_SEQ 	LIKE concat( '%' ,  #{searchMenuSeq} , '%' )		 </if>
+				 <if test="searchUpMenuId != null and searchUpMenuId != ''">	AND FM.UP_MENU_ID 	LIKE concat( '%' ,  #{searchUpMenuId} , '%' )		 </if>
+				 <if test="searchRemark != null and searchRemark != ''">	AND FM.REMARK 	LIKE concat( '%' ,  #{searchRemark} , '%' )		 </if>
+				 <if test="searchUrl != null and searchUrl != ''">	AND FM.URL 	LIKE concat( '%' ,  #{searchUrl} , '%' )		 </if>
+				 <if test="searchHelp != null and searchHelp != ''">	AND FM.HELP 	LIKE concat( '%' ,  #{searchHelp} , '%' )		 </if>
+				 <if test="searchTmpType != null and searchTmpType != ''">	AND FM.TMP_TYPE 	LIKE concat( '%' ,  #{searchTmpType} , '%' )		 </if>
+				 <if test="searchTblNm != null and searchTblNm != ''">	AND FM.TBL_NM 	LIKE concat( '%' ,  #{searchTblNm} , '%' )		 </if>
+				<!-- <if test="searchRegId != null and searchRegId != ''">	AND FM.REG_ID 	= #{searchRegId}		 </if> -->
+				<!-- <if test="searchUpdId != null and searchUpdId != ''">	AND FM.UPD_ID 	= #{searchUpdId}		 </if> -->
+				<!-- <if test="searchRegTm != null and searchRegTm != ''">	AND FM.REG_TM 	= #{searchRegTm}		 </if> -->
+				<!-- <if test="searchUpdTm != null and searchUpdTm != ''">	AND FM.UPD_TM 	= #{searchUpdTm}		 </if> -->
+			</sql>
+	
+	<select id="getFwmenu" parameterType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO" resultType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO">
+		/* ====== com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper.getFwmenu ====== */
+			SELECT 
+								  MENU_ID /* 메뉴ID */
+				    								 ,  UBSEQ /* 자료순번 */
+				    								 ,  MENU_NM /* 메뉴명 */
+				    								 ,  DEPTH /* 레벨 */
+				    								 ,  MENU_SEQ /* 메뉴순서 */
+				    								 ,  UP_MENU_ID /* 상위메뉴ID */
+				    								 ,  REMARK /* 설명 */
+				    								 ,  URL /* url */
+				    								 ,  HELP /* 도움말 */
+				    								 ,  TMP_TYPE /* 템플릿구분 */
+				    								 ,  TBL_NM /* 테이블명 */
+				    								 ,  REG_ID /* 등록자 */
+				    								 ,  UPD_ID /* 변경자 */
+				    								 ,  REG_TM /* 등록시간 */
+				    								 ,  UPD_TM /* 변경시간 */
+				    							  FROM FWMENU
+			 WHERE MENU_ID = #{menuId}
+	</select>
+
+	<select id="listFwmenu" parameterType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO" resultType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO">
+		SELECT FM.*
+		FROM (SELECT F.*
+					, F.MENU_NM AS LPAD_MENU_NM
+					, F.MENU_NM AS LPAD_MENU_NM2
+		         FROM FWMENU F
+		) FM
+		ORDER BY FM.DEPTH ASC
+	</select>
+
+	<select id="getFwmenuCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+
+		/* ====== com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper.getFwmenuCnt ====== */
+		<![CDATA[
+	        SELECT
+	               COUNT(FM.UBSEQ) CNT
+	          FROM (SELECT F.*
+							, F.MENU_NM AS LPAD_MENU_NM
+							, F.MENU_NM AS LPAD_MENU_NM2
+						 FROM FWMENU F
+				) FM
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listFwmenu-where"/>
+	</select>
+	
+<!-- 	<select id="listFwmenuConnectBy" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listFwmenuConnectBy" parameterType="hashmap" resultType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO"> -->
+<!-- 	<select id="listFwmenuConnectBy" parameterType="hashmap" resultMap="fwmenu-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listFwmenuConnectBy" parameterType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO" resultType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO">
+		/* ====== com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper.listFwmenuConnectBy ====== */
+	</select>
+	
+	<select id="getFwmenuConnectByCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+
+		/* ====== com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper.getFwmenuConnectByCnt ====== */
+	</select>
+
+	
+	<sql id="saveFwmenuSQL">
+		INSERT INTO FWMENU (
+			MENU_ID
+			, UBSEQ
+			, MENU_NM
+			, DEPTH
+			, MENU_SEQ
+			, UP_MENU_ID
+			, REMARK
+			, URL
+			, HELP
+			, TMP_TYPE
+			, TBL_NM
+			, REG_ID
+			, UPD_ID
+			, REG_TM
+			, UPD_TM
+		)
+		VALUES
+		(
+			#{menuId}
+			, #{ubseq}
+			, #{menuNm}
+			, #{depth}
+			, #{menuSeq}
+			, #{upMenuId}
+			, #{remark}
+			, #{url}
+			, #{help}
+			, #{tmpType}
+			, #{tblNm}
+			, #{sessionUserId}
+			, #{sessionUserId}
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+		ON DUPLICATE KEY
+		UPDATE MENU_ID = #{menuId}
+			<!--<if test="ubseq != null and ubseq != ''">	, UBSEQ 	= #{ubseq}		 </if>-->
+			<if test="menuNm != null and menuNm != ''">	, MENU_NM 	= #{menuNm}		 </if>
+			<if test="depth != null and depth != ''">	, DEPTH 	= #{depth}		 </if>
+			<if test="menuSeq != null and menuSeq != ''">	, MENU_SEQ 	= #{menuSeq}		 </if>
+			<if test="upMenuId != null and upMenuId != ''">	, UP_MENU_ID 	= #{upMenuId}		 </if>
+			, REMARK 	= #{remark}
+			, URL 	= #{url}
+			, HELP 	= #{help}
+			, TMP_TYPE 	= #{tmpType}
+			, TBL_NM 	= #{tblNm}
+			, UPD_TM = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, UPD_ID 	= #{sessionUserId}
+			<!--<if test="remark != null and remark != ''">	, REMARK 	= #{remark}		 </if>-->
+			<!--<if test="url != null and url != ''">	, URL 	= #{url}		 </if>-->
+			<!--<if test="help != null and help != ''">	, HELP 	= #{help}		 </if>-->
+			<!--<if test="tmpType != null and tmpType != ''">	, TMP_TYPE 	= #{tmpType}		 </if>-->
+			<!--<if test="tblNm != null and tblNm != ''">	, TBL_NM 	= #{tblNm}		 </if>-->
+	</sql>	
+	<insert id="saveFwmenuMap" parameterType="java.util.HashMap">
+		/* ====== com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper.saveFwmenuMap ====== */
+		<include refid="saveFwmenuSQL"/>
+	</insert>
+	<insert id="saveFwmenu" parameterType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO">
+		/* ====== com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper.saveFwmenu ====== */
+		<include refid="saveFwmenuSQL"/>
+	</insert>
+	
+
+	<insert id="insertFwmenu" parameterType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper.insertFwmenu ====== */
+			INSERT INTO FWMENU ( 
+									 MENU_ID
+									 , UBSEQ
+									 , MENU_NM
+									 , DEPTH
+									 , MENU_SEQ
+									 , UP_MENU_ID
+									 , REMARK
+									 , URL
+									 , HELP
+									 , TMP_TYPE
+									 , TBL_NM
+									 , REG_ID
+									 , UPD_ID
+									 , REG_TM
+									 , UPD_TM
+									) 
+					VALUES 
+					( 
+								  #{menuId}
+				    								 ,  #{ubseq}
+				    								 ,  #{menuNm}
+				    								 ,  #{depth}
+				    								 ,  #{menuSeq}
+				    								 ,  #{upMenuId}
+				    								 ,  #{remark}
+				    								 ,  #{url}
+				    								 ,  #{help}
+				    								 ,  #{tmpType}
+				    								 ,  #{tblNm}
+				    								 ,  #{sessionUserId}
+				    								 ,  #{sessionUserId}
+				    								 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				    								 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				    								)
+		]]>
+	</insert>
+
+
+	<update id="updateFwmenu" parameterType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO">
+			/* ====== com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper.updateFwmenu ====== */
+	        UPDATE FWMENU 
+	        SET UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	          , UPD_ID 	= #{sessionUserId}
+				<if test="menuNm != null and menuNm != ''">, MENU_NM = #{menuNm}</if>
+				<if test="depth != null and depth != ''">, DEPTH = #{depth}</if>
+				<if test="menuSeq != null and menuSeq != ''">, MENU_SEQ = #{menuSeq}</if>
+				<if test="upMenuId != null and upMenuId != ''">, UP_MENU_ID = #{upMenuId}</if>
+				<if test="remark != null and remark != ''">, REMARK = #{remark}</if>
+				<if test="url != null and url != ''">, URL = #{url}</if>
+				<if test="help != null and help != ''">, HELP = #{help}</if>
+				<if test="tmpType != null and tmpType != ''">, TMP_TYPE = #{tmpType}</if>
+				<if test="tblNm != null and tblNm != ''">, TBL_NM = #{tblNm}</if>
+		WHERE MENU_ID = #{menuId}
+	</update>
+
+
+	<delete id="deleteFwmenu" parameterType="com.hsck.ubfw.component.fwmenu.vo.FwmenuVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.fwmenu.service.impl.FwmenuMapper.deleteFwmenu ====== */
+			DELETE FROM FWMENU 
+		]]>
+			 WHERE MENU_ID = #{menuId}
+	</delete>
+
+</mapper>

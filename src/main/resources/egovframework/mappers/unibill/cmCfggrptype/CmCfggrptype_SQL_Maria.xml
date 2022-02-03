@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsck.ubfw.component.cmCfggrptype.service.impl.CmCfggrptypeMapper">
+
+	<resultMap id="cmCfggrptype-result" type="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO">
+		<result column="GRP_TYPE" 			property="grpType" /> <!-- cfgbasecd grpType 참조 B:건물 J:조직 C:고객유형 D:문서 F:파일 R:요금항목 O:점용위치 -->
+		<result column="UBSEQ" 			property="ubseq" /> <!-- 자료순번 -->
+		<result column="GRP_NM" 			property="grpNm" /> <!-- 그룹명 -->
+		<result column="REG_ID" 			property="regId" /> <!-- 등록자 -->
+		<result column="UPD_ID" 			property="updId" /> <!-- 변경자 -->
+		<result column="REG_TM" 			property="regTm" /> <!-- 등록시간 -->
+		<result column="UPD_TM" 			property="updTm" /> <!-- 수정시간 -->
+		</resultMap>
+	
+	<sql id="listCmCfggrptype-where">
+	
+		<!-- 조회 조건값 ( CC.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<!-- <if test="grpType != null and grpType != ''">	AND CC.GRP_TYPE 	= #{grpType}		 </if> -->
+				<!-- <if test="ubseq != null and ubseq != ''">	AND CC.UBSEQ 	= #{ubseq}		 </if> -->
+				<!-- <if test="grpNm != null and grpNm != ''">	AND CC.GRP_NM 	= #{grpNm}		 </if> -->
+				<!-- <if test="regId != null and regId != ''">	AND CC.REG_ID 	= #{sessionUserId}		 </if> -->
+				<!-- <if test="updId != null and updId != ''">	AND CC.UPD_ID 	= #{sessionUserId}		 </if> -->
+				<!-- <if test="regTm != null and regTm != ''">	AND CC.REG_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')		 </if> -->
+				<!-- <if test="updTm != null and updTm != ''">	AND CC.UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND CC.PROTOTYPE_TITLE LIKE CONCAT( '%' ,  #{searchPrototypeTitle  } , '%' ) </if> -->
+				<!-- <if test="searchGrptype != null and searchGrptype != ''">	AND CC.GRP_TYPE 	= #{searchGrptype}		 </if> -->
+				<!-- <if test="searchUbseq != null and searchUbseq != ''">	AND CC.UBSEQ 	= #{searchUbseq}		 </if> -->
+				<!-- <if test="searchName != null and searchName != ''">	AND CC.GRP_NM 	= #{searchName}		 </if> -->
+				<!-- <if test="searchRegid != null and searchRegid != ''">	AND CC.REG_ID 	= #{searchRegid}		 </if> -->
+				<!-- <if test="searchUpdid != null and searchUpdid != ''">	AND CC.UPD_ID 	= #{searchUpdid}		 </if> -->
+				<!-- <if test="searchRegtm != null and searchRegtm != ''">	AND CC.REG_TM 	= #{searchRegtm}		 </if> -->
+				<!-- <if test="searchUpdytm != null and searchUpdytm != ''">	AND CC.UPD_TM 	= #{searchUpdytm}		 </if> -->
+			</sql>
+	
+	<select id="getCmCfggrptype" parameterType="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO" resultType="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO">
+		/* ====== com.hsck.ubfw.component.cmCfggrptype.service.impl.CmCfggrptypeMapper.getCmCfggrptype ====== */
+			SELECT 
+								  CC.GRP_TYPE /* cfgbasecd grpType 참조 B:건물 J:조직 C:고객유형 D:문서 F:파일 R:요금항목 O:점용위치 */
+				    								 ,  CC.UBSEQ /* 자료순번 */
+				    								 ,  CC.GRP_NM /* 그룹명 */
+				    								 ,  CC.REG_ID /* 등록자 */
+				    								 ,  CC.UPD_ID /* 변경자 */
+				    								 ,  CC.REG_TM /* 등록시간 */
+				    								 ,  CC.UPD_TM /* 수정시간 */
+				    							  FROM CM_CFGGRPTYPE CC
+			 WHERE CC.CM_CFGGRPTYPE = #{prototypeId }
+	</select>
+	
+<!-- 	<select id="listCmCfggrptype" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listCmCfggrptype" parameterType="hashmap" resultType="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO"> -->
+<!-- 	<select id="listCmCfggrptype" parameterType="hashmap" resultMap="cmCfggrptype-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listCmCfggrptype" parameterType="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO" resultType="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO">
+		/* ====== com.hsck.ubfw.component.cmCfggrptype.service.impl.CmCfggrptypeMapper.listCmCfggrptype ====== */
+<!-- 		<include refid="kr.co.hanssak.include.pagingStart"/> -->
+	    <![CDATA[
+			SELECT 
+								  CC.GRP_TYPE  /* cfgbasecd grpType 참조 B:건물 J:조직 C:고객유형 D:문서 F:파일 R:요금항목 O:점용위치 */
+				    								 ,  CC.UBSEQ  /* 자료순번 */
+				    								 ,  CC.GRP_NM  /* 그룹명 */
+				    								 ,  CC.REG_ID  /* 등록자 */
+				    								 ,  CC.UPD_ID  /* 변경자 */
+				    								 ,  CC.REG_TM  /* 등록시간 */
+				    								 ,  CC.UPD_TM  /* 수정시간 */
+				    							  FROM CM_CFGGRPTYPE CC
+			 WHERE 1=1 
+	    ]]>
+
+		<include refid="listCmCfggrptype-where"/>
+			ORDER BY CC.UPD_TM DESC
+<!-- 		<include refid="kr.co.hanssak.include.pagingEnd"/> -->
+	</select>
+	
+	<select id="getCmCfggrptypeCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	
+	    <![CDATA[
+			/* ====== com.hsck.ubfw.component.cmCfggrptype.service.impl.CmCfggrptypeMapper.getCmCfggrptypeCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM CM_CFGGRPTYPE CC
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listCmCfggrptype-where"/>
+	</select>
+
+	
+	<sql id="saveCmCfggrptypeSQL">
+    	MERGE INTO CM_CFGGRPTYPE 
+    	USING DUAL
+    		ON (
+    																																																																		    		)
+		WHEN MATCHED THEN
+			UPDATE SET UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+					 , UPD_ID 	= #{sessionUserId}
+													<if test="grpType != null and grpType != ''">	, GRP_TYPE 	= #{grpType}		 </if>
+
+																		<if test="grpNm != null and grpNm != ''">	, GRP_NM 	= #{grpNm}		 </if>
+											WHEN NOT MATCHED THEN
+			INSERT (
+								 GRP_TYPE
+								 , UBSEQ
+								 , GRP_NM
+								 , REG_ID
+								 , UPD_ID
+								 , REG_TM
+								 , UPD_TM
+									) 
+					VALUES 
+					( 
+								 #{grpType}
+								 , #{ubseq}
+								 , #{grpNm}
+								 , #{sessionUserId}
+								 , #{sessionUserId}
+								 , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+								 , DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+								)
+	</sql>	
+	<insert id="saveCmCfggrptypeMap" parameterType="java.util.HashMap">
+		/* ====== com.hsck.ubfw.component.cmCfggrptype.service.impl.CmCfggrptypeMapper.saveCmCfggrptypeMap ====== */
+		<include refid="saveCmCfggrptypeSQL"/>
+	</insert>
+	<insert id="saveCmCfggrptype" parameterType="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO">
+		/* ====== com.hsck.ubfw.component.cmCfggrptype.service.impl.CmCfggrptypeMapper.saveCmCfggrptype ====== */
+		<include refid="saveCmCfggrptypeSQL"/>
+	</insert>
+	
+
+	<insert id="insertCmCfggrptype" parameterType="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.cmCfggrptype.service.impl.CmCfggrptypeMapper.insertCmCfggrptype ====== */
+			INSERT INTO CM_CFGGRPTYPE ( 
+									 GRP_TYPE
+									 , UBSEQ
+									 , GRP_NM
+									 , REG_ID
+									 , UPD_ID
+									 , REG_TM
+									 , UPD_TM
+									) 
+					VALUES 
+					( 
+								  #{grpType}
+				    								 ,  #{ubseq}
+				    								 ,  #{grpNm}
+				    								 ,  #{sessionUserId}
+				    								 ,  #{sessionUserId}
+				    								 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				    								 ,  DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				    								)
+		]]>
+	</insert>
+
+
+	<update id="updateCmCfggrptype" parameterType="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO">
+			/* ====== com.hsck.ubfw.component.cmCfggrptype.service.impl.CmCfggrptypeMapper.updateCmCfggrptype ====== */
+	        UPDATE CM_CFGGRPTYPE 
+	        SET UPD_TM 	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				, UPD_ID 	= #{sessionUserId}
+															 <if test="grpType != null and grpType != ''">		, GRP_TYPE 	= #{grpType}		 </if>
+					    				    															 <!--<if test="ubseq != null and ubseq != ''">		, UBSEQ 	= #{ubseq}		 </if>-->
+					    				    															 <if test="grpNm != null and grpNm != ''">		, GRP_NM 	= #{grpNm}		 </if>
+					    				    						     WHERE
+	</update>
+
+
+	<delete id="deleteCmCfggrptype" parameterType="com.hsck.ubfw.component.cmCfggrptype.vo.CmCfggrptypeVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.cmCfggrptype.service.impl.CmCfggrptypeMapper.deleteCmCfggrptype ====== */
+			DELETE FROM CM_CFGGRPTYPE 
+		]]>
+			 WHERE 																																																																</delete>
+
+</mapper>

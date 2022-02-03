@@ -1,0 +1,111 @@
+@charset "utf-8";
+
+
+
+@font-face {
+  font-family: 'Noto_R';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../font/NotoSansKR-Regular-Hestia.eot') format('eot'),
+        url('../font/NotoSansKR-Regular-Hestia.eot?#iefix') format('embedded-opentype'),
+        url('../font/NotoSansKR-Regular-Hestia.woff') format('woff'),
+        url('../font/NotoSansKR-Regular-Hestia.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto_M';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../font/NotoSansKR-Medium-Hestia.eot') format('eot'),
+        url('../font/NotoSansKR-Medium-Hestia.eot?#iefix') format('embedded-opentype'),
+        url('../font/NotoSansKR-Medium-Hestia.woff') format('woff'),
+        url('../font/NotoSansKR-Medium-Hestia.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto_B';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../font/NotoSansKR-Bold-Hestia.eot') format('eot'),
+        url('../font/NotoSansKR-Bold-Hestia.eot?#iefix') format('embedded-opentype'),
+        url('../font/NotoSansKR-Bold-Hestia.woff') format('woff'),
+        url('../font/NotoSansKR-Bold-Hestia.otf') format('opentype');
+}
+
+
+
+@charset "utf-8";
+
+/* ebill */
+
+body{font-family: 'Noto_R','Noto_M','Noto_B', Verdana,'MalgunGothic', '���� ���',Tahoma, sans-serif;letter-spacing:-.3px;}
+
+ul,li{list-style:none;padding:0; margin:0;}
+img {border:0; vertical-align:middle;}
+table, th, td{border-collapse:collapse;} 
+
+html, body{padding:0; margin:0; width:100%; height:100%;}
+
+.bill_w {width:970px; margin:0 auto; border:1px solid #eeeeee;}
+
+.btop {width:100%; height:250px; margin:0 auto; background: url('../images/ebill/ebg.png') no-repeat ;}
+.bcont {width:800px; height:auto;  margin:0 auto;}
+.bfooter {width:100%;  background:#dcdcdc; }
+.bfooter p{ padding:30px; margin:0 auto; text-align:center; font-size:12px; color:#6f6f6f;}
+
+.elogo {margin:0 auto; width:850px; height:100px; padding-top:50px;}
+.elogo img{margin:0px 0px 10px 0px; }
+.elogo .etxt{padding:0px 0px 0px 45px;color:#adb1b7; font-size:13px; line-height:20px; letter-spacing:0px !important;}
+
+.emonth {margin:0 auto; text-align:right; font-size:40px; font-weight:bold; width:800px; height:80px; padding: 20px 20px 0px 0px; color:#ff7e00;}
+.emonth img{margin:0px 10px 3px 0px;}
+
+.billbox {width:100%; padding:20px 0px 40px; color:#515151;}
+.billbox1 {width:100%; padding:10px 0px 30px; color:#515151;}
+
+table {width:100%; color:#6b6b6b; font-size:15px;}
+table th{background:#f3f3f3; height:35px; border-top:3px solid #ff7e00; }
+table td{border-bottom:1px solid #d9d9d9; height:35px;}
+table td:first-child{padding-left:35px;}
+table td:last-child{padding-right:35px;}
+table th:first-child{padding-left:35px;}
+table th:last-child{padding-right:35px;}
+.noline {border-bottom:0px solid #d9d9d9 !important; height:30px;}
+
+.btitle { width:100%; height:auto;  font-size:18px;  font-family: 'Noto_M'; padding-bottom:15px; color:#515151;}
+.btitle img{margin:0px 5px 5px 0px;}
+
+
+
+.bbox { width:100%; margin:0 auto; padding:20px 35px; border:1px solid #d9d9d9; background:#fcfcfc;}
+.bbox ul li{ float:left; width:42%;}
+.bbox img{padding:0px 5px 3px 5px;}
+.bbox span{padding-left:30px;}
+
+.bbox1 { width:100%; margin:0 auto; padding:20px 35px; border:1px solid #d9d9d9;}
+.bbox1 li{ float:left; width:42%;  padding:20px 35px;}
+.bbox1 img{padding:0px 5px 3px 5px;}
+
+.bvalue{font-size:25px; text-align:center; margin:0 auto; width:80%; height:50px; padding-top:10px; font-family: 'Noto_M'}
+.bvalue li{display:inline;}
+.bvalue span{color:#ff7e00; font-family: 'Noto_M'; padding: 0px 10px;}
+
+
+.bnotice {width:100%; padding:20px 0px 50px; border:1px solid #ddd;}
+.bnotice ul{width:100%; height:80px; padding:20px; border:1px solid #ddd;}
+
+
+.bbox0 { width:100%; margin:0 auto;  border:1px solid #d9d9d9; background:#fcfcfc; padding:20px 0px 20px;}
+.bbox0 table td{border-bottom:0px; height:25px;}
+
+.fr {float:right;}
+.fl {float:left;}
+
+.tr {text-align:right;}
+.tl {text-align:left;}
+.tc {text-align:center;}
+
+.tp {padding-top:15px;}
+.tb {/* padding-bottom:15px; */}
+
+.bp{margin-bottom:30px;}

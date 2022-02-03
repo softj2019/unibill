@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="monitor">
+	<!-- TODAY 통화 -->
+    <select id="daytong" parameterType="map" resultType="egovMap">
+
+		select 
+			format(ifnull(sum(cnt),0),0) as cnt 
+			,format(ifnull(sum(cost),0),0) as cost 
+		from pb_tongpbx 
+		where TDAY = #{tday}
+
+	</select>
+	
+	<!-- MONTH 통화 -->
+	<select id="montong" parameterType="map" resultType="egovMap">
+
+		select 
+			format(ifnull(sum(cnt),0),0) as cnt 
+			,format(ifnull(sum(cost),0),0) as cost 
+		from pb_tongpbx 
+		where substr(TDAY, 1, 6) =  #{tmon}
+		
+
+	</select>
+	
+	<!-- 전월대비 -->
+	<select id="prevmonth" parameterType="map" resultType="egovMap"> 			
+			 
+		select 
+			  (case when a.cnt =0 and b.cnt = 0 then 0  when a.cnt = 0 then 100     else round(((b.cnt-a.cnt)/a.cnt)*100) end	) pcnt2 -- 중앙
+			 ,(case when a.cnt =0 and b.cnt = 0 then 0  
+			 	else round(b.cnt /(b.cnt+a.cnt)*100) end 
+			  ) pcnt3 -- 현월비중 
+			 ,(case when a.cnt =0 and b.cnt = 0 then 0   
+			   else round(a.cnt /(b.cnt+a.cnt)*100) end 
+			  ) pcnt -- 전월비중			 
+			 ,(case when a.cost =0 and b.cost = 0 then 0  	when a.cost =0  then 100     	else round(((b.cost-a.cost)/a.cost)*100)  	end	) pcost2 -- 중앙			  
+			 ,(case when a.cost =0 and b.cost = 0 then 0  
+			   else round(b.cost /(b.cost+a.cost)*100) end 
+			  ) pcost3 -- 현월비중 
+			 ,(case when a.cost =0 and b.cost = 0 then 0  
+			    else round( a.cost /(b.cost+a.cost)*100) end 
+			   )  pcost -- 전월비중
+		    ,format(a.cnt,0) precnt
+		    ,format(b.cnt,0) curcnt  
+		    ,format(a.cost,0) precost
+		    ,format(b.cost,0) curcost 
+		  FROM 
+		
+		  ( select coalesce(sum(cnt),0)  cnt , coalesce(sum(cost),0) cost from pb_tongpbx where substr(TDAY, 1, 6) = #{pretmon} ) a,
+			( select coalesce(sum(cnt),0)  cnt , coalesce(sum(cost),0) cost from pb_tongpbx where substr(TDAY, 1, 6) = #{tmon} ) b 
+		   
+ 		<!--		  
+ 		   
+ 		select
+		    case when a.cnt =0 and b.cnt = 0 then 0 else 100-ceil((b.cnt)/(a.cnt+b.cnt)*100) end pcnt
+           ,case when a.cnt =0 and b.cnt = 0 then 0 else ceil((b.cnt)/(a.cnt+b.cnt)*100) end pcnt2 
+		   ,case when a.cnt = 0 and b.cnt != 0  then 100 
+           		   when b.cnt = 0 and (a.cnt != 0 or a.cnt = 0)  then 0
+                   when b.cnt > a.cnt then  round((b.cnt)/(a.cnt)*100)
+           ELSE  -(round((a.cnt)/(b.cnt)*100)) 
+           end as pcnt3
+           ,format(a.cnt,0) precnt
+           ,format(b.cnt,0) curcnt 
+           ,case when a.cost =0 and b.cost = 0 then 0 else 100-ceil((b.cnt)/(a.cnt+b.cnt)*100) end pcost
+		   ,case when a.cost =0 and b.cost = 0 then 0 else ceil((b.cnt)/(a.cnt+b.cnt)*100) end pcost2
+           ,case when a.cost = 0 and b.cost != 0 then 100 
+           		 when b.cost = 0 and (b.cost != 0 or b.cost = 0) then 0
+                 when b.cost > a.cnt then  round((b.cost)/(a.cost)*100)
+           ELSE  -(round((a.cost)/(b.cost)*100)) 
+           end as pcost3
+           ,format(a.cost,0) precost
+           ,format(b.cost,0) curcost
+ 		from  
+		( select coalesce(sum(cnt),0)  cnt , coalesce(sum(cost),0) cost from pb_tongpbx where substr(TDAY, 1, 6) = #{pretmon} ) a,
+		( select coalesce(sum(cnt),0)  cnt , coalesce(sum(cost),0) cost from pb_tongpbx where substr(TDAY, 1, 6) = #{tmon} ) b
+-->
+	</select>
+	
+	<!-- 상태조회 -->
+	<select id="statuschk" parameterType="map" resultType="egovMap">
+		select * from cm_monsys
+	</select>
+	
+	<!-- 월별현황 -->
+	<select id="monthcur" parameterType="map" resultType="egovMap">
+
+		select a.*
+ 			,convert(round(ifnull(sinecnt, 0)),char) as sinecnt
+      		,convert(round(ifnull(injubcnt,0)),char) as injubcnt
+      		,convert(round(ifnull(siuecnt + injubcnt,0)),char) as siuecnt
+      		,convert(round(ifnull(idongcnt,0)),char) as idongcnt
+      		,convert(round(ifnull(intercnt,0)),char) as intercnt
+      		,convert(round(ifnull(kukjecnt,0)),char) as kukjecnt
+      		,convert(round(ifnull(gitacnt ,0)),char) as gitacnt
+      
+      		,convert(round(ifnull(sinecost, 0)),char) as sinecost
+      		,convert(round(ifnull(injubcost,0)),char) as injubcost
+      		,convert(round(ifnull(siuecost + injubcost,0)),char) as siuecost
+      		,convert(round(ifnull(idongcost,0)),char) as idongcost
+      		,convert(round(ifnull(intercost,0)),char) as intercost
+      		,convert(round(ifnull(kukjecost,0)),char) as kukjecost
+      		,convert(round(ifnull(gitacost ,0)),char) as gitacost
+		from (
+			SELECT DATE_FORMAT(DATE_ADD(concat(#{preyeartmon},'01'), INTERVAL seq-1 MONTH), '%Y%m') as ym
+			FROM seq_1_to_6) a
+		left join (
+		  	select ym
+      			,concat(sum(sinecnt)) as sinecnt
+      			,concat(sum(injubcnt)) as injubcnt
+      			,concat(sum(siuecnt)) as siuecnt
+      			,concat(sum(idongcnt)) as idongcnt
+      			,concat(sum(intercnt)) as intercnt
+      			,concat(sum(kukjecnt)) as kukjecnt
+      			,concat(sum(gitacnt)) as gitacnt
+      
+      			,round(sum(sinecost)) as sinecost
+      			,round(sum(injubcost)) as injubcost
+      			,round(sum(siuecost)) as siuecost
+      			,round(sum(idongcost)) as idongcost
+      			,round(sum(intercost)) as intercost
+      			,round(sum(kukjecost)) as kukjecost
+      			,round(sum(gitacost)) as gitacost
+  			from (
+
+	      		select a.*
+	                ,case when mbtype = '1' then cnt  else '0' end as sinecnt
+	                ,case when mbtype = '2' then cnt  else '0' end as injubcnt
+	                ,case when mbtype = '3' then cnt  else '0' end as siuecnt
+	                ,case when mbtype = '4' then cnt  else '0' end as idongcnt
+	                ,case when mbtype = '5' then cnt  else '0' end as intercnt
+	                ,case when mbtype = '6' then cnt  else '0' end as kukjecnt
+	                ,case when mbtype = '7' then cnt  else '0' end as gitacnt
+	                  
+	                ,case when mbtype = '1' then cost  else '0' end as sinecost
+	                ,case when mbtype = '2' then cost  else '0' end as injubcost
+	                ,case when mbtype = '3' then cost  else '0' end as siuecost
+	                ,case when mbtype = '4' then cost  else '0' end as idongcost
+	                ,case when mbtype = '5' then cost  else '0' end as intercost
+	                ,case when mbtype = '6' then cost  else '0' end as kukjecost
+	                ,case when mbtype = '7' then cost  else '0' end as gitacost
+	      		from (
+		            select ym,btype
+		                ,(case when btype in (1,3,4,5,6) then btype  
+		            		   when btype in (2) then 2  -- 인접 
+		            	  else 7 end ) mbtype 
+						,sum(cnt) cnt
+						,sum(cost) cost                         
+		            from pb_tongym where btype between 1 and  98 and ym between #{preyeartmon} and #{pretmon}
+		            group by ym,btype
+		            
+		            union all
+                    
+                    select #{tmon} as ym, btype
+		                ,(case when btype in (1,3,4,5,6) then btype  
+		            		   when btype in (2) then 2  -- 인접 
+		            	  else 7 end ) mbtype 
+						,sum(cnt) cnt
+						,sum(cost) cost                         
+		            from pb_tongpbx where btype between 1 and  98 and substr(tday, 1,6) = #{tmon}
+		            
+		            group by ym,btype
+				) a
+	  		) a
+  			group by ym
+		) b on (a.ym = b.ym)
+
+	</select>
+	
+	<!-- 일별현황 -->
+	<select id="daycur" parameterType="map" resultType="egovMap">
+
+		select a.*
+ 			,convert(round(ifnull(sinecnt, 0)),char) as sinecnt
+      		,convert(round(ifnull(injubcnt,0)),char) as injubcnt
+      		,convert(round(ifnull(siuecnt + injubcnt,0)),char) as siuecnt
+      		,convert(round(ifnull(idongcnt,0)),char) as idongcnt
+      		,convert(round(ifnull(intercnt,0)),char) as intercnt
+      		,convert(round(ifnull(kukjecnt,0)),char) as kukjecnt
+      		,convert(round(ifnull(gitacnt ,0)),char) as gitacnt
+      
+      		,convert(round(ifnull(sinecost, 0)),char) as sinecost
+      		,convert(round(ifnull(injubcost,0)),char) as injubcost
+      		,convert(round(ifnull(siuecost + injubcnt,0)),char) as siuecost
+      		,convert(round(ifnull(idongcost,0)),char) as idongcost
+      		,convert(round(ifnull(intercost,0)),char) as intercost
+      		,convert(round(ifnull(kukjecost,0)),char) as kukjecost
+      		,convert(round(ifnull(gitacost ,0)),char) as gitacost
+		from (
+			SELECT DATE_FORMAT(DATE_ADD(concat(#{preyeartday},#{pretday}), INTERVAL seq-1 DAY), '%Y%m%d') as tday
+			FROM seq_1_to_6) a
+		left join (
+		  	select tday
+      			,concat(sum(sinecnt)) as sinecnt
+      			,concat(sum(injubcnt)) as injubcnt
+      			,concat(sum(siuecnt)) as siuecnt
+      			,concat(sum(idongcnt)) as idongcnt
+      			,concat(sum(intercnt)) as intercnt
+      			,concat(sum(kukjecnt)) as kukjecnt
+      			,concat(sum(gitacnt)) as gitacnt
+      
+      			,round(sum(sinecost)) as sinecost
+      			,round(sum(injubcost)) as injubcost
+      			,round(sum(siuecost)) as siuecost
+      			,round(sum(idongcost)) as idongcost
+      			,round(sum(intercost)) as intercost
+      			,round(sum(kukjecost)) as kukjecost
+      			,round(sum(gitacost)) as gitacost
+  			from (
+
+	      		select a.*
+	                ,case when mbtype = '1' then cnt  else '0' end as sinecnt
+	                ,case when mbtype = '2' then cnt  else '0' end as injubcnt
+	                ,case when mbtype = '3' then cnt  else '0' end as siuecnt
+	                ,case when mbtype = '4' then cnt  else '0' end as idongcnt
+	                ,case when mbtype = '5' then cnt  else '0' end as intercnt
+	                ,case when mbtype = '6' then cnt  else '0' end as kukjecnt
+	                ,case when mbtype = '7' then cnt  else '0' end as gitacnt
+	                  
+	                ,case when mbtype = '1' then cost  else '0' end as sinecost
+	                ,case when mbtype = '2' then cost  else '0' end as injubcost
+	                ,case when mbtype = '3' then cost  else '0' end as siuecost
+	                ,case when mbtype = '4' then cost  else '0' end as idongcost
+	                ,case when mbtype = '5' then cost  else '0' end as intercost
+	                ,case when mbtype = '6' then cost  else '0' end as kukjecost
+	                ,case when mbtype = '7' then cost  else '0' end as gitacost
+	      		from (
+		            select tday,btype
+		                ,(case when btype in (1,3,4,5,6) then btype  
+		            		   when btype in (2) then 2  -- 인접 
+		            	  else 7 end ) mbtype 
+						,sum(cnt) cnt
+						,sum(cost) cost                         
+		            from pb_tongpbx where btype between 1 and  98 and tday between #{preyeartday} and #{tday}
+		            group by tday,btype
+				) a
+	  		) a
+  			group by tday
+		) b on (a.tday = b.tday)
+
+	</select>
+	
+	<!-- btype 조회 -->
+	<select id="getbtype" parameterType="map" resultType="egovMap">
+		select nm from cm_cfgbasecd x where GRP_CD='MON_BTYPE' and val <![CDATA[ <= ]]> 7 and val != '2' order by cast(val as int)
+	</select>
+	
+	
+	<!-- 시스템,디스크현황 -->
+	<select id="system" parameterType="map" resultType="egovMap">
+		select a.*, 100-use_rate as ruse_rate  from cm_monsysres a
+	</select>
+	
+	<!-- 네트워크 트래픽 -->
+	<select id="network" parameterType="map" resultType="egovMap">
+		select a.thour
+			,ifnull(host_nm,0) as host_nm
+			,ifnull(res_id,0) as res_id
+			,ifnull(res_nm,0) as res_nm
+			,ifnull(rx_packets,0) as rx_packets
+			,ifnull(round(rx_bytes/1024),0) as rx_bytes
+			,ifnull(rx_errors,0) as rx_errors
+			,ifnull(rx_dropped,0) as rx_dropped
+			,ifnull(rx_overruns,0) as rx_overruns
+			,ifnull(tx_packets,0) as tx_packets
+			,ifnull(round(tx_bytes/1024),0) as tx_bytes
+			,ifnull(tx_errors,0) as tx_errors
+			,ifnull(tx_dropped,0) as tx_dropped
+			,ifnull(tx_overruns,0) as tx_overruns
+			,ifnull(tx_carrier,0) as tx_carrier
+			,ifnull(tx_collisions,0) as tx_collisions
+		from 
+		(
+			SELECT DATE_FORMAT(DATE_ADD(#{thour}, INTERVAL seq-1 hour), '%Y%m%d%H') as thour
+			FROM seq_1_to_6
+		) a
+		left join cm_hourusednetwork b on (a.thour = b.thour)
+	</select>
+	
+	
+	
+	
+	<!-- 당일 호종류 현황 -->
+	<select id="daybtype" parameterType="map" resultType="egovMap">
+		select a.val as mbtype
+			,a.nm as btype_nm
+			,case when b.cnt is null then 0 else b.cnt end as cnt
+			,case when b.cost is null then 0 else b.cost end as cost
+			,case when b.pcnt is null then 0 else round(b.pcnt) end as pcnt
+			,case when b.pcost is null then 0 else b.pcost end as pcost
+			
+		from (
+			select val, nm from cm_cfgbasecd x where GRP_CD='MON_BTYPE' and val != '2'
+		)  a
+		left join  (
+			
+			select a.*
+					,(select nm from cm_cfgbasecd x where GRP_CD='MON_BTYPE' and x.DTL_CD=a.mbtype ) btype_nm
+					, round( a.cnt*100/t.cnt,2) pcnt
+					, round( a.cost*100/t.cost,2) pcost  from 
+					(
+					           select mbtype,sum(cnt) cnt, sum(cost)  cost
+					           from (
+					                     select btype
+						                     ,(case when btype in (1,3,4,5,6) then btype when btype in (2) then 3  else 7 end ) mbtype 
+											 ,sum(cnt) cnt
+											 ,sum(cost) cost                        
+					                     from pb_tongpbx 
+					                     where btype between 1 and  98  
+					                     	and  tday = #{tday}
+					                     group by btype
+					           ) a  
+					           group by mbtype
+					) a , 
+					(
+					                     select  
+					                     sum(cnt) cnt
+					                     ,sum(cost) cost                        
+					                     from pb_tongpbx where btype between 1 and  98 and  tday = #{tday} 
+					) t
+					order by a.mbtype 
+		) b
+		on (a.val=b.mbtype)
+	
+	</select>
+	
+	<!-- 당일 비과금 현황 -->
+	<select id="daynobill" parameterType="map" resultType="egovMap">
+		select a.*
+			,ifnull(format(b.cnt,0),0) as cnt
+			,ifnull(round(b.pcnt),0) as pcnt  
+		from (
+		 	select val, nm FROM (
+		      select 
+		       	(case when val in ('C','I','N','S') then val 
+		              when val in ('D','G') then 'D' 
+		         else 'E' end 
+		       	) val
+		       	,(case when val in ('C','I','N','S') then nm 
+		               when val in ('D','G') then '불완료' 
+		          else '기타' end 
+		       	) nm
+		       from cm_cfgbasecd x 
+		       where GRP_CD = 'CALL_TYPE'
+		    ) a
+		    GROUP by val, nm
+		) a
+		left join (
+		    select a.*
+		    	, round( a.cnt*100/t.cnt,2) pcnt
+		  	from (
+		    	select call_type
+		        	,(case when call_type in ('C','I','N','S') then call_type 
+		                   when call_type in ('D','G') then 'D' 
+		              else 'E' end 
+		             ) mcall_type
+		            ,count(*) cnt
+		        from pb_pbxcdr${tmon}
+		        where  CALL_STATUS = 'N'
+		        and eday = #{tday}
+		        group by mcall_type
+		    ) a, (
+		        select count(*) cnt 
+		        from pb_pbxcdr${tmon}
+		        where  CALL_STATUS = 'N'
+		        and eday = #{tday}
+		        
+		    ) t 
+		) b 
+		on (a.val = b.mcall_type)        
+		
+	</select>
+	
+	<!-- 당일 호검사 현황 -->
+	<select id="daycheck" parameterType="map" resultType="egovMap">
+		select long_cnt, high_cnt, caller_cnt, callee_cnt, chk_cnt, telno_errcnt
+			,ifnull(round(long_cnt*100/(long_cnt + high_cnt + caller_cnt + callee_cnt + chk_cnt + telno_errcnt)),0) plong_cnt
+			,ifnull(round(high_cnt*100/(long_cnt + high_cnt + caller_cnt + callee_cnt + chk_cnt + telno_errcnt)),0) phigh_cnt
+			,ifnull(round(caller_cnt*100/(long_cnt + high_cnt + caller_cnt + callee_cnt + chk_cnt + telno_errcnt)),0) pcaller_cnt
+			,ifnull(round(callee_cnt*100/(long_cnt + high_cnt + caller_cnt + callee_cnt + chk_cnt + telno_errcnt)),0) pcallee_cnt
+			,ifnull(round(chk_cnt*100/(long_cnt + high_cnt + caller_cnt + callee_cnt + chk_cnt + telno_errcnt)),0) pchk_cnt
+			,ifnull(round(telno_errcnt*100/(long_cnt + high_cnt + caller_cnt + callee_cnt + chk_cnt + telno_errcnt)),0) ptelno_errcnt
+		from
+		(select count(*) long_cnt from pb_pbxcdr${tmon} where   long_yn='Y' and eday=#{tday}) a
+		, (select count(*) high_cnt from pb_pbxcdr${tmon} where   high_yn='Y' and eday=#{tday}) b
+		, (select count(*) caller_cnt from pb_pbxcdr${tmon} where   caller_alter_yn='Y' and eday=#{tday}) c
+		, (select count(*) callee_cnt from pb_pbxcdr${tmon} where   callee_alter_yn='Y' and eday=#{tday}) d
+		, (select count(*) chk_cnt from pb_pbxcdr${tmon} where   btype between 1 and  98 and cost <![CDATA[ <= ]]> 0  and call_status not in ('N','S','V') and eday=#{tday}) e
+		, (select count(*) telno_errcnt from pb_pbxcdr${tmon} where   nobill in (9,10) and eday=#{tday}) f
+	</select>
+	
+	<!-- 통화수집현황 -->
+	<select id="pbxtong" parameterType="map" resultType="egovMap">
+		select pbx_sn
+			, (select nm from pb_cfgpbx  x where x.pbx_sn = a.pbx_sn) as pbx_nm
+			, concat(substr(sday,5,2),'/', substr(sday,7,2),' ',substr(STM,1,2),':', substr(STM,3,2),':', substr(STM,5,2)) as stm
+			, dur
+			,f_showtelnonm('', ncaller) ncaller
+			,f_showtelnonm('', ncallee) ncallee
+			, btype
+			, (select nm from cm_cfgbasecd x where x.grp_cd = 'BTYPE' and x.val = a.btype) as btypeNm  
+			, cost
+			, callee_area_nm 
+		from    pb_pbxcdr${tmon} a 
+		where eday = #{tday} 
+		order by cdrseq desc 
+		limit 20
+	</select>
+		
+	<!-- 알람현황 -->
+	<select id="almtong" parameterType="map" resultType="egovMap">
+		select ALM_ID
+        	, (select nm from cm_cfgalm x where x.alm_id = a.alm_id and x.alm_level = a.alm_level) as alml_nm
+         	, concat(substr(ALM_YMD,5,2),'/', substr(ALM_YMD,7,2),' ',substr(ALM_HMS,1,2),':', substr(ALM_HMS,3,2),':', substr(ALM_HMS,5,2)) as stm
+        	, ALM_LEVEL
+        	, (select nm from cm_cfgbasecd x where x.grp_cd = 'ALM_LEVEL' and x.val = a.ALM_LEVEL) as alm_nm
+        	, ALM_KEY
+        	, msg
+        	, ubseq 
+        from cm_monalm a
+        where del_yn != 'Y'
+        ORDER BY alm_ymd desc ,alm_hms desc
+	</select>
+	
+	<!-- 시스템현황 상세 -->
+	<select id="getSysDetail" parameterType="map" resultType="egovMap">
+		select * from cm_cfgsysinfo 
+    </select>
+    
+    <delete id="delalarm" parameterType="map" >
+    	delete from cm_monalm where ubseq = #{ubseq}
+    </delete>
+	
+	<update id="upalarm" parameterType="map" >
+		update cm_monalm set del_yn = 'Y' where ubseq = #{ubseq}
+	</update>
+	
+
+</mapper>

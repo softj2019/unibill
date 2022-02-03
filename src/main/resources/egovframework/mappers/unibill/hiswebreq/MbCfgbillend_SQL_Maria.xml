@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper">
+
+	<resultMap id="mbCfgbillend-result" type="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO">
+		<result column="BILL_YM" 			property="billYm" /> <!-- 청구월 -->
+		<!--<result column="SVC_ID" 			property="svcId" /> &lt;!&ndash; 서비스ID &ndash;&gt;-->
+		<result column="UBSEQ" 			property="ubseq" /> <!-- 자료순번 -->
+		<result column="BILLEND_YN" 			property="billendYn" /> <!-- 마감여부 -->
+		<result column="REG_ID" 			property="regId" /> <!-- 등록자 -->
+		<result column="UPD_ID" 			property="updId" /> <!-- 변경자 -->
+		<result column="REG_TM" 			property="regTm" /> <!-- 등록시간 -->
+		<result column="UPD_TM" 			property="updTm" /> <!-- 변경시간 -->
+		</resultMap>
+	
+	<sql id="listMbCfgbillend-where">
+	
+		<!-- 조회 조건값 Type 1( MC.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				 <!--<if test="bill_ym != null and bill_ym != ''">	AND MC.BILL_YM 	= #{bill_ym}		 </if>-->
+				 <!--<if test="svc_id != null and svc_id != ''">	AND MC.SVC_ID 	= #{svc_id}		 </if>-->
+				<!-- <if test="ubseq != null and ubseq != ''">	AND MC.UBSEQ 	= #{ubseq}		 </if> -->
+				<!-- <if test="billend_yn != null and billend_yn != ''">	AND MC.BILLEND_YN 	= #{billend_yn}		 </if> -->
+				<!-- <if test="reg_id != null and reg_id != ''">	AND MC.REG_ID 	= #{reg_id}		 </if> -->
+				<!-- <if test="upd_id != null and upd_id != ''">	AND MC.UPD_ID 	= #{upd_id}		 </if> -->
+				<!-- <if test="reg_tm != null and reg_tm != ''">	AND MC.REG_TM 	= #{reg_tm}		 </if> -->
+				<!-- <if test="upd_tm != null and upd_tm != ''">	AND MC.UPD_TM 	= #{upd_tm}		 </if> -->
+				
+		<!-- 조회 조건값 Type 2( MC.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				 <if test="billYm != null and billYm != ''">	AND MC.BILL_YM 	= #{billYm}		 </if>
+				 <!--<if test="svcId != null and svcId != ''">	AND MC.SVC_ID 	= #{svcId}		 </if>-->
+				<!-- <if test="ubseq != null and ubseq != ''">	AND MC.UBSEQ 	= #{ubseq}		 </if> -->
+				<!-- <if test="billendYn != null and billendYn != ''">	AND MC.BILLEND_YN 	= #{billendYn}		 </if> -->
+				<!-- <if test="regId != null and regId != ''">	AND MC.REG_ID 	= #{regId}		 </if> -->
+				<!-- <if test="updId != null and updId != ''">	AND MC.UPD_ID 	= #{updId}		 </if> -->
+				<!-- <if test="regTm != null and regTm != ''">	AND MC.REG_TM 	= #{regTm}		 </if> -->
+				<!-- <if test="updTm != null and updTm != ''">	AND MC.UPD_TM 	= #{updTm}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND MC.PROTOTYPE_TITLE LIKE '%' ||  #{searchPrototypeTitle  } || '%' </if> -->
+				<!-- <if test="searchBillYm != null and searchBillYm != ''">	AND MC.BILL_YM 	= #{searchBillYm}		 </if> -->
+				<!-- <if test="searchUbseq != null and searchUbseq != ''">	AND MC.UBSEQ 	= #{searchUbseq}		 </if> -->
+				<!-- <if test="searchBillendYn != null and searchBillendYn != ''">	AND MC.BILLEND_YN 	= #{searchBillendYn}		 </if> -->
+				<!-- <if test="searchRegId != null and searchRegId != ''">	AND MC.REG_ID 	= #{searchRegId}		 </if> -->
+				<!-- <if test="searchUpdId != null and searchUpdId != ''">	AND MC.UPD_ID 	= #{searchUpdId}		 </if> -->
+				<!-- <if test="searchRegTm != null and searchRegTm != ''">	AND MC.REG_TM 	= #{searchRegTm}		 </if> -->
+				<!-- <if test="searchUpdTm != null and searchUpdTm != ''">	AND MC.UPD_TM 	= #{searchUpdTm}		 </if> -->
+			</sql>
+	
+	<select id="getMbCfgbillend" parameterType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO" resultType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO">
+		/* ====== com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper.getMbCfgbillend ====== */
+			SELECT 
+				  	MC.BILL_YM /* 청구월 */
+				 ,  MC.UBSEQ /* 자료순번 */
+				 ,  MC.BILLEND_YN /* 마감여부 */
+				 ,  MC.REG_ID /* 등록자 */
+				 ,  MC.UPD_ID /* 변경자 */
+				 ,  MC.REG_TM /* 등록시간 */
+				 ,  MC.UPD_TM /* 변경시간 */
+			  FROM MB_CFGBILLEND MC
+			 WHERE MC. MC.BILL_YM 	= #{billYm}
+</select>
+
+<!-- 	<select id="listMbCfgbillend" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listMbCfgbillend" parameterType="hashmap" resultType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO"> -->
+<!-- 	<select id="listMbCfgbillend" parameterType="hashmap" resultMap="mbCfgbillend-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listMbCfgbillend" parameterType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO" resultType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO">
+		/* ====== com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper.listMbCfgbillend ====== */
+		<include refid="com.hsck.ubfw.component.include.maria.pagingStart"/>
+	    <![CDATA[
+			SELECT 
+								  MC.BILL_YM  /* 청구월 */
+				    								 ,  MC.UBSEQ  /* 자료순번 */
+				    								 ,  MC.BILLEND_YN  /* 마감여부 */
+				    								 ,  MC.REG_ID  /* 등록자 */
+				    								 ,  MC.UPD_ID  /* 변경자 */
+				    								 ,  MC.REG_TM  /* 등록시간 */
+				    								 ,  MC.UPD_TM  /* 변경시간 */
+				    							  FROM MB_CFGBILLEND MC
+			 WHERE 1=1 
+	    ]]>
+
+		<include refid="listMbCfgbillend-where"/>
+		<choose>
+			<when test="sidx != null and sidx != '' and sord != null and sord != ''">
+				ORDER BY ${sidx} ${sord}
+			</when>
+			<otherwise>
+				ORDER BY MC.UBSEQ ASC
+			</otherwise>
+		</choose>
+		<include refid="com.hsck.ubfw.component.include.maria.pagingEnd"/>
+	</select>
+	
+	<select id="getMbCfgbillendCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	
+	    <![CDATA[
+			/* ====== com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper.getMbCfgbillendCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM MB_CFGBILLEND MC
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listMbCfgbillend-where"/>
+	</select>
+
+	
+	<sql id="saveMbCfgbillendSQL">
+    	MERGE INTO MB_CFGBILLEND 
+    	USING DUAL
+    		ON (
+    								 BILL_YM = #{billYm}
+				    																																																										    		)
+		WHEN MATCHED THEN
+			UPDATE SET UPDATE_DATE = SYSDATE
+					 , UPDATE_USER 	= #{sessionMemSeq}
+																															<if test="ubseq != null and ubseq != ''">	, UBSEQ 	= #{ubseq}		 </if>
+																		<if test="billendYn != null and billendYn != ''">	, BILLEND_YN 	= #{billendYn}		 </if>
+																		<if test="regId != null and regId != ''">	, REG_ID 	= #{regId}		 </if>
+																		<if test="updId != null and updId != ''">	, UPD_ID 	= #{updId}		 </if>
+																		<if test="regTm != null and regTm != ''">	, REG_TM 	= #{regTm}		 </if>
+																		<if test="updTm != null and updTm != ''">	, UPD_TM 	= #{updTm}		 </if>
+											WHEN NOT MATCHED THEN
+			INSERT (
+								 BILL_YM
+								 , UBSEQ
+								 , BILLEND_YN
+								 , REG_ID
+								 , UPD_ID
+								 , REG_TM
+								 , UPD_TM
+									) 
+					VALUES 
+					( 
+								 #{billYm}
+								 , #{ubseq}
+								 , #{billendYn}
+								 , #{regId}
+								 , #{updId}
+								 , #{regTm}
+								 , #{updTm}
+								)
+	</sql>	
+	<insert id="saveMbCfgbillendMap" parameterType="java.util.HashMap">
+		/* ====== com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper.saveMbCfgbillendMap ====== */
+		<include refid="saveMbCfgbillendSQL"/>
+	</insert>
+	<insert id="saveMbCfgbillend" parameterType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO">
+		/* ====== com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper.saveMbCfgbillend ====== */
+		<include refid="saveMbCfgbillendSQL"/>
+	</insert>
+	
+
+	<insert id="insertMbCfgbillend" parameterType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper.insertMbCfgbillend ====== */
+			INSERT INTO MB_CFGBILLEND ( 
+									 BILL_YM
+									 , UBSEQ
+									 , BILLEND_YN
+									 , REG_ID
+									 , UPD_ID
+									 , REG_TM
+									 , UPD_TM
+									) 
+					VALUES 
+					( 
+								  #{billYm}
+				    								 ,  #{ubseq}
+				    								 ,  #{billendYn}
+				    								 ,  #{regId}
+				    								 ,  #{updId}
+				    								 ,  #{regTm}
+				    								 ,  #{updTm}
+				    								)
+		]]>
+	</insert>
+
+
+	<update id="updateMbCfgbillend" parameterType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO">
+			/* ====== com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper.updateMbCfgbillend ====== */
+	        UPDATE MB_CFGBILLEND 
+	        SET UPDATE_DATE 	= SYSDATE
+	          , UPDATE_USER 	= #{sessionMemSeq}
+																																	 <if test="ubseq != null and ubseq != ''">		, UBSEQ 	= #{ubseq}		 </if>
+					    				    															 <if test="billendYn != null and billendYn != ''">		, BILLEND_YN 	= #{billendYn}		 </if>
+					    				    															 <if test="regId != null and regId != ''">		, REG_ID 	= #{regId}		 </if>
+					    				    															 <if test="updId != null and updId != ''">		, UPD_ID 	= #{updId}		 </if>
+					    				    															 <if test="regTm != null and regTm != ''">		, REG_TM 	= #{regTm}		 </if>
+					    				    															 <if test="updTm != null and updTm != ''">		, UPD_TM 	= #{updTm}		 </if>
+					    				    						     WHERE 					 BILL_YM = #{billYm}
+
+	</update>
+
+
+	<delete id="deleteMbCfgbillend" parameterType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper.deleteMbCfgbillend ====== */
+			DELETE FROM MB_CFGBILLEND 
+		]]>
+			 WHERE 1=1 
+	 AND BILL_YM = #{billYm}
+								</delete>
+
+
+	<delete id="deleteListMbCfgbillend" parameterType="com.hsck.ubfw.component.hiswebreq.vo.MbCfgbillendVO">
+		<![CDATA[
+			/* ====== com.hsck.ubfw.component.hiswebreq.service.impl.MbCfgbillendMapper.deleteMbCfgbillend ====== */
+			DELETE FROM MB_CFGBILLEND 
+		]]>
+			 WHERE 1=1  
+			   AND UBSEQ IN
+		<foreach collection="delUbseqList" item="delUbseqs" index="index" open="(" close=")" separator=",">
+			${delUbseqs}
+		</foreach>
+	</delete>
+
+</mapper>

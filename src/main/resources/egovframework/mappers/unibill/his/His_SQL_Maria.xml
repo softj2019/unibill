@@ -1,0 +1,1323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="his">
+
+
+
+<sql id="selectHisSqlCondTelnoEnc">            
+         
+        <if test="ocaller != null and ocaller != '' ">    <!-- 원발신번호  AND a.ocaller like concat( #{ocaller},'%')  --> 
+            AND a.ocaller = f_enc('1', 'telno', #{ocaller})
+        </if>
+        <if test="ocallee != null and ocallee != '' ">    <!-- 원착신번호  AND a.ocallee like concat( #{ocallee},'%') --> 
+            AND a.ocallee = f_enc('1', 'telno', #{ocallee})
+        </if>
+        <if test="rdn != null and rdn != '' ">    <!-- 전환번호  AND a.rdn like concat( #{rdn},'%') --> 
+            AND a.rdn = f_enc('1', 'telno', #{rdn})
+        </if>
+        <if test="fcallee != null and fcallee != '' ">    <!-- 최종착신번호  AND a.fcallee like concat( #{fcallee},'%')  --> 
+            AND a.fcallee = f_enc('1', 'telno', #{fcallee})
+        </if>         
+        <if test="billno != null and billno != '' ">    <!-- 과금번호  AND a.billno like concat('%',#{billno},'%') --> 
+            AND a.billno = f_enc('1', 'telno', #{billno})
+        </if>        
+         
+	</sql>
+	
+	
+	<sql id="selectHisSqlCondTelno">            
+         <if test="billno != null and billno != '' ">    <!-- 과금번호  AND a.billno like concat('%',#{billno},'%') --> 
+            AND a.billno like concat('%',#{billno},'%')
+        </if>              
+        <if test="ocaller != null and ocaller != '' ">    <!-- 원발신번호  AND a.ocaller like concat( #{ocaller},'%')  --> 
+            AND a.ocaller like concat('%',#{ocaller},'%')
+        </if>
+        <if test="ocallee != null and ocallee != '' ">    <!-- 원착신번호  AND a.ocallee like concat( #{ocallee},'%') --> 
+            AND a.ocallee like concat('%',#{ocallee},'%')
+        </if>
+        <if test="rdn != null and rdn != '' ">    <!-- 전환번호  AND a.rdn like concat( #{rdn},'%') --> 
+            AND a.rdn like concat('%',#{rdn},'%')
+        </if>
+        <if test="fcallee != null and fcallee != '' ">    <!-- 최종착신번호  AND a.fcallee like concat( #{fcallee},'%')  --> 
+            AND a.fcallee like concat('%',#{fcallee},'%')
+        </if>         
+        <if test="billno != null and billno != '' ">    <!-- 과금번호  AND a.billno like concat('%',#{billno},'%') --> 
+            AND a.billno like concat('%',#{billno},'%')
+        </if>                 
+	</sql>
+	
+	
+<sql id="selectHisSqlCondEtc">  
+        <if test='(search_day_type == null or search_day_type == "" or search_day_type == "1") and from_eday1 != null and from_eday1 != "" and to_eday1 != null and to_eday1 != ""'>
+        	AND a.eday between  replace(#{from_eday1},'-','') and replace(#{to_eday1},'-','')
+        </if>
+        <if test='(search_day_type == null or search_day_type == "" or search_day_type == "1") and from_eday1 != null and from_eday1 != "" and f_etm != null and f_etm != ""'>
+        	and ( case when eday=replace(#{from_eday1},'-','') then etm <![CDATA[ >=  ]]>replace(#{f_etm},':','') else 1 end  )
+        </if>
+        <if test='(search_day_type == null or search_day_type == "" or search_day_type == "1") and to_eday1 != null and to_eday1 != "" and t_etm != null and t_etm != ""'>
+        	and ( case when eday=replace(#{to_eday1},'-','') then etm <![CDATA[ <=  ]]> replace(#{t_etm},':','') else 1 end  )
+        </if>
+        
+        <if test='search_day_type == "2" and from_eday1 != null and from_eday1 != "" and to_eday1 != null and to_eday1 != ""'>
+        	AND a.sday between  replace(#{from_eday1},'-','') and replace(#{to_eday1},'-','')
+        </if>
+        <if test='search_day_type == "2" and from_eday1 != null and from_eday1 != "" and f_etm != null and f_etm != ""'>
+        	and ( case when sday=replace(#{from_eday1},'-','') then stm <![CDATA[ >=  ]]>replace(#{f_etm},':','') else 1 end  )
+        </if>
+        <if test='search_day_type == "2" and to_eday1 != null and to_eday1 != "" and t_etm != null and t_etm != ""'>
+        	and ( case when sday=replace(#{to_eday1},'-','') then stm <![CDATA[ <=  ]]> replace(#{t_etm},':','') else 1 end  )
+        </if>
+         
+        
+        <if test="cdrseq != null and cdrseq != '' ">        <!-- cdrseq -->
+            AND a.cdrseq = #{cdrseq}
+        </if>
+        <if test="pbx_type != null and pbx_type != '' ">    <!-- 교환기 종류  -->
+            AND a.pbx_type = #{pbx_type}
+        </if>
+        <if test="pbx_sn != null and pbx_sn != '' ">    <!-- 교환기 종류  -->
+            AND a.pbx_sn = #{pbx_sn}
+        </if>
+        <if test="call_status != null and call_status != '' ">    <!-- 통화상태  -->
+            AND a.call_status = #{call_status}
+        </if>
+        <if test="call_type != null and call_type != '' ">    <!-- 통화유형  -->
+            AND a.call_type = #{call_type}
+        </if>
+        <if test="btype != null and btype != '' ">    <!-- 통화유형  -->
+            AND a.btype = #{btype}
+        </if>
+         
+        <if test="pstn_type != null and pstn_type != '' ">    <!-- 회선종류  -->
+            AND a.pstn_type = #{pstn_type}
+        </if>
+         <if test="ort_nm != null and ort_nm != '' ">    <!-- 라우트 종류  -->
+            AND a.ort_nm = #{ort_nm}
+        </if>
+        
+          <if test="ort_no != null and ort_no != '' ">     
+            AND a.ort_no = #{ort_no}
+        </if>
+        
+         <if test="oug_nm != null and oug_nm != '' ">    
+            AND a.oug_nm = #{oug_nm}
+        </if>
+        
+          <if test="irt_nm != null and irt_nm != '' ">    
+            AND a.irt_nm = #{irt_nm}
+        </if>
+        
+          <if test="irt_no != null and irt_no != '' ">    
+            AND a.irt_no = #{irt_no}
+        </if>
+        
+         <if test="iug_nm != null and iug_nm != '' ">     
+            AND a.iug_nm = #{iug_nm}
+        </if>
+        
+         <if test="callid != null and callid != '' ">     
+            AND a.callid = #{callid}
+        </if>
+        <if test='del_yn != null and del_yn != "" '>     
+             <choose>
+		 		<when test='del_yn == "T" '>
+		 			AND a.del_yn != 'Y'
+		 		</when>
+		 		<otherwise>
+		 			AND a.del_yn = #{del_yn}
+		 		</otherwise>
+		 	</choose>            
+        </if>
+        
+        <if test="grp_cd != null and grp_cd != '' ">    <!-- 발신및 착신조직  -->
+           AND  	(a.grpcd like  concat('%-',#{grp_cd}) or a.grpcd like  concat('%-',#{grp_cd},'-%') or grpcd=#{grp_cd} )
+        </if>
+        
+        <if test="dgrp_cd != null and dgrp_cd != '' ">    <!-- 발신및 착신조직  -->
+           AND  	(a.dgrpcd like  concat('%-',#{dgrp_cd}) or a.dgrpcd like  concat('%-',#{dgrp_cd},'-%') or dgrpcd=#{dgrp_cd} ) 
+        </if>
+        <include refid="selectHisSqlCondTelno" /> 
+	</sql>
+	
+	<!-- 우리카드 -->
+	<sql id="selectHisSqlCondEtcEnc"> 
+	 
+	 <!-- 
+        <choose>
+	 		<when test="f_etm != null and f_etm != '' and  t_etm != null and t_etm != ''">
+	 			AND concat(a.eday, a.etm) between  concat(replace(#{from_eday1},'-',''), replace(#{f_etm},':','')) and concat(replace(#{to_eday1},'-',''), replace(#{t_etm},':',''))
+	 		</when>
+	 		<otherwise>
+	 			AND a.eday between  replace(#{from_eday1},'-','') and replace(#{to_eday1},'-','')
+	 		</otherwise>
+	 	</choose>
+      -->   
+        
+        
+        <if test='(search_day_type == null or search_day_type == "" or search_day_type == "1") and from_eday1 != null and from_eday1 != "" and to_eday1 != null and to_eday1 != ""'>
+        	AND a.eday between  replace(#{from_eday1},'-','') and replace(#{to_eday1},'-','')
+        </if>
+        <if test='(search_day_type == null or search_day_type == "" or search_day_type == "1") and from_eday1 != null and from_eday1 != "" and f_etm != null and f_etm != ""'>
+        	and ( case when eday=replace(#{from_eday1},'-','') then etm <![CDATA[ >=  ]]>replace(#{f_etm},':','') else 1 end  )
+        </if>
+        <if test='(search_day_type == null or search_day_type == "" or search_day_type == "1") and to_eday1 != null and to_eday1 != "" and t_etm != null and t_etm != ""'>
+        	and ( case when eday=replace(#{to_eday1},'-','') then etm <![CDATA[ <=  ]]> replace(#{t_etm},':','') else 1 end  )
+        </if>
+        
+        <if test='search_day_type == "2" and from_eday1 != null and from_eday1 != "" and to_eday1 != null and to_eday1 != ""'>
+        	AND a.sday between  replace(#{from_eday1},'-','') and replace(#{to_eday1},'-','')
+        </if>
+        <if test='search_day_type == "2" and from_eday1 != null and from_eday1 != "" and f_etm != null and f_etm != ""'>
+        	and ( case when sday=replace(#{from_eday1},'-','') then stm <![CDATA[ >=  ]]>replace(#{f_etm},':','') else 1 end  )
+        </if>
+        <if test='search_day_type == "2" and to_eday1 != null and to_eday1 != "" and t_etm != null and t_etm != ""'>
+        	and ( case when sday=replace(#{to_eday1},'-','') then stm <![CDATA[ <=  ]]> replace(#{t_etm},':','') else 1 end  )
+        </if>
+         
+        
+        <if test="cdrseq != null and cdrseq != '' ">        <!-- cdrseq -->
+            AND a.cdrseq = #{cdrseq}
+        </if>
+        <if test="pbx_type != null and pbx_type != '' ">    <!-- 교환기 종류  -->
+            AND a.pbx_type = #{pbx_type}
+        </if>
+        <if test="pbx_sn != null and pbx_sn != '' ">    <!-- 교환기 종류  -->
+            AND a.pbx_sn = #{pbx_sn}
+        </if>
+        <if test="call_status != null and call_status != '' ">    <!-- 통화상태  -->
+            AND a.call_status = #{call_status}
+        </if>
+        <if test="call_type != null and call_type != '' ">    <!-- 통화유형  -->
+            AND a.call_type = #{call_type}
+        </if>
+        <if test="btype != null and btype != '' ">    <!-- 통화유형  -->
+            AND a.btype = #{btype}
+        </if>
+        <if test="ocaller != null and ocaller != '' ">    <!-- 원발신번호  AND a.ocaller like concat( #{ocaller},'%')  --> 
+            AND a.ocaller = f_enc('1', 'telno', #{ocaller})
+        </if>
+        <if test="ocallee != null and ocallee != '' ">    <!-- 원착신번호  AND a.ocallee like concat( #{ocallee},'%') --> 
+            AND a.ocallee = f_enc('1', 'telno', #{ocallee})
+        </if>
+        <if test="rdn != null and rdn != '' ">    <!-- 전환번호  AND a.rdn like concat( #{rdn},'%') --> 
+            AND a.rdn = f_enc('1', 'telno', #{rdn})
+        </if>
+        <if test="fcallee != null and fcallee != '' ">    <!-- 최종착신번호  AND a.fcallee like concat( #{fcallee},'%')  --> 
+            AND a.fcallee = f_enc('1', 'telno', #{fcallee})
+        </if>         
+        <if test="billno != null and billno != '' ">    <!-- 과금번호  AND a.billno like concat('%',#{billno},'%') --> 
+            AND a.billno = f_enc('1', 'telno', #{billno})
+        </if>
+        <if test="pstn_type != null and pstn_type != '' ">    <!-- 회선종류  -->
+            AND a.pstn_type = #{pstn_type}
+        </if>
+         <if test="ort_nm != null and ort_nm != '' ">    <!-- 라우트 종류  -->
+            AND a.ort_nm = #{ort_nm}
+        </if>
+        
+          <if test="ort_no != null and ort_no != '' ">     
+            AND a.ort_no = #{ort_no}
+        </if>
+        
+         <if test="oug_nm != null and oug_nm != '' ">    
+            AND a.oug_nm = #{oug_nm}
+        </if>
+        
+          <if test="irt_nm != null and irt_nm != '' ">    
+            AND a.irt_nm = #{irt_nm}
+        </if>
+        
+          <if test="irt_no != null and irt_no != '' ">    
+            AND a.irt_no = #{irt_no}
+        </if>
+        
+         <if test="iug_nm != null and iug_nm != '' ">     
+            AND a.iug_nm = #{iug_nm}
+        </if>
+        
+         <if test="callid != null and callid != '' ">     
+            AND a.callid = #{callid}
+        </if>
+        <if test='del_yn != null and del_yn != "" '>     
+             <choose>
+		 		<when test='del_yn == "T" '>
+		 			AND a.del_yn != 'Y'
+		 		</when>
+		 		<otherwise>
+		 			AND a.del_yn = #{del_yn}
+		 		</otherwise>
+		 	</choose>            
+        </if>
+        
+        <if test="grp_cd != null and grp_cd != '' ">    <!-- 발신및 착신조직  -->
+           AND  	(a.grpcd like  concat('%-',#{grp_cd}) or a.grpcd like  concat('%-',#{grp_cd},'-%') or grpcd=#{grp_cd} )
+        </if>
+        
+        <if test="dgrp_cd != null and dgrp_cd != '' ">    <!-- 발신및 착신조직  -->
+           AND  	(a.dgrpcd like  concat('%-',#{dgrp_cd}) or a.dgrpcd like  concat('%-',#{dgrp_cd},'-%') or dgrpcd=#{dgrp_cd} ) 
+        </if>
+        
+         <if test="billno != null and billno != '' ">    <!-- 과금번호  AND a.billno like concat('%',#{billno},'%') --> 
+            AND a.billno = f_enc('1', 'telno', #{billno})
+        </if>      
+        
+	</sql>
+	
+	
+	<sql id="selectHisSqlCond"> 
+		<include refid="selectHisSqlCondEtc" /> 
+		<if test="ncaller != null and ncaller != '' ">     
+            AND a.ncaller like concat( '%',#{ncaller},'%') 
+        </if>
+        <if test="ncallee != null and ncallee != '' ">    
+           AND a.ncallee like concat('%', #{ncallee},'%') 
+        </if>        
+        <!-- 우리카드 암호화 
+        <if test="ncaller != null and ncaller != '' ">    
+            AND a.ncaller = f_enc('1', 'telno', #{ncaller})
+        </if>
+        <if test="ncallee != null and ncallee != '' ">     
+            AND a.ncallee = f_enc('1', 'telno', #{ncallee})
+        </if>     
+         -->
+	 </sql>
+	
+	 	
+	 
+	<!-- ncaller, ncallee 머지 조건 -->
+	<sql id="MgrTelnoCondX"> 	  
+	  	<if test="ncaller != null and ncaller != '' ">    <!-- 변환발신번호 AND a.ncaller like concat( #{ncaller},'%')  --> 
+            AND ( a.ncaller = f_enc('1', 'telno', #{ncaller})
+            	or a.ocaller = f_enc('1', 'telno', #{ncaller})
+            	or a.rdn = f_enc('1', 'telno', #{ncaller})
+            )
+        </if>
+        <if test="ncallee != null and ncallee != '' ">    <!-- 변환착신번호 AND a.ncallee like concat( #{ncallee},'%')  -->  
+            AND ( a.ncallee = f_enc('1', 'telno', #{ncallee})
+            	or a.ocallee = f_enc('1', 'telno', #{ncallee})
+            	or a.fcallee = f_enc('1', 'telno', #{ncallee})
+            )
+        </if>    
+           
+	</sql>
+	
+	
+		<sql id="MgrTelnoCond"> 	  
+	  	<if test="ncaller != null and ncaller != '' ">    <!-- 변환발신번호 AND a.ncaller like concat( #{ncaller},'%')  --> 
+            AND ( a.ncaller like concat( #{ncaller},'%') 
+            	or a.ocaller like concat( #{ncaller},'%') 
+            	or a.rdn like concat( #{ncaller},'%') 
+            )
+        </if>
+        <if test="ncallee != null and ncallee != '' ">    <!-- 변환착신번호 AND a.ncallee like concat( #{ncallee},'%')  -->  
+            AND ( a.ncallee like concat( #{ncallee},'%') 
+            	or a.ocallee = like concat( #{ncallee},'%') 
+            	or a.fcallee = like concat( #{ncallee},'%') 
+            )
+        </if>    
+           
+	</sql>
+	
+	
+	<sql id="selectHisSqlCondInter"> 
+		<include refid="selectHisSqlCondEtc" /> 
+		<include refid="MgrTelnoCond" />  
+	 </sql>
+	
+	<!-- 이용기관 통화내역 , 머지 , 중복호, 시스템콜 제외 del_yn ='N'  -->
+	<sql id="selectMgrHisSql">  
+		and a.del_yn!='Y'
+        <if test='(search_day_type == null or search_day_type == "" or search_day_type == "1") and from_eday1 != null and from_eday1 != "" and to_eday1 != null and to_eday1 != ""'>
+        	AND a.eday between  replace(#{from_eday1},'-','') and replace(#{to_eday1},'-','')
+        </if>
+        <if test='(search_day_type == null or search_day_type == "" or search_day_type == "1") and from_eday1 != null and from_eday1 != "" and f_etm != null and f_etm != ""'>
+        	and ( case when eday=replace(#{from_eday1},'-','') then etm <![CDATA[ >=  ]]>replace(#{f_etm},':','') else 1 end  )
+        </if>
+        <if test='(search_day_type == null or search_day_type == "" or search_day_type == "1") and to_eday1 != null and to_eday1 != "" and t_etm != null and t_etm != ""'>
+        	and ( case when eday=replace(#{to_eday1},'-','') then etm <![CDATA[ <=  ]]> replace(#{t_etm},':','') else 1 end  )
+        </if>
+        
+        <if test='search_day_type == "2" and from_eday1 != null and from_eday1 != "" and to_eday1 != null and to_eday1 != ""'>
+        	AND a.sday between  replace(#{from_eday1},'-','') and replace(#{to_eday1},'-','')
+        </if>
+        <if test='search_day_type == "2" and from_eday1 != null and from_eday1 != "" and f_etm != null and f_etm != ""'>
+        	and ( case when sday=replace(#{from_eday1},'-','') then stm <![CDATA[ >=  ]]>replace(#{f_etm},':','') else 1 end  )
+        </if>
+        <if test='search_day_type == "2" and to_eday1 != null and to_eday1 != "" and t_etm != null and t_etm != ""'>
+        	and ( case when sday=replace(#{to_eday1},'-','') then stm <![CDATA[ <=  ]]> replace(#{t_etm},':','') else 1 end  )
+        </if>
+         
+          
+        <if test="call_status != null and call_status != '' ">    <!-- 통화상태  -->
+            AND a.call_status = #{call_status}
+        </if>
+        <if test="call_type != null and call_type != '' ">    <!-- 통화유형  -->
+            AND a.call_type = #{call_type}
+        </if>
+        <if test="btype != null and btype != '' ">    <!-- 통화유형  -->
+            AND a.btype = #{btype}
+        </if>
+       <!-- 전화번호로 발착신 모두  -->
+        <if test="ncaller != null and ncaller != '' ">     
+            AND ( a.ncaller like concat( '%',#{ncaller},'%') 
+	            or a.ocaller like concat( '%',#{ncaller},'%')
+	            or a.rdn like concat( '%',#{ncaller},'%')
+	             or a.ncallee like concat( '%',#{ncaller},'%') 
+	            or a.ocallee like concat( '%',#{ncaller},'%')
+	            or a.fcallee like concat( '%',#{ncaller},'%')
+	            )
+        </if>
+        <!-- 
+        <if test="ncallee != null and ncallee != '' ">            
+            AND (
+            	 a.ncallee like concat( '%',#{ncallee},'%') 
+	            or a.ocallee like concat( '%',#{ncallee},'%')
+	            or a.fcallee like concat( '%',#{ncallee},'%')
+	            )
+        </if>
+           -->
+         <!-- 
+         <if test="ncaller != null and ncaller != '' ">     
+            AND ( a.ncaller = f_enc('1', 'telno', #{ncaller}) 
+	            or a.ocaller = f_enc('1', 'telno', #{ncaller}) 
+	            or a.rdn = f_enc('1', 'telno', #{ncaller}) 
+	            )
+        </if>
+        <if test="ncallee != null and ncallee != '' ">            
+            AND (
+            	a.ncallee = f_enc('1', 'telno', #{ncallee}) 
+	            or a.ocallee = f_enc('1', 'telno', #{ncallee}) 
+	            or a.fcallee = f_enc('1', 'telno', #{ncallee})  
+	            )
+        </if>
+         -->
+       
+        <if test="bothgrp_cd != null and bothgrp_cd != '' ">    <!-- 발신및 착신조직  -->
+            AND ( 	(a.grpcd like  concat('%-',#{bothgrp_cd}) or a.grpcd like  concat('%-',#{bothgrp_cd},'-%')  or a.grpcd=#{bothgrp_cd} )
+		     or (a.dgrpcd like  concat('%-',#{bothgrp_cd}) or a.dgrpcd like  concat('%-',#{bothgrp_cd},'-%') or a.dgrpcd=#{bothgrp_cd}  ) 
+		    )            
+        </if>
+	</sql>
+	
+	
+	<sql id="SelPbxCdrSqlCol">
+		SELECT 	cdrseq as CDRSEQ,              
+				PBX_TYPE,            
+				CON_TYPE,            
+				PBX_SN,              
+				NOBILL,              
+				CALL_STATUS,         
+				CALL_TYPE,
+				GRPCD ,               
+				GRP_CD ,
+				DGRPCD ,               
+				DGRP_CD ,
+				CONCAT( substr(SDAY,1,4),'-', substr(SDAY,5,2),'-', substr(SDAY,7,2))  as sday1,
+			    CONCAT( substr(STM,1,2),':', substr(STM,3,2),':', substr(STM,5,2))  as stm,
+			    CONCAT( substr(EDAY,1,4),'-', substr(EDAY,5,2),'-', substr(EDAY,7,2))  as eday1,
+			    CONCAT( substr(ETM,1,2),':', substr(ETM,3,2),':', substr(ETM,5,2))  as etm,    
+			    eday,
+			    sday,      
+				DUR,                 
+				DOSU,                
+				OCALLER,             
+				OCALLEE,             
+				RDN,                 
+				FCALLEE,             
+				NCALLER,             
+				NCALLEE,
+				BILLNO,             
+				CID,          
+				IUG_NM,              
+				IRT_NM,              
+				ITN_NM,              
+				IIP,                 
+				OUG_NM,              
+				ORT_NM,              
+				OTN_NM,              
+				OIP,                 
+				IRT_NO,              
+				ORT_NO,              
+				IREASON,             
+				OREASON,             
+				CALLID,              
+				BTYPE,               
+				truncate(OCOST,0) OCOST,               
+				truncate(VCOST,0) VCOST,               
+				truncate(COST,0) COST,                
+				CALLEE_AREA_NM,      
+				HIGH_YN,             
+				LONG_YN,             
+				PSTN_TYPE,           
+				CALLER_ALTER_YN,     
+				DEL_YN,              
+				CALLEE_ALTER_YN,     
+				UPD_TM                 
+		  FROM ( 
+		  select      <!--   a.rownum	rnum ,-->
+					   a.CDRSEQ, 
+				       d.NM AS PBX_TYPE, 
+				       c.NM AS CON_TYPE, 
+				       e.NM AS PBX_SN, 
+				       a.NOBILL, 
+				       f.NM AS CALL_STATUS, 
+				       g.NM AS CALL_TYPE, 
+				       <!-- hsnull(jk.path_nm, a.grpcd) grp_cd -->
+				        a.grpcd ,
+				        a.dgrpcd ,   
+				         <!-- concat(callergrpnm,'(',a.grpcd,')' ) grp_cd ,
+				         concat(calleegrpnm,'(',a.dgrpcd,')' ) dgrp_cd ,
+				         -->
+				       callergrpnm grp_cd ,				           
+				       calleegrpnm dgrp_cd ,
+				       a.sday ,
+                       a.stm ,
+                       a.eday ,
+                       a.etm ,
+				       a.DUR, 
+				       a.DOSU, 
+				       f_telnoname(a.pbx_sn,a.ocaller,a.eday) ocaller ,             
+					   f_telnoname(a.pbx_sn,a.ocallee,a.eday) ocallee  ,
+					   f_telnoname(a.pbx_sn,a.rdn,a.eday) RDN  ,
+					   f_telnoname(a.pbx_sn,a.fcallee,a.eday) fcallee  ,  
+				       f_showtelnonm(a.callernm, a.ncaller) ncaller,
+				       f_showtelnonm(a.calleenm, a.ncallee) ncallee,
+				       f_showtelnonm('', a.BILLNO) BILLNO,
+				       a.CID, 				       				       
+				       a.IUG_NM, 
+				       a.IRT_NM, 
+				       a.ITN_NM, 
+				       a.IIP, 
+				       a.OUG_NM, 
+				       a.ORT_NM, 
+				       a.OTN_NM, 
+				       a.OIP, 
+				       i.NM as IRT_NO, 
+				       h.NM as ORT_NO, 
+				       t1.nm as IREASON, 
+				       t2.nm as OREASON, 
+				       a.CALLID, 
+				       b.NM AS BTYPE, 
+				       a.OCOST, 
+				       a.VCOST, 
+				       a.COST, 
+				       a.CALLEE_AREA_NM, 
+				       (case when a.HIGH_YN='Y' then '예' else '아니오' end ) AS HIGH_YN, 
+				       (case when a.LONG_YN='Y' then '예' else '아니오' end ) AS LONG_YN,
+				       j.NM AS PSTN_TYPE, 
+				       (case when a.CALLER_ALTER_YN='Y' then '예' else '아니오' end ) AS CALLER_ALTER_YN,
+				       (case when a.DEL_YN='Y' then '예' else '아니오' end ) AS DEL_YN,
+				       (case when a.CALLEE_ALTER_YN='Y' then '예' else '아니오' end ) AS CALLEE_ALTER_YN,				        
+				       a.UPD_TM 					       
+		  from
+		  ( 
+		  <!-- 
+		  	select a.*, @ROWNUM := @ROWNUM + 1 AS ROWNUM FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a
+		  	, (SELECT @ROWNUM := 0) R
+		  	 -->
+		  	 select a.* FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a
+		  	WHERE 1=1					      
+         	 
+      </sql>	 
+    
+ 
+    <sql id="SelPbxCdrSqlCondJoin">
+		   LEFT OUTER join (select *  from CM_CFGBASECD  where GRP_CD='BTYPE' ) b ON TO_CHAR(a.btype) = b.VAL 
+		   LEFT OUTER JOIN (select *  from CM_CFGBASECD  where GRP_CD='CONN_TYPE' )  c  ON TO_CHAR(a.CON_TYPE) = c.VAL  
+		   LEFT OUTER JOIN (select *  from CM_CFGBASECD  where GRP_CD='PBX_TYPE' )  d  ON TO_CHAR(a.PBX_TYPE) = d.VAL
+		   LEFT OUTER JOIN PB_CFGPBX e  ON   a.PBX_SN = e.PBX_SN
+		   LEFT OUTER JOIN (select *  from CM_CFGBASECD  where GRP_CD='CALL_STATUS' )  f  ON TO_CHAR(a.CALL_STATUS) = f.VAL
+		   LEFT OUTER JOIN (select *  from CM_CFGBASECD  where GRP_CD='CALL_TYPE' )  g  ON TO_CHAR(a.CALL_TYPE) = g.VAL
+		   LEFT OUTER JOIN PB_CFGRTNO h  ON   a.ort_no = h.rt_no
+           LEFT OUTER JOIN PB_CFGRTNO i  ON   a.irt_no = i.rt_no				   
+		   LEFT OUTER JOIN (select *  from CM_CFGBASECD  where GRP_CD='PSTN_TYPE' )  j  ON TO_CHAR(a.PSTN_TYPE) = j.VAL
+		   LEFT OUTER JOIN (select *  from CM_CFGBASECD  where GRP_CD='TERM_CAUSE' )  t1  ON TO_CHAR(a.IREASON) = t1.VAL
+		   LEFT OUTER JOIN (select *  from CM_CFGBASECD  where GRP_CD='TERM_CAUSE' )  t2  ON TO_CHAR(a.OREASON) = t2.VAL
+		  <!-- 
+		  LEFT OUTER JOIN  pb_cfgjojik  jk  ON ( jk.grp_cd=a.grpcd and a.eday   between jk.sday and hsnull(jk.eday,'99991231')   )
+		   -->   
+	</sql>
+	
+	  <sql id="SelPbxCdrSqlCondPage">
+      		<include refid="selectHisSqlCond" /> 
+		  	order by sday desc, stm desc  
+		  	limit #{limitSize}  offset #{firstIndex}
+		   ) a 			
+		   <include refid="SelPbxCdrSqlCondJoin" /> 	   
+		  
+       )m		 
+	</sql>
+	
+	
+	
+	  <sql id="SelPbxCdrSqlCondPageMgr">
+      		<include refid="selectMgrHisSql" /> 
+		  	order by sday desc, stm desc  
+		  	limit #{limitSize}  offset #{firstIndex}
+		   ) a 			
+		   <include refid="SelPbxCdrSqlCondJoin" /> 	   
+		  
+       )m		 
+     </sql>  
+       
+	 <sql id="SelPbxCdrSqlCond">
+      		<include refid="selectHisSqlCond" />       		
+		  	order by  sday desc, stm desc  
+		   ) a 				   
+		  <include refid="SelPbxCdrSqlCondJoin" /> 	   
+       )m		 
+	</sql>
+	
+	<sql id="SelPbxCdrSqlCondMgr">
+      		<include refid="selectMgrHisSql" />       		
+		  	order by  sday desc, stm desc  
+		   ) a 				   
+		   <include refid="SelPbxCdrSqlCondJoin" /> 	   
+       )m		 
+	</sql>
+	 
+	
+
+	<!-- 상세통화 조회 -->
+	<select id="selectAllList" parameterType="map" resultType="egovMap">
+		select a.*
+		<!--  
+		,f_jojikname(a.grpcd, a.eday) grp_cd
+		 --> 
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			<include refid="SelPbxCdrSqlCondPage" /> 
+		) a  
+	</select>
+	
+	<!-- 상세통화 총갯수 -->
+	<select id="selectAllListCnt" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	 
+		WHERE 1=1	
+        <include refid="selectHisSqlCond" />	  
+	</select>
+	
+	<!-- 상세통화 조회 -->
+	<select id="selectAllListExcel" parameterType="map" resultType="egovMap">
+		select a.*
+		<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  --> 
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			<include refid="SelPbxCdrSqlCond" /> 
+		) a  
+	</select>
+	
+	
+	<!-- 발/착신 통합  통화 조회 지점/통화내역 조회 -->
+	<select id="selectMgrList" parameterType="map" resultType="egovMap">
+		select a.* 
+		<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  --> 
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			<include refid="SelPbxCdrSqlCondPageMgr" /> 
+		) a   
+	</select>
+	 
+	<!-- 전체통화 조회 총갯수 -->
+	<select id="selectMgrListCnt" parameterType="map" resultType="int">	
+		SELECT COUNT(*) FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	 
+		WHERE 1=1	
+        <include refid="selectMgrHisSql" />	
+	</select>
+
+		<!-- 전체 통화 엑셀 -->
+	<select id="selectMgrListExcel" parameterType="map" resultType="egovMap"> 
+		select a.* 
+		<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			<include refid="SelPbxCdrSqlCondMgr" /> 
+		) a    
+	</select>
+	 
+	
+		<!-- 불완료호  조회 -->
+	<select id="selectNsucList" parameterType="map" resultType="egovMap">
+	    select a.* 
+<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			and a.dur=0	 
+			<include refid="SelPbxCdrSqlCondPage" /> 
+		) a    
+		 
+	</select>
+	
+	<!-- 불완료호조회 총갯수 -->
+	<select id="selectNsucListCnt" parameterType="map" resultType="int">	
+		SELECT COUNT(*) FROM PB_PBXCDR${eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	         	 
+		WHERE 1=1 
+		and a.dur=0  
+        <include refid="selectHisSqlCond" />	 
+	</select>
+	 
+	
+		<!-- 착신 통화 조회 -->
+	<select id="selectInList" parameterType="map" resultType="egovMap">
+	
+	    select a.* 
+<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			and a.call_type='I'   
+			<include refid="SelPbxCdrSqlCondPage" /> 
+		) a    
+		 
+	</select>
+	
+	<!-- 착신통화 조회 총갯수 -->
+	<select id="selectInListCnt" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM PB_PBXCDR${eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	         	 
+		WHERE 1=1
+		and a.call_type='I' 
+        <include refid="selectHisSqlCond" />	  
+	</select>
+		
+		<!-- 외부 발신 조회 -->
+	<select id="selectOutList" parameterType="map" resultType="egovMap">
+		select a.*
+<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			and a.call_status='S'  
+			<include refid="SelPbxCdrSqlCondPage" /> 
+		) a    
+		 
+	</select>
+	
+	<!-- 외부 발신 총갯수 -->
+	<select id="selectOutListCnt" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	         	 
+		WHERE 1=1
+		and a.call_status='S'  
+        <include refid="selectHisSqlCond" />	 
+	
+	</select>
+
+		<!-- 외부 발신 조회 -->
+	<select id="selectOutListExcel" parameterType="map" resultType="egovMap"> 
+		select a.*
+<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			and a.call_status='S'  
+			<include refid="SelPbxCdrSqlCond" /> 
+		) a    
+		 
+	</select>	
+	
+		<!-- 검증 대상 조회 -->
+	<select id="selectChkList" parameterType="map" resultType="egovMap">
+	
+		select a.*
+<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			and a.call_status='S'  
+			<include refid="SelPbxCdrSqlCondPage" /> 
+		) a    
+		 
+	</select>
+	
+	<!-- 검증 대상 조회 총갯수 -->
+	<select id="selectChkListCnt" parameterType="map" resultType="int"> 
+	SELECT COUNT(*) FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	         	 
+		WHERE 1=1
+		and a.call_status='S'  
+        <include refid="selectHisSqlCond" />	 
+	</select>
+	
+		<!-- 고액 통화 조회 -->
+	<select id="selectHighList" parameterType="map" resultType="egovMap">
+	
+		select a.* 
+<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			and a.high_yn='Y'  
+			<include refid="SelPbxCdrSqlCondPage" /> 
+		) a    
+		 
+	</select>
+	
+	<!-- 고액 통화 조회 총갯수 -->
+	<select id="selectHighListCnt" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	         	 
+		WHERE 1=1
+		and a.high_yn='Y'  
+        <include refid="selectHisSqlCond" />	 
+	</select>
+	
+		<!-- 장시간 통화 조회 -->
+	<select id="selectLongList" parameterType="map" resultType="egovMap"> 
+		select a.* 
+<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			and a.long_yn='Y'  
+			<include refid="SelPbxCdrSqlCondPage" /> 
+		) a    
+		 
+	</select>
+	
+	<!-- 장시간 통화 총갯수 -->
+	<select id="selectLongListCnt" parameterType="map" resultType="int">
+	SELECT COUNT(*) FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	         	 
+		WHERE 1=1
+		and a.long_yn='Y'  
+        <include refid="selectHisSqlCond" />	 	
+	</select>
+	
+	<!-- Fraud호 검출 조회 -->
+	<select id="selectFraudList" parameterType="map" resultType="egovMap">
+	
+		select a.* 
+<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			and a.callee_alter_yn='Y'  
+			<include refid="SelPbxCdrSqlCondPage" /> 
+		) a     
+	</select>
+	
+	<!-- Fraud호 검출 조회 총갯수 -->
+	<select id="selectFraudListCnt" parameterType="map" resultType="int">
+	SELECT COUNT(*) FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	         	 
+		WHERE 1=1
+		and a.callee_alter_yn='Y'  
+        <include refid="selectHisSqlCond" />	 
+	</select>
+	
+		<!-- 발신번호 변작 조회 -->
+	<select id="selectAlterList" parameterType="map" resultType="egovMap">
+
+		select a.* 
+<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlCol" /> 
+			and a.caller_alter_yn='Y'  
+			<include refid="SelPbxCdrSqlCondPage" /> 
+		) a     
+		 
+	</select>
+	
+	<!-- 발신번호 변작 조회 총갯수 -->
+	<select id="selectAlterListCnt" parameterType="map" resultType="int">
+	
+	SELECT COUNT(*) FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	         	 
+		WHERE 1=1
+		and a.caller_alter_yn='Y'  
+        <include refid="selectHisSqlCond" />	 
+        
+	</select>
+	
+	<!-- 수집현황 조회 -->
+	<select id="selectCollectCuList" parameterType="map" resultType="egovMap">
+	select * from (
+		select a.* 
+		, rownum as rnum
+		from (
+			select a.* 				
+			from (			
+					SELECT a.coll_ymd
+					, a.pbx_sn
+					, CASE WHEN b.cnt IS null THEN 0 ELSE b.cnt END AS cnt
+					, CASE WHEN b.cnt IS NULL AND a.pbx_sn IN ('1','3') THEN '0개 입니다. 확인필요' ELSE b.bigo END AS bigo
+					, CASE WHEN b.cnt IS NULL AND a.pbx_sn IN ('1','3') THEN '1' 
+							WHEN b.cnt IS NULL AND a.pbx_sn NOT IN('1','3') THEN '2'
+							ELSE b.collstatus END  AS collstatus
+					, c.nm					
+					FROM (
+						SELECT * FROM (	
+							select  date_format (dt,'%Y%m%d') AS coll_ymd  
+						          FROM cm_cfgdate 
+						          where 1=1
+						          and  dt  <![CDATA[ >=  ]]>'${from_coll_ymd}'
+						          and  dt  <![CDATA[ <=  ]]>'${to_coll_ymd}'
+						) a, (SELECT pbx_sn FROM pb_hiscdrfile GROUP BY pbx_sn) b
+					) a
+					LEFT JOIN (
+									select a.* 
+									, ( CASE WHEN a.pbx_sn = 1 AND a.cnt <![CDATA[ < ]]> 48 THEN '48개 미만 입니다. 확인필요' 
+						     				WHEN a.pbx_sn = 3 AND a.cnt  <![CDATA[ < ]]> 144 THEN '144개 미만 입니다. 확인필요' 
+							        		ELSE '정상' 	END) AS bigo
+							        , ( CASE WHEN a.pbx_sn = 1 AND a.cnt <![CDATA[ < ]]> 48 THEN '1' 
+						     			WHEN a.pbx_sn = 3 AND a.cnt  <![CDATA[ < ]]> 144 THEN '1' 
+							        	ELSE '2' 
+						              	END ) AS collstatus						              
+									from 
+									(
+										SELECT coll_ymd,pbx_sn
+										, COUNT(*) cnt										
+										FROM pb_hiscdrfile 
+										WHERE 0=0  
+										and	coll_ymd <![CDATA[ >= replace('${from_coll_ymd}','-','') and coll_ymd <= replace('${to_coll_ymd}','-','')  ]]> 										
+										GROUP BY coll_ymd,pbx_sn										
+										ORDER BY coll_ymd,pbx_sn										
+									) a								
+					) b ON (a.coll_ymd = b.coll_ymd AND a.pbx_sn = b.pbx_sn)
+					left JOIN PB_CFGPBX c ON (a.pbx_sn = c.pbx_sn)
+					where 1=1
+					
+			) a
+			
+			WHERE 1 = 1
+			<if test="pbx_sn !=null and pbx_sn !=''">
+					and a.pbx_sn = #{pbx_sn}
+				</if>
+			<if test="nm !=null and nm !=''">
+				and a.nm like (concat('%',#{nm},'%'))
+			</if>
+			<if test="collstatus !=null and collstatus !=''">
+				and a.collstatus = #{collstatus}
+			</if>
+				
+			<if test="OrderByColumn == null or OrderByColumn == ''">
+				ORDER BY a.coll_ymd, a. pbx_sn
+			</if>
+			<if test="OrderByColumn != null and OrderByColumn != ''">
+				ORDER BY a.${OrderByColumn} ${OrderByType}
+			</if>
+		) a
+	)
+	where 1=1
+	AND rnum <![CDATA[ <= #{lastIndex} ]]> AND rnum <![CDATA[ > #{firstIndex} ]]>
+
+	</select>
+	
+	<!-- 수집현황 조회 총갯수 -->
+	<select id="selectCollectCuListCnt" parameterType="map" resultType="int">
+		select count(*) from (
+			select a.* 
+			
+			from (
+				select a.* 
+					
+				from (
+				
+						SELECT a.coll_ymd
+						, a.pbx_sn
+						, b.cnt
+						, b.nm
+						, CASE WHEN b.cnt IS NULL AND a.pbx_sn IN ('1','3') THEN '0개 입니다. 확인필요' ELSE b.bigo END AS bigo
+						, CASE WHEN b.cnt IS NULL AND a.pbx_sn IN ('1','3') THEN '1' 
+								WHEN b.cnt IS NULL AND a.pbx_sn NOT IN('1','3') THEN '2'
+								ELSE b.collstatus END  AS collstatus
+						 
+						
+						FROM (
+							SELECT * FROM (	
+								SELECT TO_CHAR(TO_DATE(replace('${from_coll_ymd}','-',''), 'YYYYMMDD')+LEVEL-1, 'YYYYMMDD') AS coll_ymd
+							          FROM DUAL CONNECT BY LEVEL <![CDATA[ <=  ]]>(TO_DATE(replace('${to_coll_ymd}','-',''), 'YYYYMMDD')-TO_DATE(replace('${from_coll_ymd}','-',''), 'YYYYMMDD')+1) 
+							) a, (SELECT pbx_sn FROM pb_hiscdrfile GROUP BY pbx_sn) b
+						) a
+						LEFT JOIN (
+										select a.* 
+										, b.nm
+										, CASE WHEN a.pbx_sn = 1 AND a.cnt <![CDATA[ < ]]> 48 THEN '48개 미만 입니다. 확인필요' 
+							     			WHEN a.pbx_sn = 3 AND a.cnt  <![CDATA[ < ]]> 144 THEN '144개 미만 입니다. 확인필요' 
+								        ELSE '정상'
+								        END AS bigo
+								        , CASE WHEN a.pbx_sn = 1 AND a.cnt <![CDATA[ < ]]> 48 THEN '1' 
+							     			WHEN a.pbx_sn = 3 AND a.cnt  <![CDATA[ < ]]> 144 THEN '1' 
+								        ELSE '2' 
+							              END AS collstatus
+							              
+										from 
+										(
+											SELECT coll_ymd,pbx_sn
+											, COUNT(*) cnt
+											
+											FROM pb_hiscdrfile 
+											WHERE 0=0  
+											and	coll_ymd <![CDATA[ >= replace('${from_coll_ymd}','-','') and coll_ymd <= replace('${to_coll_ymd}','-','')  ]]> 
+											
+											GROUP BY coll_ymd,pbx_sn
+											
+												ORDER BY coll_ymd,pbx_sn
+											
+										) a
+										left JOIN PB_CFGPBX b ON (a.pbx_sn = b.pbx_sn)
+										
+									
+						) b ON (a.coll_ymd = b.coll_ymd AND a.pbx_sn = b.pbx_sn)
+						where 1=1
+						
+				) a
+				WHERE 1 = 1
+				<if test="pbx_sn !=null and pbx_sn !=''">
+					and a.pbx_sn = #{pbx_sn}
+				</if>
+				<if test="nm !=null and nm !=''">
+					and a.nm like (concat('%',#{nm},'%'))
+				</if>
+				<if test="collstatus !=null and collstatus !=''">
+					and a.collstatus = #{collstatus}
+				</if>
+					
+				<if test="OrderByColumn == null or OrderByColumn == ''">
+					ORDER BY a.coll_ymd, a. pbx_sn
+				</if>
+				<if test="OrderByColumn != null and OrderByColumn != ''">
+					ORDER BY a.${OrderByColumn} ${OrderByType}
+				</if>
+			) a
+		)
+		where 1=1
+		
+        
+	
+	</select>
+
+	<!-- 수집현황 조회 엑셀 -->
+	<select id="selectCollectCuListExcel" parameterType="map" resultType="egovMap">
+		select * from (
+			select a.* 
+			
+			from (
+				select a.* , b.nm
+					
+				from (
+				
+						SELECT a.coll_ymd
+						, a.pbx_sn
+						, CASE WHEN b.cnt IS null THEN 0 ELSE b.cnt END AS cnt
+						, CASE WHEN b.cnt IS NULL AND a.pbx_sn IN ('1','3') THEN '0개 입니다. 확인필요' ELSE b.bigo END AS bigo
+						, CASE WHEN b.cnt IS NULL AND a.pbx_sn IN ('1','3') THEN '1' 
+								WHEN b.cnt IS NULL AND a.pbx_sn NOT IN('1','3') THEN '2'
+								ELSE b.collstatus END  AS collstatus
+						 
+						
+						FROM (
+							SELECT * FROM (	
+								SELECT TO_CHAR(TO_DATE(replace('${from_coll_ymd}','-',''), 'YYYYMMDD')+LEVEL-1, 'YYYYMMDD') AS coll_ymd
+							          FROM DUAL CONNECT BY LEVEL <![CDATA[ <=  ]]>(TO_DATE(replace('${to_coll_ymd}','-',''), 'YYYYMMDD')-TO_DATE(replace('${from_coll_ymd}','-',''), 'YYYYMMDD')+1) 
+							) a, (SELECT pbx_sn FROM pb_hiscdrfile GROUP BY pbx_sn) b
+						) a
+						LEFT JOIN (
+										select a.* 
+										, CASE WHEN a.pbx_sn = 1 AND a.cnt <![CDATA[ < ]]> 48 THEN '48개 미만 입니다. 확인필요' 
+							     			WHEN a.pbx_sn = 3 AND a.cnt  <![CDATA[ < ]]> 144 THEN '144개 미만 입니다. 확인필요' 
+								        ELSE '정상'
+								        END AS bigo
+								        , CASE WHEN a.pbx_sn = 1 AND a.cnt <![CDATA[ < ]]> 48 THEN '1' 
+							     			WHEN a.pbx_sn = 3 AND a.cnt  <![CDATA[ < ]]> 144 THEN '1' 
+								        ELSE '2' 
+							              END AS collstatus
+							              
+										from 
+										(
+											SELECT coll_ymd,pbx_sn
+											, COUNT(*) cnt
+											
+											FROM pb_hiscdrfile 
+											WHERE 0=0  
+											and	coll_ymd <![CDATA[ >= replace('${from_coll_ymd}','-','') and coll_ymd <= replace('${to_coll_ymd}','-','')  ]]> 
+											
+											GROUP BY coll_ymd,pbx_sn
+											
+												ORDER BY coll_ymd,pbx_sn
+											
+										) a
+										
+										
+									
+						) b ON (a.coll_ymd = b.coll_ymd AND a.pbx_sn = b.pbx_sn)
+						where 1=1
+						
+				) a
+				left JOIN PB_CFGPBX b ON (a.pbx_sn = b.pbx_sn)
+				WHERE 1 = 1
+				<if test="pbx_sn !=null and pbx_sn !=''">
+					and a.pbx_sn = #{pbx_sn}
+				</if>
+				<if test="nm !=null and nm !=''">
+					and a.nm like (concat('%',#{nm},'%'))
+				</if>
+				<if test="collstatus !=null and collstatus !=''">
+					and a.collstatus = #{collstatus}
+				</if>
+					
+				<if test="OrderByColumn == null or OrderByColumn == ''">
+					ORDER BY a.coll_ymd, a. pbx_sn
+				</if>
+				<if test="OrderByColumn != null and OrderByColumn != ''">
+					ORDER BY a.${OrderByColumn} ${OrderByType}
+				</if>
+			) a
+		)
+		where 1=1
+		
+
+		
+		
+	</select>
+	
+	
+	
+	 
+	
+	<!--  SMS 조회 조건  -->
+	<sql id="selectTongSmsCond">  
+	 
+	   <if test="from_eday1 != null and from_eday1 != '' ">     
+            AND  deliver_time <![CDATA[ >=  ]]> concat( replace(#{from_eday1},'-',''),  hsnull(replace(#{f_etm},':',''),'000000') )
+        </if> 
+    	<if test="to_eday1 != null and to_eday1 != '' ">     
+            AND  deliver_time <![CDATA[ <=  ]]> concat( replace(#{to_eday1},'-',''),  hsnull(replace(#{t_etm},':',''),'999999') ) 
+        </if>
+        
+      
+	    
+		 <if test="grpcd != null and grpcd != '' ">    <!-- 라우트 종류  -->		
+		 <!-- 
+		  AND  (grp_path like  concat('%-',#{grpcd}) or grp_path like  concat('%-',#{grpcd},'-%')  or grpcd=#{grpcd})
+		  -->
+          and grpcd =#{grpcd}
+        </if>	 
+        
+        
+        <if test="ym != null and ym != '' ">    <!-- 라우트 종류  -->		
+           and ym =#{ym}
+        </if>
+        
+        
+        <if test="job_type != null and job_type != '' ">    <!-- 라우트 종류  -->		
+           and job_type =#{job_type}
+        </if>
+        
+        <if test="sms_type != null and sms_type != '' ">    <!-- sms 종류  -->		
+           and sms_type =#{sms_type}
+        </if>
+        
+          <if test="telcoinfo != null and telcoinfo != '' ">    <!-- 라우트 종류  -->		
+           and telcoinfo =#{telcoinfo}
+        </if>
+	 
+        <if test="billno != null and billno != '' ">    <!-- 라우트 종류  -->		
+          and billno like concat('%',#{billno},'%')
+        </if>
+        
+        <if test="caller != null and caller != '' ">    <!-- 라우트 종류  -->		
+          and caller like concat('%',#{caller},'%')
+        </if>
+        
+        
+         <if test="callee != null and callee != '' ">    <!-- 라우트 종류  -->		
+          and callee like concat('%',#{callee},'%')
+        </if>
+        
+         
+	</sql>
+	
+	
+	
+	<!-- 월별 SMS 요금 통계 조회, 번호타입 구분 -->
+	<sql id="selectHisSmsCol">	
+			select   
+			    ym       
+                ,job_id    
+                ,subject      
+                ,concat(b.nm,"(",b.val,")") sms_type 
+                ,caller    
+                ,callee    
+                ,file_count 
+                ,concat(grp_pathnm,"(",grpcd,")")    grpcd   
+                ,deliver_time     
+                ,telcoinfo        
+                ,msglen       
+                ,msg     
+                ,cost    
+                ,reg_tm      
+			 from pb_smscdr a  
+			 left join ( select nm,val  from cm_cfgbasecd where grp_cd='SMS_TYPE') b
+			 on ( a.sms_type=b.val) 
+			where 1=1
+			 <include refid="selectTongSmsCond" />  
+      </sql>
+       
+	
+	<!-- 월별 SMS 요금 통계 조회  -->
+	<select id="selectHisSms" parameterType="map" resultType="egovMap">
+	   <include refid="selectHisSmsCol" /> 
+		order by ym desc,job_id desc 
+		limit #{limitSize}  offset #{firstIndex} 
+	</select>
+	
+	<!-- 월별 SMS 총갯수 -->
+	<select id="selectHisSmsCnt" parameterType="map" resultType="int">
+		SELECT COUNT(*) from (
+			<include refid="selectHisSmsCol" /> 
+		)a
+	</select>
+	
+	<!-- 월별 SMS 엑셀 -->
+	<select id="selectHisSmsExcel" parameterType="map" resultType="egovMap">
+		<include refid="selectHisSmsCol" /> 
+		order by ym desc,job_id desc 
+	</select>
+	 
+	 
+     <sql id="SelPbxCdrSqlCondJoinInter">
+		   LEFT OUTER join (select *  from CM_CFGBASECD  where GRP_CD='BTYPE' ) b ON TO_CHAR(a.btype) = b.VAL 
+		   LEFT OUTER JOIN (select *  from CM_CFGBASECD  where GRP_CD='PBX_TYPE' )  d  ON TO_CHAR(a.PBX_TYPE) = d.VAL
+		   LEFT OUTER JOIN PB_CFGPBX e  ON   a.PBX_SN = e.PBX_SN 
+	</sql>
+	
+	  <sql id="SelPbxCdrSqlCondPageInter">
+      		<include refid="selectHisSqlCond" />
+      		and call_type='S' 
+		  	order by sday desc, stm desc  
+		  	limit #{limitSize}  offset #{firstIndex}
+		   ) a 			
+		   <include refid="SelPbxCdrSqlCondJoinInter" /> 	
+       )m		 
+       
+	</sql>
+	
+	
+	  <sql id="SelPbxCdrSqlCondInter">
+      		<include refid="selectHisSqlCondInter" />       	
+      		and call_type='S' 	
+		  	order by  sday desc, stm desc  
+		   ) a 				   
+		  <include refid="SelPbxCdrSqlCondJoinInter" /> 	   
+       )m		 
+	</sql>
+	 
+	 <sql id="SelPbxCdrSqlColInter">
+		SELECT 	cdrseq as CDRSEQ,              
+				PBX_TYPE,            
+				PBX_SN,      
+				GRP_CD ,           
+				DGRP_CD ,
+				CONCAT( substr(SDAY,1,4),'-', substr(SDAY,5,2),'-', substr(SDAY,7,2))  as sday1,
+			    CONCAT( substr(STM,1,2),':', substr(STM,3,2),':', substr(STM,5,2))  as stm,
+			    CONCAT( substr(EDAY,1,4),'-', substr(EDAY,5,2),'-', substr(EDAY,7,2))  as eday1,
+			    CONCAT( substr(ETM,1,2),':', substr(ETM,3,2),':', substr(ETM,5,2))  as etm,    
+			    eday,
+			    sday,      
+				DUR,                 
+				DOSU,                
+				OCALLER,             
+				OCALLEE,             
+				RDN,                 
+				FCALLEE,             
+				NCALLER,             
+				NCALLEE,
+				BILLNO 
+		  FROM ( 
+		  select      
+					   a.CDRSEQ, 
+				       d.NM AS PBX_TYPE, 
+				       e.NM AS PBX_SN, 
+				       a.NOBILL,    
+				         <!-- concat(callergrpnm,'(',a.grpcd,')' ) grp_cd ,
+				         concat(calleegrpnm,'(',a.dgrpcd,')' ) dgrp_cd ,
+				         -->
+				       callergrpnm grp_cd ,				           
+				       calleegrpnm dgrp_cd ,
+				       a.sday ,
+                       a.stm ,
+                       a.eday ,
+                       a.etm ,
+				       a.DUR, 
+				       a.DOSU, 
+				       f_telnoname(a.pbx_sn,a.ocaller,a.eday) ocaller ,             
+					   f_telnoname(a.pbx_sn,a.ocallee,a.eday) ocallee  ,
+					   f_telnoname(a.pbx_sn,a.rdn,a.eday) RDN  ,
+					   f_telnoname(a.pbx_sn,a.fcallee,a.eday) fcallee  ,  
+				       f_showtelnonm(a.callernm, a.ncaller) ncaller,
+				       f_showtelnonm(a.calleenm, a.ncallee) ncallee,
+				       f_showtelnonm('', a.BILLNO) BILLNO 
+		  from
+		  ( 
+		  <!-- 
+		  	select a.*, @ROWNUM := @ROWNUM + 1 AS ROWNUM FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a
+		  	, (SELECT @ROWNUM := 0) R
+		  	 -->
+		  	 select a.* FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a
+		  	WHERE 1=1					      
+         	 
+      </sql>
+
+		
+	<!-- 조직간 통화이력 조회 -->
+	<select id="selectGrpInterList" parameterType="map" resultType="egovMap">
+		select a.* 
+		<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  --> 
+		from
+		(
+			<include refid="SelPbxCdrSqlColInter" /> 
+			<include refid="SelPbxCdrSqlCondPageInter" /> 
+		) a   
+	</select>
+	 
+	<!-- 총갯수 call_type 교환망 중복제외 -->
+	<select id="selectGrpInterListCnt" parameterType="map" resultType="int">	
+		SELECT COUNT(*) FROM PB_PBXCDR${from_eday1.substring(0,4)}${from_eday1.replace("-","").substring(4,6)} a       	 
+		WHERE 1=1	
+        <include refid="selectHisSqlCondInter" />	
+        and call_type='S' 
+	</select>
+
+		<!-- 엑셀 -->
+	<select id="selectGrpInterListExcel" parameterType="map" resultType="egovMap"> 
+		select a.* 
+		<!-- 
+		 ,f_jojikname(a.grpcd, a.eday) grp_cd
+		  -->  
+		from
+		(
+			<include refid="SelPbxCdrSqlColInter" /> 
+			<include refid="SelPbxCdrSqlCondInter" /> 
+		) a    
+	</select>
+	
+	
+	 
+</mapper>

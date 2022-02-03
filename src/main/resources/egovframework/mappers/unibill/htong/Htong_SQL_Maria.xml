@@ -1,0 +1,999 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="htong">
+
+	<!-- 월별 번호별 통계 조회 -->
+	<select id="selectMonthKeyList" parameterType="map" resultType="egovMap">
+		SELECT 
+			BILL_YM
+			, SVC_ID 
+			, svc_nm 
+			, GD_ID 
+			, gd_nm 
+			, ITEM_ID 
+			, item_nm 
+			, CUST_ID 
+			, cust_nm 
+			, cust_dept_id 
+            , up_dept_id 
+            , depth1 
+            , depth2 
+            , depth3 
+            , depth4 
+			, KEY_NO 
+			, COST   
+
+		FROM (
+
+				SELECT 
+					BILL_YM
+					  , SVC_ID 
+					  , svc_nm 
+					  , GD_ID 
+					  , gd_nm 
+					  , ITEM_ID 
+					  , item_nm 
+					  , CUST_ID 
+					  , cust_nm 
+					  , cust_dept_id 
+		              , up_dept_id 
+		              , depth1 
+		              , depth2 
+		              , depth3 
+		              , depth4 
+					  , KEY_NO 
+					  , COST  
+		              ,ROW_NUMBER() OVER (ORDER BY svc_id) AS rnum
+		
+				FROM (
+		
+		
+					SELECT 
+					  BILL_YM
+					  , aa.SVC_ID
+					  , bb.nm AS svc_nm
+					  , aa.GD_ID
+					  , cc.nm AS gd_nm
+					  , aa.ITEM_ID
+					  , dd.nm AS item_nm
+					  , aa.CUST_ID
+					  , ee.cust_nm
+					  , aa.cust_dept_id
+		              , aa.up_dept_id
+		              , CONNECT_BY_PATH_depth1(aa.cust_dept_id, aa.up_dept_id, #{bill_ym}) AS depth1
+		              , CONNECT_BY_PATH_depth2(aa.cust_dept_id, aa.up_dept_id, #{bill_ym}) AS depth2
+		              , CONNECT_BY_PATH_depth3(aa.cust_dept_id, aa.up_dept_id, #{bill_ym}) AS depth3
+		              , CONNECT_BY_PATH_depth4(aa.cust_dept_id, aa.up_dept_id, #{bill_ym}) AS depth4
+					  , aa.KEY_NO
+					  , aa.COST 
+					  
+					FROM (
+						SELECT BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, cust_dept_id, up_dept_id
+							, KEY_NO, SUM(COST) AS COST
+						FROM (
+		
+							SELECT 
+								a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, a.cust_dept_id, b.up_dept_id
+								,a.KEY_NO, a.COST
+							FROM MB_TC_TONG a
+		            		left JOIN CM_CFGDEPT b ON (a.cust_dept_id = b.dept_id)
+							WHERE a.bill_ym = #{bill_ym}
+							<include refid="selectHtongSql" />
+					
+					
+							union
+					
+							SELECT 
+								a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, '' AS cust_dept_id, '' AS up_dept_id
+								, a.KEY_NO, a.COST
+							FROM MB_RPTJUMPO a
+		            
+							WHERE a.bill_ym = #{bill_ym}
+		            		<include refid="selectHtongSql" />
+		            	) 
+						GROUP BY BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, KEY_NO, cust_dept_id, up_dept_id
+		            ) aa
+		            left JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id)
+					left JOIN MB_CFGGD cc ON (aa.gd_id = cc.gd_id)
+					left JOIN MB_CFGITEM dd ON (aa.item_id = dd.item_id)
+					left JOIN MB_CFGCUST ee ON (aa.cust_id = ee.cust_id)
+		            
+				) aaa
+
+  		) aaaa  
+		
+		WHERE rnum <![CDATA[ <= #{lastIndex} ]]> AND rnum <![CDATA[ > #{firstIndex} ]]>
+		
+	</select>
+	
+	<!-- 월별 번호별 통계 총갯수 -->
+	<select id="selectMonthKeyListCnt" parameterType="map" resultType="int">
+	
+		SELECT 
+			count(*)
+					  
+		FROM (
+			SELECT BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, cust_dept_id, up_dept_id
+				, KEY_NO, SUM(COST) AS COST
+			FROM (
+				SELECT 
+					a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, a.cust_dept_id, b.up_dept_id
+					,a.KEY_NO, a.COST
+				FROM MB_TC_TONG a
+		   		left JOIN CM_CFGDEPT b ON (a.cust_dept_id = b.dept_id)
+				WHERE a.bill_ym = #{bill_ym}
+				<include refid="selectHtongSql" />
+					
+					
+				union
+		
+				SELECT 
+					a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, '' AS cust_dept_id, '' AS up_dept_id
+					, a.KEY_NO, a.COST
+				FROM MB_RPTJUMPO a
+		          
+				WHERE a.bill_ym = #{bill_ym}
+		   		<include refid="selectHtongSql" />
+		   	) 
+			GROUP BY BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, KEY_NO, cust_dept_id, up_dept_id
+		) aa
+		left JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id)
+		left JOIN MB_CFGGD cc ON (aa.gd_id = cc.gd_id)
+		left JOIN MB_CFGITEM dd ON (aa.item_id = dd.item_id)
+		left JOIN MB_CFGCUST ee ON (aa.cust_id = ee.cust_id)
+		
+	
+	</select>
+
+	<!-- 월별 번호별 통계 엑셀 -->
+	<select id="selectMonthKeyListExcel" parameterType="map" resultType="egovMap">
+
+		SELECT 
+			BILL_YM
+			  , SVC_ID 
+			  , svc_nm 
+			  , GD_ID 
+			  , gd_nm 
+			  , ITEM_ID 
+			  , item_nm 
+			  , CUST_ID 
+			  , cust_nm 
+			  , cust_dept_id 
+		      , up_dept_id 
+		      , depth1 
+		      , depth2 
+		      , depth3 
+		      , depth4 
+			  , KEY_NO 
+			  , COST  
+		      
+		
+		FROM (
+		
+		
+			SELECT 
+			  BILL_YM
+			  , aa.SVC_ID
+			  , bb.nm AS svc_nm
+			  , aa.GD_ID
+			  , cc.nm AS gd_nm
+			  , aa.ITEM_ID
+			  , dd.nm AS item_nm
+			  , aa.CUST_ID
+			  , ee.cust_nm
+			  , aa.cust_dept_id
+		      , aa.up_dept_id
+		      , CONNECT_BY_PATH_depth1(aa.cust_dept_id, aa.up_dept_id, #{bill_ym}) AS depth1
+		      , CONNECT_BY_PATH_depth2(aa.cust_dept_id, aa.up_dept_id, #{bill_ym}) AS depth2
+		      , CONNECT_BY_PATH_depth3(aa.cust_dept_id, aa.up_dept_id, #{bill_ym}) AS depth3
+		      , CONNECT_BY_PATH_depth4(aa.cust_dept_id, aa.up_dept_id, #{bill_ym}) AS depth4
+			  , aa.KEY_NO
+			  , aa.COST 
+			  
+			FROM (
+				SELECT BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, cust_dept_id, up_dept_id
+					, KEY_NO, SUM(COST) AS COST
+				FROM (
+		
+					SELECT 
+						a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, a.cust_dept_id, b.up_dept_id
+						,a.KEY_NO, a.COST
+					FROM MB_TC_TONG a
+		    		left JOIN CM_CFGDEPT b ON (a.cust_dept_id = b.dept_id)
+					WHERE a.bill_ym = #{bill_ym}
+					<include refid="selectHtongSql" />
+			
+			
+					union
+			
+					SELECT 
+						a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, '' AS cust_dept_id, '' AS up_dept_id
+						, a.KEY_NO, a.COST
+					FROM MB_RPTJUMPO a
+		    
+					WHERE a.bill_ym = #{bill_ym}
+		    		<include refid="selectHtongSql" />
+		    	) 
+				GROUP BY BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, KEY_NO, cust_dept_id, up_dept_id
+		    ) aa
+		    left JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id)
+			left JOIN MB_CFGGD cc ON (aa.gd_id = cc.gd_id)
+			left JOIN MB_CFGITEM dd ON (aa.item_id = dd.item_id)
+			left JOIN MB_CFGCUST ee ON (aa.cust_id = ee.cust_id)
+		    
+		) aaa
+
+  		
+		
+		
+	
+	</select>
+	
+	
+	<!-- 년별 번호별 통계 조회 -->
+	<select id="selectYearKeyList" parameterType="map" resultType="egovMap">
+		SELECT 
+			BILL_YM
+			, SVC_ID 
+			, svc_nm 
+			, GD_ID 
+			, gd_nm 
+			, ITEM_ID 
+			, item_nm 
+			, CUST_ID 
+			, cust_nm 
+			, cust_dept_id 
+            , up_dept_id 
+            , depth1 
+            , depth2 
+            , depth3 
+            , depth4 
+			, KEY_NO 
+			, COST   
+
+		FROM (
+
+				SELECT 
+					BILL_YM
+					  , SVC_ID 
+					  , svc_nm 
+					  , GD_ID 
+					  , gd_nm 
+					  , ITEM_ID 
+					  , item_nm 
+					  , CUST_ID 
+					  , cust_nm 
+					  , cust_dept_id 
+		              , up_dept_id 
+		              , depth1 
+		              , depth2 
+		              , depth3 
+		              , depth4 
+					  , KEY_NO 
+					  , COST  
+		              ,ROW_NUMBER() OVER (ORDER BY svc_id) AS rnum
+		
+				FROM (
+		
+		
+					SELECT 
+					  BILL_YM
+					  , aa.SVC_ID
+					  , bb.nm AS svc_nm
+					  , aa.GD_ID
+					  , cc.nm AS gd_nm
+					  , aa.ITEM_ID
+					  , dd.nm AS item_nm
+					  , aa.CUST_ID
+					  , ee.cust_nm
+					  , aa.cust_dept_id
+		              , aa.up_dept_id
+		              , CONNECT_BY_PATH_YEAR_DEPTH1(aa.cust_dept_id, aa.up_dept_id, #{bill_ym_yyyy}) AS depth1
+		              , CONNECT_BY_PATH_YEAR_DEPTH2(aa.cust_dept_id, aa.up_dept_id, #{bill_ym_yyyy}) AS depth2
+		              , CONNECT_BY_PATH_YEAR_DEPTH3(aa.cust_dept_id, aa.up_dept_id, #{bill_ym_yyyy}) AS depth3
+		              , CONNECT_BY_PATH_YEAR_DEPTH4(aa.cust_dept_id, aa.up_dept_id, #{bill_ym_yyyy}) AS depth4
+					  , aa.KEY_NO
+					  , aa.COST 
+					  
+					FROM (
+						SELECT BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, cust_dept_id, up_dept_id
+							, KEY_NO, SUM(COST) AS COST
+						FROM (
+		
+							SELECT 
+								a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, a.cust_dept_id, b.up_dept_id
+								,a.KEY_NO, a.COST
+							FROM MB_TC_TONG a
+		            		left JOIN CM_CFGDEPT b ON (a.cust_dept_id = b.dept_id)
+							WHERE substr(a.bill_ym,1,4) = #{bill_ym_yyyy}
+							<include refid="selectHtongSql" />
+					
+					
+							union
+					
+							SELECT 
+								a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, '' AS cust_dept_id, '' AS up_dept_id
+								, a.KEY_NO, a.COST
+							FROM MB_RPTJUMPO a
+		            
+							WHERE substr(a.bill_ym,1,4) = #{bill_ym_yyyy}
+		            		<include refid="selectHtongSql" />
+		            	) 
+						GROUP BY BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, KEY_NO, cust_dept_id, up_dept_id
+		            ) aa
+		            left JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id)
+					left JOIN MB_CFGGD cc ON (aa.gd_id = cc.gd_id)
+					left JOIN MB_CFGITEM dd ON (aa.item_id = dd.item_id)
+					left JOIN MB_CFGCUST ee ON (aa.cust_id = ee.cust_id)
+		            
+				) aaa
+
+  		) aaaa  
+		
+		WHERE rnum <![CDATA[ <= #{lastIndex} ]]> AND rnum <![CDATA[ > #{firstIndex} ]]>
+		
+	</select>
+	
+	<!-- 년별 번호별 통계 총갯수 -->
+	<select id="selectYearKeyListCnt" parameterType="map" resultType="int">
+
+		
+		
+		SELECT 
+		  count(*) 
+		  
+		FROM (
+			SELECT BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, cust_dept_id, up_dept_id
+				, KEY_NO, SUM(COST) AS COST
+			FROM (
+		
+				SELECT 
+					a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, a.cust_dept_id, b.up_dept_id
+					,a.KEY_NO, a.COST
+				FROM MB_TC_TONG a
+				left JOIN CM_CFGDEPT b ON (a.cust_dept_id = b.dept_id)
+				WHERE substr(a.bill_ym,1,4) = #{bill_ym_yyyy}
+				<include refid="selectHtongSql" />
+		
+		
+				union
+		
+				SELECT 
+					a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, '' AS cust_dept_id, '' AS up_dept_id
+					, a.KEY_NO, a.COST
+				FROM MB_RPTJUMPO a
+		
+				WHERE substr(a.bill_ym,1,4) = #{bill_ym_yyyy}
+				<include refid="selectHtongSql" />
+			) 
+			GROUP BY BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, KEY_NO, cust_dept_id, up_dept_id
+		) aa
+		left JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id)
+		left JOIN MB_CFGGD cc ON (aa.gd_id = cc.gd_id)
+		left JOIN MB_CFGITEM dd ON (aa.item_id = dd.item_id)
+		left JOIN MB_CFGCUST ee ON (aa.cust_id = ee.cust_id)
+	
+	
+	</select>
+
+	<!-- 년별 번호별 통계 엑셀 -->
+	<select id="selectYearKeyListExcel" parameterType="map" resultType="egovMap">
+
+		
+
+		SELECT 
+			BILL_YM
+			  , SVC_ID 
+			  , svc_nm 
+			  , GD_ID 
+			  , gd_nm 
+			  , ITEM_ID 
+			  , item_nm 
+			  , CUST_ID 
+			  , cust_nm 
+			  , cust_dept_id 
+		      , up_dept_id 
+		      , depth1 
+		      , depth2 
+		      , depth3 
+		      , depth4 
+			  , KEY_NO 
+			  , COST  
+		      
+		
+		FROM (
+		
+		
+			SELECT 
+			  BILL_YM
+			  , aa.SVC_ID
+			  , bb.nm AS svc_nm
+			  , aa.GD_ID
+			  , cc.nm AS gd_nm
+			  , aa.ITEM_ID
+			  , dd.nm AS item_nm
+			  , aa.CUST_ID
+			  , ee.cust_nm
+			  , aa.cust_dept_id
+		      , aa.up_dept_id
+		      , CONNECT_BY_PATH_YEAR_DEPTH1(aa.cust_dept_id, aa.up_dept_id, #{bill_ym_yyyy}) AS depth1
+		      , CONNECT_BY_PATH_YEAR_DEPTH2(aa.cust_dept_id, aa.up_dept_id, #{bill_ym_yyyy}) AS depth2
+		      , CONNECT_BY_PATH_YEAR_DEPTH3(aa.cust_dept_id, aa.up_dept_id, #{bill_ym_yyyy}) AS depth3
+		      , CONNECT_BY_PATH_YEAR_DEPTH4(aa.cust_dept_id, aa.up_dept_id, #{bill_ym_yyyy}) AS depth4
+			  , aa.KEY_NO
+			  , aa.COST 
+			  
+			FROM (
+				SELECT BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, cust_dept_id, up_dept_id
+					, KEY_NO, SUM(COST) AS COST
+				FROM (
+		
+					SELECT 
+						a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, a.cust_dept_id, b.up_dept_id
+						,a.KEY_NO, a.COST
+					FROM MB_TC_TONG a
+		    		left JOIN CM_CFGDEPT b ON (a.cust_dept_id = b.dept_id)
+					WHERE substr(a.bill_ym,1,4) = #{bill_ym_yyyy}
+					<include refid="selectHtongSql" />
+			
+			
+					union
+			
+					SELECT 
+						a.UBSEQ, a.BILL_YM, a.SVC_ID, a.GD_ID, a.ITEM_ID, a.CUST_ID, '' AS cust_dept_id, '' AS up_dept_id
+						, a.KEY_NO, a.COST
+					FROM MB_RPTJUMPO a
+		    
+					WHERE substr(a.bill_ym,1,4) = #{bill_ym_yyyy}
+		    		<include refid="selectHtongSql" />
+		    	) 
+				GROUP BY BILL_YM, SVC_ID, GD_ID, ITEM_ID, CUST_ID, KEY_NO, cust_dept_id, up_dept_id
+		    ) aa
+		    left JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id)
+			left JOIN MB_CFGGD cc ON (aa.gd_id = cc.gd_id)
+			left JOIN MB_CFGITEM dd ON (aa.item_id = dd.item_id)
+			left JOIN MB_CFGCUST ee ON (aa.cust_id = ee.cust_id)
+		    
+		) aaa
+
+  	
+	</select>
+	
+	<!-- 조회 조건 -->
+	<sql id="selectHtongSql">
+		<if test="svc_id != null and svc_id != '' ">        
+			AND a.svc_id = #{svc_id} 
+		</if>
+		<if test="gd_id != null and gd_id != '' ">        
+			AND a.gd_id = #{gd_id} 
+		</if>
+		<if test="item_id != null and item_id != '' ">        
+			AND a.item_id = #{item_id} 
+		</if>
+		<if test="cust_id != null and cust_id != '' ">        
+			AND a.cust_id = #{cust_id} 
+		</if>
+		<if test="cust_dept_id != null and cust_dept_id != '' ">        
+			AND a.cust_dept_id = #{cust_dept_id} 
+		</if>
+	</sql>	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 데이터 번호별 요금내역 -->
+	<select id="selectDataKeynoList" parameterType="map" resultType="egovMap">
+		select 
+			bill_ym
+			,svc_id
+			,svc_nm
+			,gd_id 
+			,gd_nm
+			,jumpo_code
+			,jumpo_nm
+			,rcust_id
+			,rcust_nm
+			,cust_id
+			,cust_nm
+			,key_no
+			,item_id
+			,item_nm
+			,cost
+		from(
+			SELECT  
+				a.bill_ym
+				,a.svc_id
+				,b.nm AS svc_nm
+				,a.GD_ID 
+				,c.nm AS gd_nm
+				,a.JUMPO_CODE
+				,d.nm AS jumpo_nm
+				,a.rcust_id
+				,f.cust_nm AS rcust_nm
+				,a.cust_id
+				,e.cust_nm
+				,a.key_no
+				,a.item_id
+				,g.nm AS item_nm
+				,a.cost
+				, rownum rnum
+			FROM MB_RPTJUMPO a
+			left JOIN MB_CFGSVC b ON (a.svc_id = b.svc_id)
+			left JOIN MB_CFGGD c ON (a.gd_id = c.gd_id)
+			left JOIN MB_CFGJUMPO d ON (a.jumpo_code = d.jumpo_id)
+			left JOIN MB_CFGCUST e ON (a.cust_id = e.cust_id)
+			left JOIN MB_CFGCUST f ON (a.rcust_id = f.cust_id)
+			left JOIN MB_CFGITEM g ON (a.item_id = g.item_id)
+			where 0=0
+			<if test="bill_ym != null and bill_ym != '' ">        
+				AND a.bill_ym = #{bill_ym} 
+			</if>
+			<include refid="selectDataKeynoSql" />
+		) aa
+		WHERE rnum <![CDATA[ <= #{lastIndex} ]]> AND rnum <![CDATA[ > #{firstIndex} ]]>
+		
+		
+		ORDER BY bill_ym, gd_id, jumpo_code, rcust_id, cust_id, key_no, item_id
+		
+		
+	</select>
+	
+	<!-- 데이터 번호별 요금내역 총갯수-->
+	<select id="selectDataKeynoListCnt" parameterType="map" resultType="int">
+	
+		
+		SELECT  
+			count(*)
+		FROM MB_RPTJUMPO a
+		left JOIN MB_CFGSVC b ON (a.svc_id = b.svc_id)
+		left JOIN MB_CFGGD c ON (a.gd_id = c.gd_id)
+		left JOIN MB_CFGJUMPO d ON (a.jumpo_code = d.jumpo_id)
+		left JOIN MB_CFGCUST e ON (a.cust_id = e.cust_id)
+		left JOIN MB_CFGCUST f ON (a.rcust_id = f.cust_id)
+		left JOIN MB_CFGITEM g ON (a.item_id = g.item_id)
+		where 0=0
+		<if test="bill_ym != null and bill_ym != '' ">        
+			AND a.bill_ym = #{bill_ym} 
+		</if>
+		<include refid="selectDataKeynoSql" />
+		
+	</select>
+
+	<!-- 데이터 번호별 요금내역 엑셀 -->
+	<select id="selectDataKeynoListExcel" parameterType="map" resultType="egovMap">
+
+		select 
+			bill_ym
+			,svc_id
+			,svc_nm
+			,gd_id 
+			,gd_nm
+			,jumpo_code
+			,jumpo_nm
+			,rcust_id
+			,rcust_nm
+			,cust_id
+			,cust_nm
+			,key_no
+			,item_id
+			,item_nm
+			,cost
+		from(
+			SELECT  
+				a.bill_ym
+				,a.svc_id
+				,b.nm AS svc_nm
+				,a.GD_ID 
+				,c.nm AS gd_nm
+				,a.JUMPO_CODE
+				,d.nm AS jumpo_nm
+				,a.rcust_id
+				,f.cust_nm AS rcust_nm
+				,a.cust_id
+				,e.cust_nm
+				,a.key_no
+				,a.item_id
+				,g.nm AS item_nm
+				,a.cost
+				, rownum rnum
+			FROM MB_RPTJUMPO a
+			left JOIN MB_CFGSVC b ON (a.svc_id = b.svc_id)
+			left JOIN MB_CFGGD c ON (a.gd_id = c.gd_id)
+			left JOIN MB_CFGJUMPO d ON (a.jumpo_code = d.jumpo_id)
+			left JOIN MB_CFGCUST e ON (a.cust_id = e.cust_id)
+			left JOIN MB_CFGCUST f ON (a.rcust_id = f.cust_id)
+			left JOIN MB_CFGITEM g ON (a.item_id = g.item_id)
+			
+			where 0=0
+			<if test="bill_ym != null and bill_ym != '' ">        
+				AND a.bill_ym = #{bill_ym} 
+			</if>
+			<include refid="selectDataKeynoSql" />
+		) aa
+		WHERE 0=0
+		
+		
+		ORDER BY bill_ym, gd_id, jumpo_code, rcust_id, cust_id, key_no, item_id
+		
+	</select>
+	
+	<!-- 데이터 번호별 요금내역 조회 조건 -->
+	<sql id="selectDataKeynoSql">
+		<if test="svc_id != null and svc_id != '' ">        
+			AND a.svc_id = #{svc_id} 
+		</if>
+		<if test="svc_nm != null and svc_nm != '' ">        
+			AND a.svc_nm = #{svc_nm} ||'%'
+		</if>
+		<if test="gd_id != null and gd_id != '' ">        
+			AND a.gd_id = #{gd_id} 
+		</if>
+		<if test="gd_nm != null and gd_nm != '' ">        
+			AND a.gd_nm = #{gd_nm} ||'%'
+		</if>
+		<if test="jumpo_code != null and jumpo_code != '' ">        
+			AND a.jumpo_code = #{jumpo_code} 
+		</if>
+		<if test="jumpo_nm != null and jumpo_nm != '' ">        
+			AND a.jumpo_nm = #{jumpo_nm} ||'%'
+		</if>
+		<if test="rcust_id != null and rcust_id != '' ">        
+			AND a.cust_id = #{cust_id} 
+		</if>
+		<if test="rcust_nm != null and rcust_nm != '' ">        
+			AND a.cust_nm = #{cust_nm} ||'%'
+		</if>
+		<if test="cust_id != null and cust_id != '' ">        
+			AND a.cust_id = #{cust_id} 
+		</if>
+		<if test="cust_nm != null and cust_nm != '' ">        
+			AND a.cust_nm = #{cust_nm} ||'%'
+		</if>
+		<if test="key_no != null and key_no != '' ">        
+			AND a.key_no = #{key_no} 
+		</if>
+		<if test="item_id != null and item_id != '' ">        
+			AND a.item_id = #{item_id} 
+		</if>
+		<if test="item_nm != null and item_nm != '' ">        
+			AND a.item_nm = #{item_nm} ||'%'
+		</if>
+		
+	</sql>	
+	
+	
+	
+	<!-- 원가대비 공급가 리스트 -->
+	<select id="selectContrastCostList" parameterType="map" resultType="egovMap">
+		select 
+			bill_ym
+			,rcust_id
+			,rcust_nm
+			,svc_id
+			,svc_nm
+			,cust_type
+			,ocost
+			,COST
+			,profit
+			,profitrate
+			,remark
+		from (
+			SELECT 
+				aa.bill_ym
+				,aa.rcust_id
+				,cc.cust_nm as rcust_nm
+				,aa.svc_id
+				,bb.nm AS svc_nm
+				,ee.nm AS cust_type
+				,aa.ocost + NVL(DD.COST,0) AS ocost
+				,aa.COST
+				,aa.profit
+				,aa.profitrate
+				,dd.remark
+				, rownum rnum
+			FROM ( 
+				  select bill_ym,rcust_id, svc_id
+					  ,ROUND(SUM(cost)) AS COST
+					  ,ROUND(SUM(ocost)) AS ocost
+					  ,ROUND(SUM(cost))-ROUND(SUM(ocost)) AS profit
+					  ,ROUND((ROUND(SUM(cost)) - ROUND(SUM(ocost))) / ROUND(SUM(cost)) * 100)  AS profitrate  
+					
+				  from
+				  (
+				  SELECT bill_ym,rcust_id, svc_id, ocost, cost  FROM MB_TC_TONG
+				  WHERE bill_ym = #{bill_ym}
+
+				  ) a
+				  
+				  GROUP BY bill_ym, rcust_id, svc_id 
+			) aa
+			left JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id)
+			left JOIN MB_CFGCUST cc ON (aa.rcust_id = cc.cust_id)
+			left JOIN mb_cfgaddcost dd ON (aa.bill_ym = dd.bill_ym AND aa.rcust_id = dd.rcust_id AND aa.svc_id=dd.svc_id)
+			left JOIN (select* FROM CM_CFGBASECD WHERE grp_cd = 'CUST_TYPE') ee ON (cc.cust_type = ee.val)
+			where 0=0
+			<include refid="selectContrastCostListSql" />
+		) aaa
+		
+		WHERE rnum <![CDATA[ <= #{lastIndex} ]]> AND rnum <![CDATA[ > #{firstIndex} ]]>
+		ORDER BY bill_ym, rcust_id DESC
+
+
+		
+	</select>
+	
+	<!-- 원가대비 공급가 총갯수 -->
+	<select id="selectContrastCostListCnt" parameterType="map" resultType="int">
+		select
+			count(*)
+		from (
+			
+			SELECT 
+				aa.bill_ym
+				,aa.rcust_id
+				,cc.cust_nm as rcut_nm
+				,aa.svc_id
+				,bb.nm AS svc_nm
+				,ee.nm AS cust_type
+				,aa.ocost + NVL(DD.COST,0) AS ocost
+				,aa.COST
+				,aa.profit
+				,aa.profitrate
+				,dd.remark
+				
+			FROM ( 
+				  select bill_ym,rcust_id, svc_id
+					  ,ROUND(SUM(cost)) AS COST
+					  ,ROUND(SUM(ocost)) AS ocost
+					  ,ROUND(SUM(cost))-ROUND(SUM(ocost)) AS profit
+					  ,ROUND((ROUND(SUM(cost)) - ROUND(SUM(ocost))) / ROUND(SUM(cost)) * 100)  AS profitrate  
+					
+				  from
+				  (
+				  SELECT bill_ym,rcust_id, svc_id, ocost, cost  FROM MB_TC_TONG
+				  WHERE bill_ym = #{bill_ym}
+
+				  ) a
+				  GROUP BY bill_ym, rcust_id, svc_id 
+			) aa
+			left JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id)
+			left JOIN MB_CFGCUST cc ON (aa.rcust_id = cc.rcust_id)
+			left JOIN mb_cfgaddcost dd ON (aa.bill_ym = dd.bill_ym AND aa.rcust_id = dd.rcust_id AND aa.svc_id=dd.svc_id)
+			left JOIN (select* FROM CM_CFGBASECD WHERE grp_cd = 'CUST_TYPE') ee ON (cc.cust_type = ee.val)
+			where 0=0
+			<include refid="selectContrastCostListSql" />
+		) aaa
+		
+
+		
+	</select>
+	
+	<!-- 원가대비 공급가 엑셀 -->
+	<select id="selectContrastCostListExcel" parameterType="map" resultType="egovMap">
+		SELECT 
+			aa.bill_ym
+			,aa.rcust_id
+			,cc.cust_nm as rcut_nm
+			,aa.svc_id
+			,bb.nm AS svc_nm
+			,ee.nm AS cust_type
+			,aa.ocost + NVL(DD.COST,0) AS ocost
+			,aa.COST
+			,aa.profit
+			,aa.profitrate
+			,dd.remark
+		FROM ( 
+			  select bill_ym,rcust_id, svc_id
+				  ,ROUND(SUM(cost)) AS COST
+				  ,ROUND(SUM(ocost)) AS ocost
+				  ,ROUND(SUM(cost))-ROUND(SUM(ocost)) AS profit
+				  ,ROUND((ROUND(SUM(cost)) - ROUND(SUM(ocost))) / ROUND(SUM(cost)) * 100)  AS profitrate  
+				
+			  from
+			  (
+			  SELECT bill_ym,rcust_id, svc_id, ocost, cost  FROM MB_TC_TONG
+			  WHERE bill_ym = #{bill_ym}
+
+			  ) a
+			  GROUP BY bill_ym, rcust_id, svc_id 
+		) aa
+		left JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id)
+		left JOIN MB_CFGCUST cc ON (aa.rcust_id = cc.cust_id)
+		left JOIN mb_cfgaddcost dd ON (aa.bill_ym = dd.bill_ym AND aa.rcust_id = dd.rcust_id AND aa.svc_id=dd.svc_id)
+		left JOIN (select* FROM CM_CFGBASECD WHERE grp_cd = 'CUST_TYPE') ee ON (cc.cust_type = ee.val)
+		where 0=0
+		<include refid="selectContrastCostListSql" />
+		
+		ORDER BY bill_ym, rcust_id DESC
+
+
+		
+	</select>
+	
+	
+	<!-- 원가대비 공급가 조건 -->
+	<sql id="selectContrastCostListSql">
+		<if test="rcust_id != null and rcust_id != '' ">        
+			AND aa.rcust_id = #{rcust_id} 
+		</if>
+		<if test="rcust_nm != null and rcust_nm != '' ">        
+			AND cc.cust_nm = #{rcust_nm} ||'%'
+		</if>
+		<if test="svc_id != null and svc_id != '' ">        
+			AND aa.svc_id = #{svc_id} 
+		</if>
+		<if test="cust_type != null and cust_type != '' ">        
+			AND cc.cust_type = #{cust_type}
+		</if>
+	</sql>
+	
+	
+	
+	<!-- 목표대비 실적 리스트 -->
+	<select id="selectContrastGoalList" parameterType="map" resultType="egovMap">
+		SELECT 
+			bill_ym ,
+		    rcust_id ,
+		    rcut_nm ,
+		    svc_id ,
+		    svc_nm ,
+		    cust_type ,
+		    goalcost,
+		    ocost ,
+		    COST ,
+		    cost_type,
+		    profit,
+		    round(profit / goalcost * 100) AS profitrate,
+		    remark 
+		FROM 
+		(
+		
+		  SELECT aa.bill_ym ,
+		         aa.rcust_id ,
+				 cc.cust_nm AS rcut_nm ,
+				 aa.svc_id ,
+		         bb.nm AS svc_nm ,
+		         ee.nm AS cust_type ,
+		         dd.goalcost,
+		         aa.ocost + NVL(DD.COST,0) AS ocost ,
+		         aa.COST ,
+		         (SELECT nm FROM (SELECT * FROM cm_cfgbasecd WHERE grp_cd ='COST_TYPE') x WHERE dd.cost_type = x.val) AS cost_type,
+		         CASE WHEN dd.cost_type ='TOT' THEN aa.COST ELSE aa.COST - ocost END AS profit,
+		         dd.remark2 AS remark,
+		         rownum rnum
+		    FROM 
+		         (SELECT bill_ym, rcust_id, svc_id ,
+		                ROUND(SUM(COST)) AS COST ,
+		                ROUND(SUM(ocost)) AS ocost
+		           FROM 
+		                (SELECT bill_ym, rcust_id, svc_id, ocost, COST FROM MB_TC_TONG 
+		                 WHERE bill_ym = #{bill_ym} 
+
+		                ) a 
+		          GROUP BY bill_ym, rcust_id, svc_id 
+		         ) aa 
+		     LEFT JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id) 
+		     LEFT JOIN MB_CFGCUST cc ON (aa.rcust_id = cc.cust_id) 
+		     LEFT JOIN mb_cfgaddcost dd ON (aa.bill_ym = dd.bill_ym AND aa.rcust_id = dd.rcust_id AND aa.svc_id=dd.svc_id) 
+		     LEFT JOIN (SELECT * FROM CM_CFGBASECD WHERE grp_cd = 'CUST_TYPE') ee ON (cc.cust_type = ee.val) 
+		   WHERE 0=0 
+		    <include refid="selectContrastGoalListSql" />
+		) aaa       
+   		WHERE rnum <![CDATA[ <= #{lastIndex} ]]> AND rnum <![CDATA[ > #{firstIndex} ]]>
+		
+	</select>
+	
+	<!-- 목표대비 실적 총갯수 -->
+	<select id="selectContrastGoalListCnt" parameterType="map" resultType="int">
+		SELECT 
+			count(*) 
+		FROM 
+		(
+		
+		  SELECT aa.bill_ym ,
+		         aa.rcust_id ,
+				 cc.cust_nm AS rcut_nm ,
+				 aa.svc_id ,
+		         bb.nm AS svc_nm ,
+		         ee.nm AS cust_type ,
+		         dd.goalcost,
+		         aa.ocost + NVL(DD.COST,0) AS ocost ,
+		         aa.COST ,
+		         (SELECT nm FROM (SELECT * FROM cm_cfgbasecd WHERE grp_cd ='COST_TYPE') x WHERE dd.cost_type = x.val) AS cost_type,
+		         CASE WHEN dd.cost_type ='TOT' THEN aa.COST ELSE aa.COST - ocost END AS profit,
+		         dd.remark2 AS remark  
+		    FROM 
+		         (SELECT bill_ym, rcust_id, svc_id ,
+		                ROUND(SUM(COST)) AS COST ,
+		                ROUND(SUM(ocost)) AS ocost
+		           FROM 
+		                (SELECT bill_ym, rcust_id, svc_id, ocost, COST FROM MB_TC_TONG 
+		                 WHERE bill_ym = #{bill_ym}
+
+		                ) a 
+		          GROUP BY bill_ym, rcust_id, svc_id 
+		         ) aa 
+		     LEFT JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id) 
+		     LEFT JOIN MB_CFGCUST cc ON (aa.rcust_id = cc.cust_id) 
+		     LEFT JOIN mb_cfgaddcost dd ON (aa.bill_ym = dd.bill_ym AND aa.rcust_id = dd.rcust_id AND aa.svc_id=dd.svc_id) 
+		     LEFT JOIN (SELECT * FROM CM_CFGBASECD WHERE grp_cd = 'CUST_TYPE') ee ON (cc.cust_type = ee.val) 
+		   WHERE 0=0 
+		   <include refid="selectContrastGoalListSql" /> 
+		) aaa 
+		 
+	</select>
+	
+	<!-- 목표대비 실적 엑셀 -->
+	<select id="selectContrastGoalListExcel" parameterType="map" resultType="egovMap">
+		SELECT 
+			bill_ym ,
+		    rcust_id ,
+		    rcut_nm ,
+		    svc_id ,
+		    svc_nm ,
+		    cust_type ,
+		    goalcost,
+		    ocost ,
+		    COST ,
+		    cost_type,
+		    profit,
+		    round(profit / goalcost * 100) AS profitrate,
+		    remark 
+		FROM 
+		(
+		
+		  SELECT aa.bill_ym ,
+		         aa.rcust_id ,
+				 cc.cust_nm AS rcut_nm ,
+				 aa.svc_id ,
+		         bb.nm AS svc_nm ,
+		         ee.nm AS cust_type ,
+		         dd.goalcost,
+		         aa.ocost + NVL(DD.COST,0) AS ocost ,
+		         aa.COST ,
+		         (SELECT nm FROM (SELECT * FROM cm_cfgbasecd WHERE grp_cd ='COST_TYPE') x WHERE dd.cost_type = x.val) AS cost_type,
+		         CASE WHEN dd.cost_type ='TOT' THEN aa.COST ELSE aa.COST - ocost END AS profit,
+		         dd.remark2 AS remark  
+		    FROM 
+		         (SELECT bill_ym, rcust_id, svc_id ,
+		                ROUND(SUM(COST)) AS COST ,
+		                ROUND(SUM(ocost)) AS ocost
+		           FROM 
+		                (SELECT bill_ym, rcust_id, svc_id, ocost, COST FROM MB_TC_TONG 
+		                 WHERE bill_ym = #{bill_ym}
+
+		                ) a 
+		          GROUP BY bill_ym, rcust_id, svc_id 
+		         ) aa 
+		     LEFT JOIN MB_CFGSVC bb ON (aa.svc_id = bb.svc_id) 
+		     LEFT JOIN MB_CFGCUST cc ON (aa.rcust_id = cc.cust_id) 
+		     LEFT JOIN mb_cfgaddcost dd ON (aa.bill_ym = dd.bill_ym AND aa.rcust_id = dd.rcust_id AND aa.svc_id=dd.svc_id) 
+		     LEFT JOIN (SELECT * FROM CM_CFGBASECD WHERE grp_cd = 'CUST_TYPE') ee ON (cc.cust_type = ee.val) 
+		   WHERE 0=0 
+		   <include refid="selectContrastGoalListSql" />
+		) aaa  
+	</select>
+	
+	
+	
+	<!-- 목표대비 실적 조건 -->
+	<sql id="selectContrastGoalListSql">
+		<if test="rcust_id != null and rcust_id != '' ">        
+			AND aa.rcust_id = #{rcust_id} 
+		</if>
+		<if test="rcust_nm != null and rcust_nm != '' ">        
+			AND cc.cust_nm = #{rcust_nm} ||'%'
+		</if>
+		<if test="svc_id != null and svc_id != '' ">        
+			AND aa.svc_id = #{svc_id} 
+		</if>
+		<if test="cust_type != null and cust_type != '' ">        
+			AND cc.cust_type = #{cust_type}
+		</if>
+	</sql>
+		
+</mapper>

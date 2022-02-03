@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="file">
+
+	<!-- 파일정보 조회 -->
+	<select id="selectFileInfo" parameterType="com.hsck.ubfw.component.com.cmm.vo.FileVO" resultType="com.hsck.ubfw.component.com.cmm.vo.FileVO">
+
+		SELECT file_sn
+		     , ubseq
+		     , file_nm
+		     , rawdata
+		  FROM mb_file_upload
+		 WHERE 1 = 1
+		   AND file_sn = #{fileSn}
+		   <!--
+		 <if test="ubseq > 0">
+		   and ubseq = #{ubseq}
+		 </if>
+		 -->
+
+	</select>
+	
+		<select id="selectNoticeFileInfo" parameterType="com.hsck.ubfw.component.com.cmm.vo.FileVO" resultType="egovMap">
+
+		SELECT file_sn
+		     , file_path
+		     , nm
+		     , file_sz
+		     
+		  FROM cm_file
+		 WHERE 1 = 1
+		   AND file_sn = #{fileSn}
+		   <!--
+		 <if test="ubseq > 0">
+		   and ubseq = #{ubseq}
+		 </if>
+		 -->
+
+	</select>
+	
+	
+
+</mapper>

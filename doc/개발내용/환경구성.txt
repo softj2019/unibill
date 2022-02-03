@@ -1,0 +1,67 @@
+
+[개발환경 구성]
+ 	전자정부 프레임워크/ 스프링 / java /jsp /mariadb
+ 	 서버 ssh 접속 appbill/appbill2301   /app/appbill/websrc 에 있는 파일 다운로드 구성
+ 	svn 구성 : 이클립스에서  new => other => svn => project other svn 선택해서 다운로드
+	http://211.37.179.50:8080/scm/repo/scmadmin/appbill 
+	사용자 2개 등록 
+	user1 / user1123
+	user2 / user2123
+	필요시 사용자 추가등록 권한 부여됨
+	
+	
+	-- 개발자 개발 툴 환경 
+		0. 211.37.179.50 서버 접속 
+		1. /app/appbill/websrc 에서 jdk, 이클립스, 롬복(이클립스 폴더안에 위치), 톰캣(workspace안에 위치)  다운로드
+		2. 다운로드 후 롬복 실행 : 
+			-- 관리자 권한으로 명령 프롬프트에서 jdk bin 폴더로 이동
+			-- java -jar [lombok.jar위치] 
+			-- 창이 뜨면 이클립스 위치를 설정해주고 install
+ 		3. 이클립스 실행
+ 		    -- workspace 위치 선택 eGov-3.9\workspace
+ 		    
+ 		4. svn에서 checkout
+ 		    -- svn 주소 : http://211.37.179.50:8080/scm/repo/scmadmin/appbill
+ 		5. tomcat 설정
+ 		    -- window - preperences - server - runtime.... - add 해서 톰갯 추가 톰캣 
+ 		              파일 위치는 eGov-3.9\workspace\appbillProject\apache-tomcat-8.5.57
+ 		    -- 이클립스 server 에서 사용 톰캣 추가해서 프로젝트 연결
+ 		7. 메이븐
+ 			-- 메이븐에서 라이브러리를 제대로 못가지 올 경우 /app/appbill/websrc/.m2에서 해당 라이브러리 다운로드
+ 		6. 톰캣 실행 
+ 		7. 웹접속 확인             
+ 		              
+ 		    
+ 		    
+ 		
+ 	 
+ 	
+ 	 	
+	
+	
+	
+	
+가. globals.properties db 설정
+Globals.Url= jdbc:mariadb://211.37.179.50:9306/appbill
+
+나. 소스보안
+	findbugs
+	pmd 설정
+
+다. 패치주기
+	매주월요일 오전까지 커밋  오후에 배포작업
+
+라.설계및 기타 문의사항
+	정건일 매니저 및  박준형 이사 내용 공유 및 신세계 유화경 매니져 질의
+	 
+	신세계 유화경 : youhk@shinsegae.com
+	한싹 박준형 : heaven@hanssak.co.kr
+
+ 
+마. 개발 소스 구성 규칙
+ - 기존 파일명과 충돌나지 않게 별도 폴더및 파일명으로 작업
+ - xml 파일은 기존명칭 규칙 xxxx_SQL_Maria.xml 준수
+ - 필요시 의논하여 기존 소스에 통합
+ - 개발시 소스 구성 관련해서는 홍성원 과장 010-4422-8734 문의
+ 
+  

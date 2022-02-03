@@ -1,0 +1,16 @@
+
+1. String 값추출
+   String sql      = StringUtil.isNullToString((String) map3.get("objSql"));
+
+2. null 체크 => StringUtils.isEmpty(sql)
+
+3.  <if test="fetchcnt !=null and fetchcnt!='' ">
+
+4. 수정시 한곳만 수정할 수 있도록 함수 모듈화 , 같은 코드 반복해서 사용하지 않고 철저한 테스트
+
+5. 다양한 테스트 방법 수립후 개발 및 테스트 
+
+6. egovmap xml 사용시 반드시 hsnull 사용, 
+	list에 null인 값이 있으면 10개 컬럼이라면 null 컬럼 빠지고 리턴됨  
+	상위에서 index 로 접근하면 outofbound 발생
+ 	예제) hsnull(srn            ,'')  srn                
